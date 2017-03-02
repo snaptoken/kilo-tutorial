@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+
+def cmd(s)
+  puts s
+  `#{s}`
+end
+
+if ARGV.first == "clean"
+  cmd "rm kilo"
+  exit
+elsif ARGV.first == "new"
+  latest = Dir["kilo-*.c"].sort.last
+  n = latest[5..-3].to_i + 1
+  new = "kilo-%02d.c" % n
+  cmd "cp #{latest} #{new}"
+  exit
+elsif ARGV.first == "diff"
+  cur = ARGV[1].to_i
+  prev = cur - 1
+  cur = "%02d" % cur
+  prev = "%02d" % prev
+  system "git diff kilo-#{prev}.c kilo-#{cur}.c"
+  exit
+end
+
+step = ARGV.first ? ("kilo-%02d.c" % ARGV.first.to_i) : Dir["kilo-*.c"].sort.last
+
+cmd "gcc -o kilo #{step} -Wall -W -pedantic -std=c99"
+

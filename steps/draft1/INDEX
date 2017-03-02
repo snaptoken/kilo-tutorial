@@ -1,0 +1,35 @@
+01. main()
+02. enableRawMode()
+03. disableRawMode()
+04. error handling
+05. global state (E.rawmode)
+06. press 'q' to quit
+07. clear screen and display tildes
+08. abuf struct
+09. get window size
+10. move cursor with hjkl keys
+11. move cursor with arrow keys, ctrl-q to quit
+12. read file into memory and display it
+13. better cursor navigation
+14. render tabs properly
+15. scrolling
+16. status bar
+17. status message
+18. page up & page down
+19. inserting ordinary characters
+20. saving
+21. dirty flag
+22. quit confirmation
+23. backspace
+24. enter key
+25. bare-bones incremental search
+26. restore cursor position when escaping out of search
+27. search forward/backward with arrows
+28. highlight search results
+29. syntax highlight numbers
+30. filetype detection
+31. syntax highlight strings
+32. syntax highlight single line comments
+33. syntax highlight keywords
+34. highlight/handle nonprintable characters
+35. highlight multiline comments
