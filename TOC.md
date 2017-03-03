@@ -7,18 +7,16 @@
   * Enable raw mode
   * Disable raw mode at exit
   * Error handling
-  * Global state
   * Sections
 * Raw input and output
-  * Press `q` to quit
-  * Clear the screen
-  * Clear the whole screen
+  * Press `Ctrl-Q` to quit
+  * Clear the screen (`\e[2J`)
+  * Clear the whole screen (getWindowSize)
   * Backbuffer
   * Tildes
   * Welcome message
   * Move the cursor
   * Detect arrow keys
-  * Press `Ctrl-Q` to quit
   * Don't move the cursor off screen
 * A Text Viewer
   * A Line Viewer

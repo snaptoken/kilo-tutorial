@@ -19,7 +19,7 @@ elsif ARGV.first == "diff"
   prev = cur - 1
   cur = "%02d" % cur
   prev = "%02d" % prev
-  system "git diff kilo-#{prev}.c kilo-#{cur}.c"
+  system "git diff --no-index kilo-#{prev}.c kilo-#{cur}.c"
   exit
 end
 
