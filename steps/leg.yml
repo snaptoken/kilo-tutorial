@@ -1,0 +1,7 @@
+---
+:default_file: kilo.c
+:editor: vim
+:build: gcc -o kilo kilo.c -Wall -W -pedantic -std=c99
+:run: ./kilo
+:clean: rm -f kilo
+...
