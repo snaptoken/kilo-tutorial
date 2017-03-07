@@ -1,7 +1,6 @@
-~~~ step
+~~~ step: main
 diff --git a/kilo.c b/kilo.c
 new file mode 100644
-index 0000000..d8e88a8
 --- /dev/null
 +++ b/kilo.c
 @@ -0,0 +1,16 @@
@@ -22,10 +21,9 @@ index 0000000..d8e88a8
 + */
 +
 
-~~~ step
+~~~ step: makefile
 diff --git a/Makefile b/Makefile
 new file mode 100644
-index 0000000..0115ca0
 --- /dev/null
 +++ b/Makefile
 @@ -0,0 +1,3 @@
@@ -33,7 +31,6 @@ index 0000000..0115ca0
 +	$(CC) -o kilo kilo.c -Wall -W -pedantic -std=c99
 +
 diff --git a/kilo.c b/kilo.c
-index d8e88a8..6e82248 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,7 +1,4 @@
@@ -61,9 +58,8 @@ index d8e88a8..6e82248 100644
   */
  
 
-~~~ step
+~~~ step: canonical
 diff --git a/kilo.c b/kilo.c
-index 6e82248..51c9a05 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,16 +1,18 @@
@@ -93,9 +89,8 @@ index 6e82248..51c9a05 100644
   */
  
 
-~~~ step
+~~~ step: press-q
 diff --git a/kilo.c b/kilo.c
-index 51c9a05..fc6724b 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,18 +1,16 @@
@@ -122,9 +117,8 @@ index 51c9a05..fc6724b 100644
   */
  
 
-~~~ step
+~~~ step: echo
 diff --git a/kilo.c b/kilo.c
-index fc6724b..a0e7eed 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,16 +1,34 @@
@@ -166,9 +160,8 @@ index fc6724b..a0e7eed 100644
   */
  
 
-~~~ step
+~~~ step: atexit
 diff --git a/kilo.c b/kilo.c
-index a0e7eed..fd94b9d 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,14 +1,23 @@
@@ -215,9 +208,8 @@ index a0e7eed..fd94b9d 100644
   */
  
 
-~~~ step
+~~~ step: canonical-off
 diff --git a/kilo.c b/kilo.c
-index fd94b9d..5e9e95c 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -252,9 +244,8 @@ index fd94b9d..5e9e95c 100644
   */
  
 
-~~~ step
+~~~ step: keypresses
 diff --git a/kilo.c b/kilo.c
-index 5e9e95c..6bd29c3 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,6 +1,8 @@
@@ -298,9 +289,8 @@ index 5e9e95c..6bd29c3 100644
   */
  
 
-~~~ step
+~~~ step: isig
 diff --git a/kilo.c b/kilo.c
-index 6bd29c3..c0ea4af 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -332,9 +322,8 @@ index 6bd29c3..c0ea4af 100644
   */
  
 
-~~~ step
+~~~ step: ixon
 diff --git a/kilo.c b/kilo.c
-index c0ea4af..0c3df33 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -365,9 +354,8 @@ index c0ea4af..0c3df33 100644
   */
  
 
-~~~ step
+~~~ step: ctrl-m
 diff --git a/kilo.c b/kilo.c
-index 0c3df33..728163e 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -401,9 +389,8 @@ index 0c3df33..728163e 100644
   */
  
 
-~~~ step
+~~~ step: opost
 diff --git a/kilo.c b/kilo.c
-index 728163e..ed657de 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -448,9 +435,8 @@ index 728163e..ed657de 100644
   */
  
 
-~~~ step
+~~~ step: misc-flags
 diff --git a/kilo.c b/kilo.c
-index ed657de..9f3e49a 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -488,9 +474,8 @@ index ed657de..9f3e49a 100644
   */
  
 
-~~~ step
+~~~ step: vmin-vtime
 diff --git a/kilo.c b/kilo.c
-index 9f3e49a..631eb1a 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -540,9 +525,8 @@ index 9f3e49a..631eb1a 100644
   */
  
 
-~~~ step
+~~~ step: error-handling
 diff --git a/kilo.c b/kilo.c
-index 631eb1a..b63715e 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -605,9 +589,8 @@ index 631eb1a..b63715e 100644
   */
  
 
-~~~ step
+~~~ step: sections
 diff --git a/kilo.c b/kilo.c
-index b63715e..7a70c1f 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,14 +1,20 @@
@@ -653,9 +636,8 @@ index b63715e..7a70c1f 100644
   */
  
 
-~~~ step
+~~~ step: ctrl-q
 diff --git a/kilo.c b/kilo.c
-index 7a70c1f..e7f92c5 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -698,9 +680,8 @@ index 7a70c1f..e7f92c5 100644
   */
  
 
-~~~ step
+~~~ step: refactor-input
 diff --git a/kilo.c b/kilo.c
-index e7f92c5..b1a01de 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -759,9 +740,8 @@ index e7f92c5..b1a01de 100644
   */
  
 
-~~~ step
+~~~ step: clear-screen
 diff --git a/kilo.c b/kilo.c
-index b1a01de..486e111 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -806,9 +786,8 @@ index b1a01de..486e111 100644
   */
  
 
-~~~ step
+~~~ step: cursor-home
 diff --git a/kilo.c b/kilo.c
-index 486e111..63d6332 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -837,9 +816,8 @@ index 486e111..63d6332 100644
   */
  
 
-~~~ step
+~~~ step: tildes
 diff --git a/kilo.c b/kilo.c
-index 63d6332..7d44b44 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -873,9 +851,8 @@ index 63d6332..7d44b44 100644
   */
  
 
-~~~ step
+~~~ step: global-state
 diff --git a/kilo.c b/kilo.c
-index 7d44b44..778e3ee 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -929,9 +906,8 @@ index 7d44b44..778e3ee 100644
   */
  
 
-~~~ step
+~~~ step: window-size
 diff --git a/kilo.c b/kilo.c
-index 778e3ee..049308a 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -1010,9 +986,8 @@ index 778e3ee..049308a 100644
   */
  
 
-~~~ step
+~~~ step: bottom-left
 diff --git a/kilo.c b/kilo.c
-index 049308a..020c517 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -1060,9 +1035,8 @@ index 049308a..020c517 100644
   */
  
 
-~~~ step
+~~~ step: cursor-query
 diff --git a/kilo.c b/kilo.c
-index 020c517..e5d259c 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -1116,9 +1090,8 @@ index 020c517..e5d259c 100644
   */
  
 
-~~~ step
+~~~ step: response-buffer
 diff --git a/kilo.c b/kilo.c
-index e5d259c..17f40b7 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -1169,9 +1142,8 @@ index e5d259c..17f40b7 100644
   */
  
 
-~~~ step
+~~~ step: parse-response
 diff --git a/kilo.c b/kilo.c
-index 17f40b7..c0f8516 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -1205,9 +1177,8 @@ index 17f40b7..c0f8516 100644
   */
  
 
-~~~ step
+~~~ step: cleanup-window-size
 diff --git a/kilo.c b/kilo.c
-index c0f8516..359ce36 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -1235,9 +1206,8 @@ index c0f8516..359ce36 100644
   */
  
 
-~~~ step
+~~~ step: last-line
 diff --git a/kilo.c b/kilo.c
-index 359ce36..4180837 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -1269,9 +1239,8 @@ index 359ce36..4180837 100644
   */
  
 
-~~~ step
+~~~ step: abuf
 diff --git a/kilo.c b/kilo.c
-index 4180837..40cedda 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -1352,9 +1321,8 @@ index 4180837..40cedda 100644
   */
  
 
-~~~ step
+~~~ step: hide-cursor
 diff --git a/kilo.c b/kilo.c
-index 40cedda..630efb3 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -1394,9 +1362,8 @@ index 40cedda..630efb3 100644
   */
  
 
-~~~ step
+~~~ step: welcome
 diff --git a/kilo.c b/kilo.c
-index 630efb3..b50e772 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -1446,9 +1413,8 @@ index 630efb3..b50e772 100644
   */
  
 
-~~~ step
+~~~ step: move-cursor
 diff --git a/kilo.c b/kilo.c
-index b50e772..b6de898 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -1537,9 +1503,8 @@ index b50e772..b6de898 100644
   */
  
 
-~~~ step
+~~~ step: clear-screen-atexit
 diff --git a/kilo.c b/kilo.c
-index b6de898..80279bc 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -1570,9 +1535,8 @@ index b6de898..80279bc 100644
   */
  
 
-~~~ step
+~~~ step: arrow-keys
 diff --git a/kilo.c b/kilo.c
-index 80279bc..d2d6f60 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -1687,9 +1651,8 @@ index 80279bc..d2d6f60 100644
   */
  
 
-~~~ step
+~~~ step: off-screen
 diff --git a/kilo.c b/kilo.c
-index d2d6f60..d523edf 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -1739,9 +1702,8 @@ index d2d6f60..d523edf 100644
   */
  
 
-~~~ step
+~~~ step: single-line
 diff --git a/kilo.c b/kilo.c
-index d523edf..35c6577 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -1901,9 +1863,8 @@ index d523edf..35c6577 100644
   */
  
 
-~~~ step
+~~~ step: multiple-lines
 diff --git a/kilo.c b/kilo.c
-index 35c6577..04a2ab3 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -2004,9 +1965,8 @@ index 35c6577..04a2ab3 100644
   */
  
 
-~~~ step
+~~~ step: vertical-scroll
 diff --git a/kilo.c b/kilo.c
-index 04a2ab3..de8715c 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -2072,9 +2032,8 @@ index 04a2ab3..de8715c 100644
   */
  
 
-~~~ step
+~~~ step: horizontal-scroll
 diff --git a/kilo.c b/kilo.c
-index de8715c..97e19ad 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -2140,9 +2099,8 @@ index de8715c..97e19ad 100644
   */
  
 
-~~~ step
+~~~ step: scroll-limits
 diff --git a/kilo.c b/kilo.c
-index 97e19ad..4fbe1ec 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
@@ -2204,9 +2162,8 @@ index 97e19ad..4fbe1ec 100644
   */
  
 
-~~~ step
+~~~ step: snap-cursor
 diff --git a/kilo.c b/kilo.c
-index 4fbe1ec..4d57d7a 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
