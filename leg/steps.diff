@@ -1993,26 +1993,47 @@ diff --git a/kilo.c b/kilo.c
      if (filerow >= E.numrows) {
        if (E.numrows == 0 && row == E.screenrows / 3) {
          char welcome[80];
-@@ -248,12 +250,16 @@ void editorMoveCursor(int key) {
-       }
-       break;
-     case ARROW_UP:
--      if (E.cy != 0) {
-+      if (E.cy == 0) {
-+        if (E.rowoff > 0) E.rowoff--;
-+      } else {
-         E.cy--;
+@@ -224,7 +226,7 @@ void editorRefreshScreen() {
+   }
+ 
+   char buf[32];
+-  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", E.cy + 1, E.cx + 1);
++  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1, E.cx + 1);
+   abAppend(&ab, buf, strlen(buf));
+ 
+   abAppend(&ab, "\x1b[?25h", 6);
+@@ -235,6 +237,15 @@ void editorRefreshScreen() {
+ 
+ /*** input ***/
+ 
++void editorScroll() {
++  if (E.cy < E.rowoff) {
++    E.rowoff = E.cy;
++  }
++  if (E.cy >= E.rowoff + E.screenrows) {
++    E.rowoff = E.cy - E.screenrows + 1;
++  }
++}
++
+ void editorMoveCursor(int key) {
+   switch (key) {
+     case ARROW_LEFT:
+@@ -253,11 +264,13 @@ void editorMoveCursor(int key) {
        }
        break;
      case ARROW_DOWN:
 -      if (E.cy != E.screenrows - 1) {
-+      if (E.cy == E.screenrows - 1) {
-+        E.rowoff++;
-+      } else {
++      if (E.cy < E.numrows) {
          E.cy++;
        }
        break;
-@@ -282,6 +288,7 @@ void editorProcessKeypress() {
+   }
++
++  editorScroll();
+ }
+ 
+ void editorProcessKeypress() {
+@@ -282,6 +295,7 @@ void editorProcessKeypress() {
  void initEditor() {
    E.cx = 0;
    E.cy = 0;
@@ -2020,7 +2041,7 @@ diff --git a/kilo.c b/kilo.c
    E.numrows = 0;
    E.row = NULL;
  
-@@ -304,8 +311,7 @@ int main(int argc, char *argv[]) {
+@@ -304,8 +318,11 @@ int main(int argc, char *argv[]) {
  }
  
  /* Explain:
@@ -2028,6 +2049,10 @@ diff --git a/kilo.c b/kilo.c
 - *     use `realloc()` to do it)
 - *   - What `filerow` is for
 + *   - What `E.rowoff` means
++ *   - Think of `cx` and `cy` as being the cursor position in the file, not the
++ *     cursor position on the screen
++ *   - `editorScroll()` checks if the cursor is in the visible window, and
++ *     corrects the window position if it's not
 + *   - Another reminder about 0-indexing, off by one errors, etc.
   */
  
@@ -2063,26 +2088,41 @@ diff --git a/kilo.c b/kilo.c
        }
      }
  
-@@ -240,12 +241,16 @@ void editorRefreshScreen() {
+@@ -226,7 +227,8 @@ void editorRefreshScreen() {
+   }
+ 
+   char buf[32];
+-  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1, E.cx + 1);
++  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
++                                            (E.cx - E.coloff) + 1);
+   abAppend(&ab, buf, strlen(buf));
+ 
+   abAppend(&ab, "\x1b[?25h", 6);
+@@ -244,6 +246,12 @@ void editorScroll() {
+   if (E.cy >= E.rowoff + E.screenrows) {
+     E.rowoff = E.cy - E.screenrows + 1;
+   }
++  if (E.cx < E.coloff) {
++    E.coloff = E.cx;
++  }
++  if (E.cx >= E.coloff + E.screencols) {
++    E.coloff = E.cx - E.screencols + 1;
++  }
+ }
+ 
  void editorMoveCursor(int key) {
-   switch (key) {
-     case ARROW_LEFT:
--      if (E.cx != 0) {
-+      if (E.cx == 0) {
-+        if (E.coloff > 0) E.coloff--;
-+      } else {
-         E.cx--;
+@@ -254,9 +262,7 @@ void editorMoveCursor(int key) {
        }
        break;
      case ARROW_RIGHT:
 -      if (E.cx != E.screencols - 1) {
-+      if (E.cx == E.screencols - 1) {
-+        E.coloff++;
-+      } else {
-         E.cx++;
-       }
+-        E.cx++;
+-      }
++      E.cx++;
        break;
-@@ -289,6 +294,7 @@ void initEditor() {
+     case ARROW_UP:
+       if (E.cy != 0) {
+@@ -296,6 +302,7 @@ void initEditor() {
    E.cx = 0;
    E.cy = 0;
    E.rowoff = 0;
@@ -2090,12 +2130,18 @@ diff --git a/kilo.c b/kilo.c
    E.numrows = 0;
    E.row = NULL;
  
-@@ -311,7 +317,5 @@ int main(int argc, char *argv[]) {
+@@ -318,11 +325,7 @@ int main(int argc, char *argv[]) {
  }
  
  /* Explain:
 - *   - What `E.rowoff` means
+- *   - Think of `cx` and `cy` as being the cursor position in the file, not the
+- *     cursor position on the screen
+- *   - `editorScroll()` checks if the cursor is in the visible window, and
+- *     corrects the window position if it's not
 - *   - Another reminder about 0-indexing, off by one errors, etc.
++ *   - It's all parallel to vertical scrolling code, for now
++ *   - Except we don't limit scrolling to the right
   */
  
 
@@ -2105,59 +2151,36 @@ diff --git a/kilo.c b/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
 -/* # Horizontal scrolling
-+/* # Scrolling limits
++/* # Limit scrolling to the right
   */
  
  /*** includes ***/
-@@ -239,6 +239,10 @@ void editorRefreshScreen() {
- /*** input ***/
+@@ -255,6 +255,8 @@ void editorScroll() {
+ }
  
  void editorMoveCursor(int key) {
-+  int filerow = E.rowoff + E.cy;
-+  int filecol = E.coloff + E.cx;
-+  erow *row = (filerow >= E.numrows) ? NULL : &E.row[filerow];
++  erow *row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
 +
    switch (key) {
      case ARROW_LEFT:
-       if (E.cx == 0) {
-@@ -248,10 +252,12 @@ void editorMoveCursor(int key) {
+       if (E.cx != 0) {
+@@ -262,7 +264,9 @@ void editorMoveCursor(int key) {
        }
        break;
      case ARROW_RIGHT:
--      if (E.cx == E.screencols - 1) {
--        E.coloff++;
--      } else {
--        E.cx++;
-+      if (row && filecol < row->size) {
-+        if (E.cx == E.screencols - 1) {
-+          E.coloff++;
-+        } else {
-+          E.cx++;
-+        }
-       }
+-      E.cx++;
++      if (row && E.cx < row->size) {
++        E.cx++;
++      }
        break;
      case ARROW_UP:
-@@ -262,10 +268,12 @@ void editorMoveCursor(int key) {
-       }
-       break;
-     case ARROW_DOWN:
--      if (E.cy == E.screenrows - 1) {
--        E.rowoff++;
--      } else {
--        E.cy++;
-+      if (filerow < E.numrows) {
-+        if (E.cy == E.screenrows - 1) {
-+          E.rowoff++;
-+        } else {
-+          E.cy++;
-+        }
-       }
-       break;
-   }
-@@ -317,5 +325,6 @@ int main(int argc, char *argv[]) {
+       if (E.cy != 0) {
+@@ -325,7 +329,6 @@ int main(int argc, char *argv[]) {
  }
  
  /* Explain:
+- *   - It's all parallel to vertical scrolling code, for now
+- *   - Except we don't limit scrolling to the right
 + *   - ternary operator
   */
  
@@ -2167,36 +2190,29 @@ diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,4 @@
--/* # Scrolling limits
+-/* # Limit scrolling to the right
 +/* # Snap cursor to end of line
   */
  
  /*** includes ***/
-@@ -277,6 +277,18 @@ void editorMoveCursor(int key) {
-       }
+@@ -280,6 +280,12 @@ void editorMoveCursor(int key) {
        break;
    }
-+
-+  filerow = E.rowoff + E.cy;
-+  filecol = E.coloff + E.cx;
-+  row = (filerow >= E.numrows) ? NULL : &E.row[filerow];
+ 
++  row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
 +  int rowlen = row ? row->size : 0;
-+  if (filecol > rowlen) {
-+    E.cx -= filecol - rowlen;
-+    if (E.cx < 0) {
-+      E.coloff += E.cx;
-+      E.cx = 0;
-+    }
++  if (E.cx > rowlen) {
++    E.cx = rowlen;
 +  }
++
+   editorScroll();
  }
  
- void editorProcessKeypress() {
-@@ -325,6 +337,6 @@ int main(int argc, char *argv[]) {
+@@ -329,6 +335,5 @@ int main(int argc, char *argv[]) {
  }
  
  /* Explain:
 - *   - ternary operator
-+ *   - complicated arithmetic
   */
  
 
@@ -2210,37 +2226,16 @@ diff --git a/kilo.c b/kilo.c
   */
  
  /*** includes ***/
-@@ -246,7 +246,21 @@ void editorMoveCursor(int key) {
-   switch (key) {
+@@ -261,6 +261,9 @@ void editorMoveCursor(int key) {
      case ARROW_LEFT:
-       if (E.cx == 0) {
--        if (E.coloff > 0) E.coloff--;
-+        if (E.coloff > 0) {
-+          E.coloff--;
-+        } else {
-+          if (filerow > 0) {
-+            if (E.cy)
-+              E.cy--;
-+            else
-+              E.rowoff--;
-+            E.cx = E.row[filerow - 1].size;
-+            if (E.cx > E.screencols - 1) {
-+              E.coloff = E.cx - E.screencols + 1;
-+              E.cx = E.screencols - 1;
-+            }
-+          }
-+        }
-       } else {
+       if (E.cx != 0) {
          E.cx--;
++      } else if (E.cy > 0) {
++        E.cy--;
++        E.cx = E.row[E.cy].size;
        }
-@@ -337,6 +351,6 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - complicated arithmetic
-+ *   - complicated codepaths, and arithmetic
-  */
- 
+       break;
+     case ARROW_RIGHT:
 
 ~~~ step: moving-right
 diff --git a/kilo.c b/kilo.c
@@ -2252,26 +2247,13 @@ diff --git a/kilo.c b/kilo.c
   */
  
  /*** includes ***/
-@@ -272,6 +272,14 @@ void editorMoveCursor(int key) {
-         } else {
-           E.cx++;
-         }
-+      } else if (row && filecol == row->size) {
+@@ -269,6 +269,9 @@ void editorMoveCursor(int key) {
+     case ARROW_RIGHT:
+       if (row && E.cx < row->size) {
+         E.cx++;
++      } else if (row && E.cx == row->size) {
++        E.cy++;
 +        E.cx = 0;
-+        E.coloff = 0;
-+        if (E.cy == E.screenrows - 1) {
-+          E.rowoff++;
-+        } else {
-+          E.cy++;
-+        }
        }
        break;
      case ARROW_UP:
-@@ -351,6 +359,6 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - complicated codepaths, and arithmetic
-+ *   - this part's much easier
-  */
- 
