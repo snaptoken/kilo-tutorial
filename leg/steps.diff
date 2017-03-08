@@ -2199,3 +2199,79 @@ diff --git a/kilo.c b/kilo.c
 + *   - complicated arithmetic
   */
  
+
+~~~ step: moving-left
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -1,4 +1,4 @@
+-/* # Snap cursor to end of line
++/* # Moving left at the start of a line
+  */
+ 
+ /*** includes ***/
+@@ -246,7 +246,21 @@ void editorMoveCursor(int key) {
+   switch (key) {
+     case ARROW_LEFT:
+       if (E.cx == 0) {
+-        if (E.coloff > 0) E.coloff--;
++        if (E.coloff > 0) {
++          E.coloff--;
++        } else {
++          if (filerow > 0) {
++            if (E.cy)
++              E.cy--;
++            else
++              E.rowoff--;
++            E.cx = E.row[filerow - 1].size;
++            if (E.cx > E.screencols - 1) {
++              E.coloff = E.cx - E.screencols + 1;
++              E.cx = E.screencols - 1;
++            }
++          }
++        }
+       } else {
+         E.cx--;
+       }
+@@ -337,6 +351,6 @@ int main(int argc, char *argv[]) {
+ }
+ 
+ /* Explain:
+- *   - complicated arithmetic
++ *   - complicated codepaths, and arithmetic
+  */
+ 
+
+~~~ step: moving-right
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -1,4 +1,4 @@
+-/* # Moving left at the start of a line
++/* # Moving right at the end of a line
+  */
+ 
+ /*** includes ***/
+@@ -272,6 +272,14 @@ void editorMoveCursor(int key) {
+         } else {
+           E.cx++;
+         }
++      } else if (row && filecol == row->size) {
++        E.cx = 0;
++        E.coloff = 0;
++        if (E.cy == E.screenrows - 1) {
++          E.rowoff++;
++        } else {
++          E.cy++;
++        }
+       }
+       break;
+     case ARROW_UP:
+@@ -351,6 +359,6 @@ int main(int argc, char *argv[]) {
+ }
+ 
+ /* Explain:
+- *   - complicated codepaths, and arithmetic
++ *   - this part's much easier
+  */
+ 
