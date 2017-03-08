@@ -1983,28 +1983,9 @@ diff --git a/kilo.c b/kilo.c
    int screenrows;
    int screencols;
    struct termios orig_termios;
-@@ -193,7 +194,8 @@ void editorRefreshScreen() {
- 
-   int row;
-   for (row = 0; row < E.screenrows; row++) {
--    int filerow = row;
-+    int filerow = E.rowoff + row;
-+
-     if (filerow >= E.numrows) {
-       if (E.numrows == 0 && row == E.screenrows / 3) {
-         char welcome[80];
-@@ -224,7 +226,7 @@ void editorRefreshScreen() {
-   }
- 
-   char buf[32];
--  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", E.cy + 1, E.cx + 1);
-+  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1, E.cx + 1);
-   abAppend(&ab, buf, strlen(buf));
- 
-   abAppend(&ab, "\x1b[?25h", 6);
-@@ -235,6 +237,15 @@ void editorRefreshScreen() {
- 
- /*** input ***/
+@@ -185,7 +186,18 @@ void abFree(struct abuf *ab) {
+   free(ab->b);
+ }
  
 +void editorScroll() {
 +  if (E.cy < E.rowoff) {
@@ -2015,10 +1996,32 @@ diff --git a/kilo.c b/kilo.c
 +  }
 +}
 +
- void editorMoveCursor(int key) {
-   switch (key) {
-     case ARROW_LEFT:
-@@ -253,11 +264,13 @@ void editorMoveCursor(int key) {
+ void editorRefreshScreen() {
++  editorScroll();
++
+   struct abuf ab = ABUF_INIT;
+ 
+   abAppend(&ab, "\x1b[?25l", 6);
+@@ -193,7 +205,8 @@ void editorRefreshScreen() {
+ 
+   int row;
+   for (row = 0; row < E.screenrows; row++) {
+-    int filerow = row;
++    int filerow = E.rowoff + row;
++
+     if (filerow >= E.numrows) {
+       if (E.numrows == 0 && row == E.screenrows / 3) {
+         char welcome[80];
+@@ -224,7 +237,7 @@ void editorRefreshScreen() {
+   }
+ 
+   char buf[32];
+-  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", E.cy + 1, E.cx + 1);
++  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1, E.cx + 1);
+   abAppend(&ab, buf, strlen(buf));
+ 
+   abAppend(&ab, "\x1b[?25h", 6);
+@@ -253,7 +266,7 @@ void editorMoveCursor(int key) {
        }
        break;
      case ARROW_DOWN:
@@ -2027,12 +2030,6 @@ diff --git a/kilo.c b/kilo.c
          E.cy++;
        }
        break;
-   }
-+
-+  editorScroll();
- }
- 
- void editorProcessKeypress() {
 @@ -282,6 +295,7 @@ void editorProcessKeypress() {
  void initEditor() {
    E.cx = 0;
@@ -2075,7 +2072,20 @@ diff --git a/kilo.c b/kilo.c
    int screenrows;
    int screencols;
    struct termios orig_termios;
-@@ -212,10 +213,10 @@ void editorRefreshScreen() {
+@@ -193,6 +194,12 @@ void editorScroll() {
+   if (E.cy >= E.rowoff + E.screenrows) {
+     E.rowoff = E.cy - E.screenrows + 1;
+   }
++  if (E.cx < E.coloff) {
++    E.coloff = E.cx;
++  }
++  if (E.cx >= E.coloff + E.screencols) {
++    E.coloff = E.cx - E.screencols + 1;
++  }
+ }
+ 
+ void editorRefreshScreen() {
+@@ -223,10 +230,10 @@ void editorRefreshScreen() {
          abAppend(&ab, "~", 1);
        }
      } else {
@@ -2088,7 +2098,7 @@ diff --git a/kilo.c b/kilo.c
        }
      }
  
-@@ -226,7 +227,8 @@ void editorRefreshScreen() {
+@@ -237,7 +244,8 @@ void editorRefreshScreen() {
    }
  
    char buf[32];
@@ -2098,20 +2108,7 @@ diff --git a/kilo.c b/kilo.c
    abAppend(&ab, buf, strlen(buf));
  
    abAppend(&ab, "\x1b[?25h", 6);
-@@ -244,6 +246,12 @@ void editorScroll() {
-   if (E.cy >= E.rowoff + E.screenrows) {
-     E.rowoff = E.cy - E.screenrows + 1;
-   }
-+  if (E.cx < E.coloff) {
-+    E.coloff = E.cx;
-+  }
-+  if (E.cx >= E.coloff + E.screencols) {
-+    E.coloff = E.cx - E.screencols + 1;
-+  }
- }
- 
- void editorMoveCursor(int key) {
-@@ -254,9 +262,7 @@ void editorMoveCursor(int key) {
+@@ -256,9 +264,7 @@ void editorMoveCursor(int key) {
        }
        break;
      case ARROW_RIGHT:
@@ -2155,8 +2152,8 @@ diff --git a/kilo.c b/kilo.c
   */
  
  /*** includes ***/
-@@ -255,6 +255,8 @@ void editorScroll() {
- }
+@@ -257,6 +257,8 @@ void editorRefreshScreen() {
+ /*** input ***/
  
  void editorMoveCursor(int key) {
 +  erow *row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
@@ -2164,7 +2161,7 @@ diff --git a/kilo.c b/kilo.c
    switch (key) {
      case ARROW_LEFT:
        if (E.cx != 0) {
-@@ -262,7 +264,9 @@ void editorMoveCursor(int key) {
+@@ -264,7 +266,9 @@ void editorMoveCursor(int key) {
        }
        break;
      case ARROW_RIGHT:
@@ -2195,19 +2192,19 @@ diff --git a/kilo.c b/kilo.c
   */
  
  /*** includes ***/
-@@ -280,6 +280,12 @@ void editorMoveCursor(int key) {
+@@ -281,6 +281,12 @@ void editorMoveCursor(int key) {
+       }
        break;
    }
- 
++
 +  row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
 +  int rowlen = row ? row->size : 0;
 +  if (E.cx > rowlen) {
 +    E.cx = rowlen;
 +  }
-+
-   editorScroll();
  }
  
+ void editorProcessKeypress() {
 @@ -329,6 +335,5 @@ int main(int argc, char *argv[]) {
  }
  
@@ -2226,7 +2223,7 @@ diff --git a/kilo.c b/kilo.c
   */
  
  /*** includes ***/
-@@ -261,6 +261,9 @@ void editorMoveCursor(int key) {
+@@ -263,6 +263,9 @@ void editorMoveCursor(int key) {
      case ARROW_LEFT:
        if (E.cx != 0) {
          E.cx--;
@@ -2247,7 +2244,7 @@ diff --git a/kilo.c b/kilo.c
   */
  
  /*** includes ***/
-@@ -269,6 +269,9 @@ void editorMoveCursor(int key) {
+@@ -271,6 +271,9 @@ void editorMoveCursor(int key) {
      case ARROW_RIGHT:
        if (row && E.cx < row->size) {
          E.cx++;
@@ -2257,3 +2254,169 @@ diff --git a/kilo.c b/kilo.c
        }
        break;
      case ARROW_UP:
+
+~~~ step: render-tabs
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -1,4 +1,4 @@
+-/* # Moving right at the end of a line
++/* # Rendering tabs
+  */
+ 
+ /*** includes ***/
+@@ -32,7 +32,9 @@ enum {
+ 
+ typedef struct erow {
+   int size;
++  int rsize;
+   char *chars;
++  char *render;
+ } erow;
+ 
+ struct editorConfig {
+@@ -141,11 +143,38 @@ int getWindowSize(int *rows, int *cols) {
+ 
+ /*** editor ***/
+ 
++void editorUpdateRow(erow *row) {
++  int tabs = 0;
++  int j;
++  for (j = 0; j < row->size; j++)
++    if (row->chars[j] == '\t') tabs++;
++
++  free(row->render);
++  row->render = malloc(row->size + tabs*7);
++
++  int idx = 0;
++  for (j = 0; j < row->size; j++) {
++    if (row->chars[j] == '\t') {
++      row->render[idx++] = ' ';
++      while (idx % 8 != 0) row->render[idx++] = ' ';
++    } else {
++      row->render[idx++] = row->chars[j];
++    }
++  }
++  row->rsize = idx;
++}
++
+ void editorAppendRow(char *s, size_t len) {
+   E.row = realloc(E.row, sizeof(erow) * (E.numrows + 1));
++
+   E.row[E.numrows].size = len;
+   E.row[E.numrows].chars = malloc(len);
+   memcpy(E.row[E.numrows].chars, s, len);
++
++  E.row[E.numrows].rsize = 0;
++  E.row[E.numrows].render = NULL;
++  editorUpdateRow(&E.row[E.numrows]);
++
+   E.numrows++;
+ }
+ 
+@@ -230,10 +259,10 @@ void editorRefreshScreen() {
+         abAppend(&ab, "~", 1);
+       }
+     } else {
+-      int len = E.row[filerow].size - E.coloff;
++      int len = E.row[filerow].rsize - E.coloff;
+       if (len > 0) {
+         if (len > E.screencols) len = E.screencols;
+-        abAppend(&ab, E.row[filerow].chars + E.coloff, len);
++        abAppend(&ab, E.row[filerow].render + E.coloff, len);
+       }
+     }
+ 
+@@ -341,5 +370,9 @@ int main(int argc, char *argv[]) {
+ }
+ 
+ /* Explain:
++ *   - Problem: tabs don't erase anything, you may notice when you start up
++ *     ./kilo
++ *   - How tab stops work
++ *   - What `render` is for
+  */
+ 
+
+~~~ step: rx
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -1,4 +1,4 @@
+-/* # Rendering tabs
++/* # Tabs and the cursor
+  */
+ 
+ /*** includes ***/
+@@ -39,6 +39,7 @@ typedef struct erow {
+ 
+ struct editorConfig {
+   int cx, cy;
++  int rx;
+   int rowoff;
+   int coloff;
+   int screenrows;
+@@ -217,17 +218,28 @@ void abFree(struct abuf *ab) {
+ }
+ 
+ void editorScroll() {
++  E.rx = 0;
++  erow *row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
++  if (row) {
++    int j;
++    for (j = 0; j < E.cx; j++) {
++      if (j < row->size && row->chars[j] == '\t')
++        E.rx += 7 - (E.rx % 8);
++      E.rx++;
++    }
++  }
++
+   if (E.cy < E.rowoff) {
+     E.rowoff = E.cy;
+   }
+   if (E.cy >= E.rowoff + E.screenrows) {
+     E.rowoff = E.cy - E.screenrows + 1;
+   }
+-  if (E.cx < E.coloff) {
+-    E.coloff = E.cx;
++  if (E.rx < E.coloff) {
++    E.coloff = E.rx;
+   }
+-  if (E.cx >= E.coloff + E.screencols) {
+-    E.coloff = E.cx - E.screencols + 1;
++  if (E.rx >= E.coloff + E.screencols) {
++    E.coloff = E.rx - E.screencols + 1;
+   }
+ }
+ 
+@@ -274,7 +286,7 @@ void editorRefreshScreen() {
+ 
+   char buf[32];
+   snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
+-                                            (E.cx - E.coloff) + 1);
++                                            (E.rx - E.coloff) + 1);
+   abAppend(&ab, buf, strlen(buf));
+ 
+   abAppend(&ab, "\x1b[?25h", 6);
+@@ -346,6 +358,7 @@ void editorProcessKeypress() {
+ void initEditor() {
+   E.cx = 0;
+   E.cy = 0;
++  E.rx = 0;
+   E.rowoff = 0;
+   E.coloff = 0;
+   E.numrows = 0;
+@@ -370,9 +383,9 @@ int main(int argc, char *argv[]) {
+ }
+ 
+ /* Explain:
+- *   - Problem: tabs don't erase anything, you may notice when you start up
+- *     ./kilo
+- *   - How tab stops work
+- *   - What `render` is for
++ *   - What `rx` (render x) is for
++ *   - Why we don't need `ry` (although it could be useful for implementing
++ *     word wrapping...)
++ *   - Arithmetic
+  */
+ 
