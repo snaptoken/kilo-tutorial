@@ -2420,3 +2420,162 @@ diff --git a/kilo.c b/kilo.c
 + *   - Arithmetic
   */
  
+
+~~~ step: page-up-down
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -1,4 +1,4 @@
+-/* # Tabs and the cursor
++/* # Page Up and Page Down
+  */
+ 
+ /*** includes ***/
+@@ -25,7 +25,9 @@ enum {
+   ARROW_LEFT = 1000,
+   ARROW_RIGHT,
+   ARROW_UP,
+-  ARROW_DOWN
++  ARROW_DOWN,
++  PAGE_UP,
++  PAGE_DOWN
+ };
+ 
+ /*** data ***/
+@@ -96,11 +98,21 @@ int editorReadKey() {
+     if (read(STDIN_FILENO, seq + 1, 1) != 1) return '\x1b';
+ 
+     if (seq[0] == '[') {
+-      switch (seq[1]) {
+-        case 'A': return ARROW_UP;
+-        case 'B': return ARROW_DOWN;
+-        case 'C': return ARROW_RIGHT;
+-        case 'D': return ARROW_LEFT;
++      if (seq[1] >= '0' && seq[1] <= '9') {
++        if (read(STDIN_FILENO, seq + 2, 1) != 1) return '\x1b';
++        if (seq[2] == '~') {
++          switch (seq[1]) {
++            case '5': return PAGE_UP;
++            case '6': return PAGE_DOWN;
++          }
++        }
++      } else {
++        switch (seq[1]) {
++          case 'A': return ARROW_UP;
++          case 'B': return ARROW_DOWN;
++          case 'C': return ARROW_RIGHT;
++          case 'D': return ARROW_LEFT;
++        }
+       }
+     }
+ 
+@@ -344,6 +356,20 @@ void editorProcessKeypress() {
+       exit(0);
+       break;
+ 
++    case PAGE_UP:
++    case PAGE_DOWN:
++      {
++        if (c == PAGE_UP)
++          E.cy = E.rowoff;
++        else if (c == PAGE_DOWN)
++          E.cy = E.rowoff + E.screenrows - 1;
++
++        int times = E.screenrows;
++        while (times--)
++          editorMoveCursor(c == PAGE_UP ? ARROW_UP : ARROW_DOWN);
++      }
++      break;
++
+     case ARROW_UP:
+     case ARROW_DOWN:
+     case ARROW_LEFT:
+@@ -383,9 +409,7 @@ int main(int argc, char *argv[]) {
+ }
+ 
+ /* Explain:
+- *   - What `rx` (render x) is for
+- *   - Why we don't need `ry` (although it could be useful for implementing
+- *     word wrapping...)
+- *   - Arithmetic
++ *   - Their escape sequences
++ *   - How we implement them in terms of arrow key movements
+  */
+ 
+
+~~~ step: home-end-keys
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -1,4 +1,4 @@
+-/* # Page Up and Page Down
++/* # Home and End keys
+  */
+ 
+ /*** includes ***/
+@@ -26,6 +26,9 @@ enum {
+   ARROW_RIGHT,
+   ARROW_UP,
+   ARROW_DOWN,
++  DEL_KEY,
++  HOME_KEY,
++  END_KEY,
+   PAGE_UP,
+   PAGE_DOWN
+ };
+@@ -102,8 +105,13 @@ int editorReadKey() {
+         if (read(STDIN_FILENO, seq + 2, 1) != 1) return '\x1b';
+         if (seq[2] == '~') {
+           switch (seq[1]) {
++            case '1': return HOME_KEY;
++            case '3': return DEL_KEY;
++            case '4': return END_KEY;
+             case '5': return PAGE_UP;
+             case '6': return PAGE_DOWN;
++            case '7': return HOME_KEY;
++            case '8': return END_KEY;
+           }
+         }
+       } else {
+@@ -112,8 +120,15 @@ int editorReadKey() {
+           case 'B': return ARROW_DOWN;
+           case 'C': return ARROW_RIGHT;
+           case 'D': return ARROW_LEFT;
++          case 'H': return HOME_KEY;
++          case 'F': return END_KEY;
+         }
+       }
++    } else if (seq[0] == 'O') {
++      switch (seq[1]) {
++        case 'H': return HOME_KEY;
++        case 'F': return END_KEY;
++      }
+     }
+ 
+     return '\x1b';
+@@ -356,6 +371,15 @@ void editorProcessKeypress() {
+       exit(0);
+       break;
+ 
++    case HOME_KEY:
++      E.cx = 0;
++      break;
++
++    case END_KEY:
++      if (E.cy < E.numrows)
++        E.cx = E.row[E.cy].size;
++      break;
++
+     case PAGE_UP:
+     case PAGE_DOWN:
+       {
+@@ -409,7 +433,7 @@ int main(int argc, char *argv[]) {
+ }
+ 
+ /* Explain:
+- *   - Their escape sequences
+- *   - How we implement them in terms of arrow key movements
++ *   - Their escape sequences (why are there so many different ways of encoding
++ *     them??)
+  */
+ 
