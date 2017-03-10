@@ -121,7 +121,7 @@ void editorSetStatusMessage(const char *fmt, ...);
 void editorRefreshScreen();
 char *editorPrompt(char *prompt, void (*callback)(char *, int));
 
-/*** low level terminal ***/
+/*** terminal ***/
 
 void die(const char *s) {
   perror(s);
@@ -405,7 +405,7 @@ void editorSelectSyntaxHighlight() {
   }
 }
 
-/*** text editing ***/
+/*** row operations ***/
 
 void editorUpdateRow(erow *row) {
   int tabs = 0;
@@ -495,6 +495,8 @@ void editorRowDelChar(erow *row, int at) {
   editorUpdateRow(row);
   E.dirty++;
 }
+
+/*** editor operations ***/
 
 void editorInsertChar(int c) {
   if (E.cy == E.numrows) {
