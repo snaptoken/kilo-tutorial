@@ -509,7 +509,6 @@ void editorInsertChar(int c) {
   }
   editorRowInsertChar(&E.row[E.cy], E.cx, c);
   E.cx++;
-  E.dirty++;
 }
 
 void editorInsertNewline() {
@@ -524,8 +523,6 @@ void editorInsertNewline() {
   }
   E.cy++;
   E.cx = 0;
-
-  E.dirty++;
 }
 
 void editorDelChar() {
@@ -543,7 +540,6 @@ void editorDelChar() {
     E.cy--;
   }
   editorUpdateRow(&E.row[E.cy]);
-  E.dirty++;
 }
 
 /*** file i/o ***/
