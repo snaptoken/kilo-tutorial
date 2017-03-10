@@ -117,6 +117,7 @@ struct editorSyntax HLDB[] = {
 
 /*** prototypes ***/
 
+void disableRawMode();
 void editorSetStatusMessage(const char *fmt, ...);
 void editorRefreshScreen();
 char *editorPrompt(char *prompt, void (*callback)(char *, int));
@@ -124,11 +125,17 @@ char *editorPrompt(char *prompt, void (*callback)(char *, int));
 /*** terminal ***/
 
 void die(const char *s) {
+  disableRawMode();
   perror(s);
   exit(1);
 }
 
 void disableRawMode() {
+  static int disabled_once = 0;
+
+  if (disabled_once) return;
+  disabled_once = 1;
+
   write(STDOUT_FILENO, "\x1b[H", 3);
   write(STDOUT_FILENO, "\x1b[2J", 4);
 
@@ -137,12 +144,10 @@ void disableRawMode() {
 }
 
 void enableRawMode() {
-  struct termios raw;
-
   if (tcgetattr(STDIN_FILENO, &E.orig_termios) == -1) die("tcgetattr");
   atexit(disableRawMode);
 
-  raw = E.orig_termios;
+  struct termios raw = E.orig_termios;
   raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
   raw.c_oflag &= ~(OPOST);
   raw.c_cflag |= (CS8);
@@ -717,7 +722,7 @@ void editorScroll() {
   if (E.cy < E.numrows) {
     int j;
     for (j = 0; j < E.cx; j++) {
-      if (E.row[E.cy]->chars[j] == '\t')
+      if (E.row[E.cy].chars[j] == '\t')
         E.rx += 7 - (E.rx % 8);
       E.rx++;
     }
