@@ -3,70 +3,25 @@ diff --git a/kilo.c b/kilo.c
 new file mode 100644
 --- /dev/null
 +++ b/kilo.c
-@@ -0,0 +1,16 @@
-+/* # The `main()` function
-+ *
-+ * Create a new file named `kilo.c` and give it a `main()` function to start
-+ * out with.
-+ */
-+
+@@ -0,0 +1,3 @@
 +int main() {
 +  return 0;
 +}
-+
-+/* Explain:
-+ *   - `main()` is a special function
-+ *   - `return 0` exits the program with a successful exit status code
-+ *   - How to compile, run, and check the exit status
-+ */
-+
 
 ~~~ step: makefile
 diff --git a/Makefile b/Makefile
 new file mode 100644
 --- /dev/null
 +++ b/Makefile
-@@ -0,0 +1,3 @@
+@@ -0,0 +1,2 @@
 +kilo: kilo.c
 +	$(CC) -o kilo kilo.c -Wall -W -pedantic -std=c99
-+
-diff --git a/kilo.c b/kilo.c
---- a/kilo.c
-+++ b/kilo.c
-@@ -1,7 +1,4 @@
--/* # The `main()` function
-- *
-- * Create a new file named `kilo.c` and give it a `main()` function to start
-- * out with.
-+/* # Makefile
-  */
- 
- int main() {
-@@ -9,8 +6,11 @@ int main() {
- }
- 
- /* Explain:
-- *   - `main()` is a special function
-- *   - `return 0` exits the program with a successful exit status code
-- *   - How to compile, run, and check the exit status
-+ *   - The `vim kilo.c` -> `make` -> `./kilo` workflow
-+ *   - `kilo` depends on `kilo.c`
-+ *   - You need tabs in Makefile, not spaces
-+ *   - `$(CC)`
-+ *   - `-Wall -W -pedantic`
-+ *   - `-std=c99`
-  */
- 
 
 ~~~ step: canonical
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,16 +1,18 @@
--/* # Makefile
-+/* # Canonical mode
-  */
- 
+@@ -1,3 +1,7 @@
 +#include <unistd.h>
 +
  int main() {
@@ -74,31 +29,12 @@ diff --git a/kilo.c b/kilo.c
 +  while (read(STDIN_FILENO, &c, 1) == 1);
    return 0;
  }
- 
- /* Explain:
-- *   - The `vim kilo.c` -> `make` -> `./kilo` workflow
-- *   - `kilo` depends on `kilo.c`
-- *   - You need tabs in Makefile, not spaces
-- *   - `$(CC)`
-- *   - `-Wall -W -pedantic`
-- *   - `-std=c99`
-+ *   - `read()` comes from `<unistd.h>`
-+ *   - `STDIN_FILENO` comes from `<unistd.h>`
-+ *   - Canonical mode, and why we don't want it
-+ *   - What exactly happens when you hit `Ctrl-D` or `Ctrl-C`
-  */
- 
 
 ~~~ step: press-q
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,18 +1,16 @@
--/* # Canonical mode
-+/* # Press `q` to quit?
-  */
- 
- #include <unistd.h>
+@@ -2,6 +2,6 @@
  
  int main() {
    char c;
@@ -106,26 +42,12 @@ diff --git a/kilo.c b/kilo.c
 +  while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q');
    return 0;
  }
- 
- /* Explain:
-- *   - `read()` comes from `<unistd.h>`
-- *   - `STDIN_FILENO` comes from `<unistd.h>`
-- *   - Canonical mode, and why we don't want it
-- *   - What exactly happens when you hit `Ctrl-D` or `Ctrl-C`
-+ *   - Why it doesn't quit immediately, and any input that came after the 'q'
-+ *     was read by the shell afterwards
-  */
- 
 
 ~~~ step: echo
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,16 +1,34 @@
--/* # Press `q` to quit?
-+/* # Turn off echoing
-  */
- 
+@@ -1,6 +1,19 @@
 +#include <termios.h>
  #include <unistd.h>
  
@@ -145,30 +67,12 @@ diff --git a/kilo.c b/kilo.c
    char c;
    while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q');
    return 0;
- }
- 
- /* Explain:
-- *   - Why it doesn't quit immediately, and any input that came after the 'q'
-- *     was read by the shell afterwards
-+ *   - `tcgetattr()`, `tcsetattr()`, `TCSAFLUSH`, `struct termios`, `ECHO` come
-+ *     from `<termios.h>`
-+ *   - It's the exact same program, just doesn't show you what you're typing
-+ *   - How to `reset` your terminal (make sure to try it with bash, not zsh)
-+ *   - Bit flipping with `&=~`
-+ *   - Flags are categorized kind of randomly as c_iflag, c_oflag, c_cflag,
-+ *     c_lflag
-  */
- 
 
 ~~~ step: atexit
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,14 +1,23 @@
--/* # Turn off echoing
-+/* # Disable raw mode at exit
-  */
- 
+@@ -1,11 +1,20 @@
 +#include <stdlib.h>
  #include <termios.h>
  #include <unistd.h>
@@ -190,35 +94,12 @@ diff --git a/kilo.c b/kilo.c
    raw.c_lflag &= ~(ECHO);
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
-@@ -23,12 +32,9 @@ int main() {
- }
- 
- /* Explain:
-- *   - `tcgetattr()`, `tcsetattr()`, `TCSAFLUSH`, `struct termios`, `ECHO` come
-- *     from `<termios.h>`
-- *   - It's the exact same program, just doesn't show you what you're typing
-- *   - How to `reset` your terminal (make sure to try it with bash, not zsh)
-- *   - Bit flipping with `&=~`
-- *   - Flags are categorized kind of randomly as c_iflag, c_oflag, c_cflag,
-- *     c_lflag
-+ *   - `atexit()` comes from `<stdlib.h>`
-+ *   - structure assignment
-+ *   - echoing is turned back on when it exits in bash, also the TCSAFLUSH on
-+ *     exit prevents extra input from going to the shell afterwards
-  */
- 
 
 ~~~ step: canonical-off
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Disable raw mode at exit
-+/* # Turn off canonical mode
-  */
- 
- #include <stdlib.h>
-@@ -18,7 +18,7 @@ void enableRawMode() {
+@@ -15,7 +15,7 @@ void enableRawMode() {
    atexit(disableRawMode);
  
    raw = orig_termios;
@@ -227,38 +108,18 @@ diff --git a/kilo.c b/kilo.c
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
  }
-@@ -32,9 +32,11 @@ int main() {
- }
- 
- /* Explain:
-- *   - `atexit()` comes from `<stdlib.h>`
-- *   - structure assignment
-- *   - echoing is turned back on when it exits in bash, also the TCSAFLUSH on
-- *     exit prevents extra input from going to the shell afterwards
-+ *   - `ICANON`, `IEXTEN` come from `<stdlib.h>`
-+ *   - `IEXTEN` is basically extended features for canonical mode? (It's turned
-+ *     off already on my terminal/shell)
-+ *   - Bitwise `|` operator
-+ *   - Now `read()` returns as soon as each key is pressed, and the program
-+ *     exits as soon as you press 'q'
-  */
- 
 
 ~~~ step: keypresses
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,6 +1,8 @@
--/* # Turn off canonical mode
-+/* # Display keypresses
-  */
- 
+@@ -1,3 +1,5 @@
 +#include <ctype.h>
 +#include <stdio.h>
  #include <stdlib.h>
  #include <termios.h>
  #include <unistd.h>
-@@ -27,16 +29,22 @@ int main() {
+@@ -24,6 +26,13 @@ int main() {
    enableRawMode();
  
    char c;
@@ -273,33 +134,12 @@ diff --git a/kilo.c b/kilo.c
 +
    return 0;
  }
- 
- /* Explain:
-- *   - `ICANON`, `IEXTEN` come from `<stdlib.h>`
-- *   - `IEXTEN` is basically extended features for canonical mode? (It's turned
-- *     off already on my terminal/shell)
-- *   - Bitwise `|` operator
-- *   - Now `read()` returns as soon as each key is pressed, and the program
-- *     exits as soon as you press 'q'
-+ *   - `printf()` comes from `<stdio.h>`
-+ *   - `isprint()` comes from `<ctype.h>`
-+ *   - Show that holding `Ctrl` while pressing a key just clears the sixth and
-+ *     seventh bits of the pressed key, resulting in `Ctrl-A` being 1, `Ctrl-B`
-+ *     being 2, `Ctrl-C` being 3, ..., `Ctrl-Z` being 26
-  */
- 
 
 ~~~ step: isig
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Display keypresses
-+/* # Turn off `Ctrl-Z` and `Ctrl-C` signals
-  */
- 
- #include <ctype.h>
-@@ -20,7 +20,7 @@ void enableRawMode() {
+@@ -17,7 +17,7 @@ void enableRawMode() {
    atexit(disableRawMode);
  
    raw = orig_termios;
@@ -308,31 +148,12 @@ diff --git a/kilo.c b/kilo.c
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
  }
-@@ -41,10 +41,7 @@ int main() {
- }
- 
- /* Explain:
-- *   - `printf()` comes from `<stdio.h>`
-- *   - `isprint()` comes from `<ctype.h>`
-- *   - Show that holding `Ctrl` while pressing a key just clears the sixth and
-- *     seventh bits of the pressed key, resulting in `Ctrl-A` being 1, `Ctrl-B`
-- *     being 2, `Ctrl-C` being 3, ..., `Ctrl-Z` being 26
-+ *   - `ISIG` comes from `<termios.h>`
-+ *   - What `Ctrl-Z` and `Ctrl-C` do and why we don't want them
-  */
- 
 
 ~~~ step: ixon
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Turn off `Ctrl-Z` and `Ctrl-C` signals
-+/* # Turn off `Ctrl-S` and `Ctrl-Q`
-  */
- 
- #include <ctype.h>
-@@ -20,6 +20,7 @@ void enableRawMode() {
+@@ -17,6 +17,7 @@ void enableRawMode() {
    atexit(disableRawMode);
  
    raw = orig_termios;
@@ -340,31 +161,12 @@ diff --git a/kilo.c b/kilo.c
    raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
-@@ -41,7 +42,10 @@ int main() {
- }
- 
- /* Explain:
-- *   - `ISIG` comes from `<termios.h>`
-- *   - What `Ctrl-Z` and `Ctrl-C` do and why we don't want them
-+ *   - `IXON` comes from `<termios.h>`
-+ *   - What `Ctrl-S` and `Ctrl-Q` are for
-+ *   - Now we can `Ctrl` the whole alphabet... *except* `Ctrl-M`! It should
-+ *     be read as a 13, but it's read as a 10. We must be translating carriage
-+ *     returns to newlines! We'll fix that next.
-  */
- 
 
 ~~~ step: ctrl-m
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Turn off `Ctrl-S` and `Ctrl-Q`
-+/* # Fix `Ctrl-M`
-  */
- 
- #include <ctype.h>
-@@ -20,7 +20,7 @@ void enableRawMode() {
+@@ -17,7 +17,7 @@ void enableRawMode() {
    atexit(disableRawMode);
  
    raw = orig_termios;
@@ -373,33 +175,12 @@ diff --git a/kilo.c b/kilo.c
    raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
-@@ -42,10 +42,9 @@ int main() {
- }
- 
- /* Explain:
-- *   - `IXON` comes from `<termios.h>`
-- *   - What `Ctrl-S` and `Ctrl-Q` are for
-- *   - Now we can `Ctrl` the whole alphabet... *except* `Ctrl-M`! It should
-- *     be read as a 13, but it's read as a 10. We must be translating carriage
-- *     returns to newlines! We'll fix that next.
-+ *   - `ICRNL` comes from `<termios.h>`
-+ *   - Now we have the whole `Ctrl` alphabet to work with
-+ *   - Notice that the enter key is now read as 13 instead of 10. (Carriage
-+ *     return instead of newline). It was also being affected by ICRNL.
-  */
- 
 
 ~~~ step: opost
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Fix `Ctrl-M`
-+/* # Turn off output processing
-  */
- 
- #include <ctype.h>
-@@ -21,6 +21,7 @@ void enableRawMode() {
+@@ -18,6 +18,7 @@ void enableRawMode() {
  
    raw = orig_termios;
    raw.c_iflag &= ~(ICRNL | IXON);
@@ -407,7 +188,7 @@ diff --git a/kilo.c b/kilo.c
    raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
-@@ -32,9 +33,9 @@ int main() {
+@@ -29,9 +30,9 @@ int main() {
    char c;
    while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q') {
      if (isprint(c)) {
@@ -419,33 +200,12 @@ diff --git a/kilo.c b/kilo.c
      }
    }
  
-@@ -42,9 +43,10 @@ int main() {
- }
- 
- /* Explain:
-- *   - `ICRNL` comes from `<termios.h>`
-- *   - Now we have the whole `Ctrl` alphabet to work with
-- *   - Notice that the enter key is now read as 13 instead of 10. (Carriage
-- *     return instead of newline). It was also being affected by ICRNL.
-+ *   - `OPOST` comes from `<termios.h>`
-+ *   - It disables all other output processing flags in the `c_oflag` field
-+ *   - Generally the only thing this affects is `ONLCR`, which causes newlines
-+ *     to be translated into CR-NL's. From now on we'll have to output "\r\n"
-+ *     to get a newline with the cursor moved all the way to the left.
-  */
- 
 
 ~~~ step: misc-flags
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Turn off output processing
-+/* # Miscellaneous flags
-  */
- 
- #include <ctype.h>
-@@ -20,8 +20,9 @@ void enableRawMode() {
+@@ -17,8 +17,9 @@ void enableRawMode() {
    atexit(disableRawMode);
  
    raw = orig_termios;
@@ -456,35 +216,12 @@ diff --git a/kilo.c b/kilo.c
    raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
-@@ -43,10 +44,11 @@ int main() {
- }
- 
- /* Explain:
-- *   - `OPOST` comes from `<termios.h>`
-- *   - It disables all other output processing flags in the `c_oflag` field
-- *   - Generally the only thing this affects is `ONLCR`, which causes newlines
-- *     to be translated into CR-NL's. From now on we'll have to output "\r\n"
-- *     to get a newline with the cursor moved all the way to the left.
-+ *   - `BRKINT`, `INPCK`, `ISTRIP`, `CS8` come from `<termios.h>`
-+ *   - These flags are either probably already turned off, or don't have an
-+ *     effect on emulated terminals and are there for historical reasons, or I
-+ *     am not sure what they do or how to get a visible effect from them. But
-+ *     they seem to be generally accepted to be required settings in order for
-+ *     it to be considered "raw mode".
-  */
- 
 
 ~~~ step: vmin-vtime
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Miscellaneous flags
-+/* # Poll for keyboard input
-  */
- 
- #include <ctype.h>
-@@ -24,6 +24,8 @@ void enableRawMode() {
+@@ -21,6 +21,8 @@ void enableRawMode() {
    raw.c_oflag &= ~(OPOST);
    raw.c_cflag |= (CS8);
    raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
@@ -493,7 +230,7 @@ diff --git a/kilo.c b/kilo.c
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
  }
-@@ -31,24 +33,22 @@ void enableRawMode() {
+@@ -28,13 +30,15 @@ void enableRawMode() {
  int main() {
    enableRawMode();
  
@@ -511,31 +248,12 @@ diff --git a/kilo.c b/kilo.c
    }
  
    return 0;
- }
- 
- /* Explain:
-- *   - `BRKINT`, `INPCK`, `ISTRIP`, `CS8` come from `<termios.h>`
-- *   - These flags are either probably already turned off, or don't have an
-- *     effect on emulated terminals and are there for historical reasons, or I
-- *     am not sure what they do or how to get a visible effect from them. But
-- *     they seem to be generally accepted to be required settings in order for
-- *     it to be considered "raw mode".
-+ *   - `VMIN`, `VTIME` come from `<termios.h>`
-+ *   - Why do we want `read()` to timeout after 100ms?
-  */
- 
 
 ~~~ step: error-handling
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Poll for keyboard input
-+/* # Error handling
-  */
- 
- #include <ctype.h>
-@@ -9,14 +9,20 @@
+@@ -6,14 +6,20 @@
  
  struct termios orig_termios;
  
@@ -558,7 +276,7 @@ diff --git a/kilo.c b/kilo.c
    atexit(disableRawMode);
  
    raw = orig_termios;
-@@ -27,7 +33,7 @@ void enableRawMode() {
+@@ -24,7 +30,7 @@ void enableRawMode() {
    raw.c_cc[VMIN] = 0;
    raw.c_cc[VTIME] = 1;
  
@@ -567,7 +285,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  int main() {
-@@ -35,7 +41,7 @@ int main() {
+@@ -32,7 +38,7 @@ int main() {
  
    while (1) {
      char c = '\0';
@@ -576,28 +294,12 @@ diff --git a/kilo.c b/kilo.c
      if (isprint(c)) {
        printf("%d ('%c')\r\n", c, c);
      } else {
-@@ -48,7 +54,9 @@ int main() {
- }
- 
- /* Explain:
-- *   - `VMIN`, `VTIME` come from `<termios.h>`
-- *   - Why do we want `read()` to timeout after 100ms?
-+ *   - `perror()` comes from `<stdio.h>`
-+ *   - `exit()` comes from `<stdlib.h>`
-+ *   - Importance of checking return values
-+ *   - How to make it fail (run `cat kilo.c | ./kilo`)
-  */
- 
 
 ~~~ step: sections
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,14 +1,20 @@
--/* # Error handling
-+/* # Sections
-  */
- 
+@@ -1,11 +1,17 @@
 +/*** includes ***/
 +
  #include <ctype.h>
@@ -615,7 +317,7 @@ diff --git a/kilo.c b/kilo.c
  void die(const char *s) {
    perror(s);
    exit(1);
-@@ -36,6 +42,8 @@ void enableRawMode() {
+@@ -33,6 +39,8 @@ void enableRawMode() {
    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
  }
  
@@ -624,29 +326,12 @@ diff --git a/kilo.c b/kilo.c
  int main() {
    enableRawMode();
  
-@@ -54,9 +62,6 @@ int main() {
- }
- 
- /* Explain:
-- *   - `perror()` comes from `<stdio.h>`
-- *   - `exit()` comes from `<stdlib.h>`
-- *   - Importance of checking return values
-- *   - How to make it fail (run `cat kilo.c | ./kilo`)
-+ *   - How the sections help shorten the diffs
-  */
- 
 
 ~~~ step: ctrl-q
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Sections
-+/* # Press `Ctrl-Q` to quit
-  */
- 
- /*** includes ***/
-@@ -9,6 +9,10 @@
+@@ -6,6 +6,10 @@
  #include <termios.h>
  #include <unistd.h>
  
@@ -657,7 +342,7 @@ diff --git a/kilo.c b/kilo.c
  /*** data ***/
  
  struct termios orig_termios;
-@@ -50,18 +54,14 @@ int main() {
+@@ -47,12 +51,7 @@ int main() {
    while (1) {
      char c = '\0';
      if (read(STDIN_FILENO, &c, 1) == -1) die("read");
@@ -671,26 +356,12 @@ diff --git a/kilo.c b/kilo.c
    }
  
    return 0;
- }
- 
- /* Explain:
-- *   - How the sections help shorten the diffs
-+ *   - How `x & 0x1f` clears bits 6 & 7, and why we're doing that
-+ *   - #define, and why (k) is in parens
-  */
- 
 
 ~~~ step: refactor-input
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Press `Ctrl-Q` to quit
-+/* # Refactor keyboard input
-  */
- 
- /*** includes ***/
-@@ -46,22 +46,43 @@ void enableRawMode() {
+@@ -43,15 +43,33 @@ void enableRawMode() {
    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
  }
  
@@ -727,30 +398,12 @@ diff --git a/kilo.c b/kilo.c
    }
  
    return 0;
- }
- 
- /* Explain:
-- *   - How `x & 0x1f` clears bits 6 & 7, and why we're doing that
-- *   - #define, and why (k) is in parens
-+ *   - `editorReadKey()` is for low level input handling,
-+ *     `editorProcessKeypress()` is for binding keys to actions at a higher
-+ *     level, `main()` and the main loop should be kept trim
-+ *   - `editorReadKey()` basically blocks for input, so for now we'll only be
-+ *     updating the screen when a key is pressed
-  */
- 
 
 ~~~ step: clear-screen
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Refactor keyboard input
-+/* # Clear the screen
-  */
- 
- /*** includes ***/
-@@ -54,6 +54,12 @@ char editorReadKey() {
+@@ -51,6 +51,12 @@ char editorReadKey() {
    return c;
  }
  
@@ -763,7 +416,7 @@ diff --git a/kilo.c b/kilo.c
  /*** input ***/
  
  void editorProcessKeypress() {
-@@ -72,6 +78,7 @@ int main() {
+@@ -69,6 +75,7 @@ int main() {
    enableRawMode();
  
    while (1) {
@@ -771,32 +424,12 @@ diff --git a/kilo.c b/kilo.c
      editorProcessKeypress();
    }
  
-@@ -79,10 +86,8 @@ int main() {
- }
- 
- /* Explain:
-- *   - `editorReadKey()` is for low level input handling,
-- *     `editorProcessKeypress()` is for binding keys to actions at a higher
-- *     level, `main()` and the main loop should be kept trim
-- *   - `editorReadKey()` basically blocks for input, so for now we'll only be
-- *     updating the screen when a key is pressed
-+ *   - `write()`, `STDOUT_FILENO` come from `<unistd.h>`
-+ *   - `'\x1b' is the ESC character, we are outputting an escape sequence which
-+ *     the terminal interprets as "clear the entire screen"
-  */
- 
 
 ~~~ step: cursor-home
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Clear the screen
-+/* # Reposition the cursor
-  */
- 
- /*** includes ***/
-@@ -58,6 +58,7 @@ char editorReadKey() {
+@@ -55,6 +55,7 @@ char editorReadKey() {
  
  void editorRefreshScreen() {
    write(STDOUT_FILENO, "\x1b[2J", 4);
@@ -804,29 +437,12 @@ diff --git a/kilo.c b/kilo.c
  }
  
  /*** input ***/
-@@ -86,8 +87,7 @@ int main() {
- }
- 
- /* Explain:
-- *   - `write()`, `STDOUT_FILENO` come from `<unistd.h>`
-- *   - `'\x1b' is the ESC character, we are outputting an escape sequence which
-- *     the terminal interprets as "clear the entire screen"
-+ *   - `ESC [ H` is short for `ESC [ 1 ; 1 H`, positioning the cursor at the
-+ *     first row and first column (mnemonic: H for Home)
-  */
- 
 
 ~~~ step: tildes
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Reposition the cursor
-+/* # Tildes
-  */
- 
- /*** includes ***/
-@@ -59,6 +59,13 @@ char editorReadKey() {
+@@ -56,6 +56,13 @@ char editorReadKey() {
  void editorRefreshScreen() {
    write(STDOUT_FILENO, "\x1b[2J", 4);
    write(STDOUT_FILENO, "\x1b[H", 3);
@@ -840,28 +456,12 @@ diff --git a/kilo.c b/kilo.c
  }
  
  /*** input ***/
-@@ -87,7 +94,7 @@ int main() {
- }
- 
- /* Explain:
-- *   - `ESC [ H` is short for `ESC [ 1 ; 1 H`, positioning the cursor at the
-- *     first row and first column (mnemonic: H for Home)
-+ *   - What the tildes are for
-+ *   - Why we don't know the number of rows in the terminal window yet
-  */
- 
 
 ~~~ step: global-state
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Tildes
-+/* # Global state
-  */
- 
- /*** includes ***/
-@@ -15,7 +15,11 @@
+@@ -12,7 +12,11 @@
  
  /*** data ***/
  
@@ -874,7 +474,7 @@ diff --git a/kilo.c b/kilo.c
  
  /*** terminal ***/
  
-@@ -25,17 +29,17 @@ void die(const char *s) {
+@@ -22,17 +26,17 @@ void die(const char *s) {
  }
  
  void disableRawMode() {
@@ -895,28 +495,12 @@ diff --git a/kilo.c b/kilo.c
    raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
    raw.c_oflag &= ~(OPOST);
    raw.c_cflag |= (CS8);
-@@ -94,7 +98,7 @@ int main() {
- }
- 
- /* Explain:
-- *   - What the tildes are for
-- *   - Why we don't know the number of rows in the terminal window yet
-+ *   - What kind of global state to expect and why we're putting it all in one
-+ *     struct called `E`.
-  */
- 
 
 ~~~ step: window-size
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Global state
-+/* # Window size, the easy way
-  */
- 
- /*** includes ***/
-@@ -6,6 +6,7 @@
+@@ -3,6 +3,7 @@
  #include <ctype.h>
  #include <stdio.h>
  #include <stdlib.h>
@@ -924,7 +508,7 @@ diff --git a/kilo.c b/kilo.c
  #include <termios.h>
  #include <unistd.h>
  
-@@ -16,6 +17,8 @@
+@@ -13,6 +14,8 @@
  /*** data ***/
  
  struct editorConfig {
@@ -933,7 +517,7 @@ diff --git a/kilo.c b/kilo.c
    struct termios orig_termios;
  };
  
-@@ -58,6 +61,18 @@ char editorReadKey() {
+@@ -55,6 +58,18 @@ char editorReadKey() {
    return c;
  }
  
@@ -952,7 +536,7 @@ diff --git a/kilo.c b/kilo.c
  /*** output ***/
  
  void editorRefreshScreen() {
-@@ -65,7 +80,7 @@ void editorRefreshScreen() {
+@@ -62,7 +77,7 @@ void editorRefreshScreen() {
    write(STDOUT_FILENO, "\x1b[H", 3);
  
    int row;
@@ -961,7 +545,7 @@ diff --git a/kilo.c b/kilo.c
      write(STDOUT_FILENO, "~\r\n", 3);
    }
  
-@@ -86,8 +101,12 @@ void editorProcessKeypress() {
+@@ -83,8 +98,12 @@ void editorProcessKeypress() {
  
  /*** init ***/
  
@@ -974,29 +558,12 @@ diff --git a/kilo.c b/kilo.c
  
    while (1) {
      editorRefreshScreen();
-@@ -98,7 +117,8 @@ int main() {
- }
- 
- /* Explain:
-- *   - What kind of global state to expect and why we're putting it all in one
-- *     struct called `E`.
-+ *   - `ioctl()`, `winsize`, `TIOCGWINSZ` come from `<sys/ioctl.h>`
-+ *   - Passing input arguments by reference
-+ *   - May notice that the last row is blank, this will be fixed soon
-  */
- 
 
 ~~~ step: bottom-left
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Window size, the easy way
-+/* # Window size, the hard way (part 1)
-  */
- 
- /*** includes ***/
-@@ -64,7 +64,8 @@ char editorReadKey() {
+@@ -61,7 +61,8 @@ char editorReadKey() {
  int getWindowSize(int *rows, int *cols) {
    struct winsize ws;
  
@@ -1006,7 +573,7 @@ diff --git a/kilo.c b/kilo.c
      return -1;
    } else {
      *cols = ws.ws_col;
-@@ -102,11 +103,12 @@ void editorProcessKeypress() {
+@@ -99,11 +100,12 @@ void editorProcessKeypress() {
  /*** init ***/
  
  void initEditor() {
@@ -1020,32 +587,12 @@ diff --git a/kilo.c b/kilo.c
  
    while (1) {
      editorRefreshScreen();
-@@ -117,8 +119,10 @@ int main() {
- }
- 
- /* Explain:
-- *   - `ioctl()`, `winsize`, `TIOCGWINSZ` come from `<sys/ioctl.h>`
-- *   - Passing input arguments by reference
-- *   - May notice that the last row is blank, this will be fixed soon
-+ *   - The C and B escape sequences move the cursor way to the right and way
-+ *     to the bottom, and the output shows that this moved it to the bottom-
-+ *     right corner of the screen. Now we will just have to ask for the
-+ *     position of the cursor to find out the size of the window.
-+ *   - Why we add `1 || ...` to the if condition
-  */
- 
 
 ~~~ step: cursor-query
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Window size, the hard way (part 1)
-+/* # Window size, the hard way (part 2)
-  */
- 
- /*** includes ***/
-@@ -61,12 +61,28 @@ char editorReadKey() {
+@@ -58,12 +58,28 @@ char editorReadKey() {
    return c;
  }
  
@@ -1075,32 +622,12 @@ diff --git a/kilo.c b/kilo.c
    } else {
      *cols = ws.ws_col;
      *rows = ws.ws_row;
-@@ -119,10 +135,8 @@ int main() {
- }
- 
- /* Explain:
-- *   - The C and B escape sequences move the cursor way to the right and way
-- *     to the bottom, and the output shows that this moved it to the bottom-
-- *     right corner of the screen. Now we will just have to ask for the
-- *     position of the cursor to find out the size of the window.
-- *   - Why we add `1 || ...` to the if condition
-+ *   - The "6n" sequence asks the terminal to report the cursor position. We
-+ *     then `read()` the response and print it out character by character to
-+ *     show what the response format looks like. We'll parse the response next.
-  */
- 
 
 ~~~ step: response-buffer
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Window size, the hard way (part 2)
-+/* # Window size, the hard way (part 3)
-  */
- 
- /*** includes ***/
-@@ -62,18 +62,19 @@ char editorReadKey() {
+@@ -59,18 +59,19 @@ char editorReadKey() {
  }
  
  int getCursorPosition(int *rows, int *cols) {
@@ -1128,31 +655,12 @@ diff --git a/kilo.c b/kilo.c
    return -1;
  }
  
-@@ -135,8 +136,9 @@ int main() {
- }
- 
- /* Explain:
-- *   - The "6n" sequence asks the terminal to report the cursor position. We
-- *     then `read()` the response and print it out character by character to
-- *     show what the response format looks like. We'll parse the response next.
-+ *   - We have to read into a buf[] to parse it later with sscanf. We stop
-+ *     reading into buf[] when we hit the 'R' character of the response. We
-+ *     print out the contents of buf[], except for the first character which
-+ *     should be an ESC which would mess things up if we printed it out.
-  */
- 
 
 ~~~ step: parse-response
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Window size, the hard way (part 3)
-+/* # Window size, the hard way (part 4)
-  */
- 
- /*** includes ***/
-@@ -74,8 +74,10 @@ int getCursorPosition(int *rows, int *cols) {
+@@ -71,8 +71,10 @@ int getCursorPosition(int *rows, int *cols) {
    }
    buf[i] = '\0';
  
@@ -1165,29 +673,12 @@ diff --git a/kilo.c b/kilo.c
  }
  
  int getWindowSize(int *rows, int *cols) {
-@@ -136,9 +138,6 @@ int main() {
- }
- 
- /* Explain:
-- *   - We have to read into a buf[] to parse it later with sscanf. We stop
-- *     reading into buf[] when we hit the 'R' character of the response. We
-- *     print out the contents of buf[], except for the first character which
-- *     should be an ESC which would mess things up if we printed it out.
-+ *   - `sscanf()` comes from `<stdio.h>`
-  */
- 
 
 ~~~ step: cleanup-window-size
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Window size, the hard way (part 4)
-+/* # Window size, the hard way (part 5)
-  */
- 
- /*** includes ***/
-@@ -83,7 +83,7 @@ int getCursorPosition(int *rows, int *cols) {
+@@ -80,7 +80,7 @@ int getCursorPosition(int *rows, int *cols) {
  int getWindowSize(int *rows, int *cols) {
    struct winsize ws;
  
@@ -1196,27 +687,12 @@ diff --git a/kilo.c b/kilo.c
      if (write(STDOUT_FILENO, "\x1b[999C\x1b[999B", 12) != 12) return -1;
      return getCursorPosition(rows, cols);
    } else {
-@@ -138,6 +138,7 @@ int main() {
- }
- 
- /* Explain:
-- *   - `sscanf()` comes from `<stdio.h>`
-+ *   - We're done implementing the fallback branch, so the last step is to
-+ *     remove the `1 ||` that allowed us to test that branch.
-  */
- 
 
 ~~~ step: last-line
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Window size, the hard way (part 5)
-+/* # The last line
-  */
- 
- /*** includes ***/
-@@ -101,7 +101,11 @@ void editorRefreshScreen() {
+@@ -98,7 +98,11 @@ void editorRefreshScreen() {
  
    int row;
    for (row = 0; row < E.screenrows; row++) {
@@ -1229,27 +705,12 @@ diff --git a/kilo.c b/kilo.c
    }
  
    write(STDOUT_FILENO, "\x1b[H", 3);
-@@ -138,7 +142,6 @@ int main() {
- }
- 
- /* Explain:
-- *   - We're done implementing the fallback branch, so the last step is to
-- *     remove the `1 ||` that allowed us to test that branch.
-+ *   - Why does ending the last line with "\r\n" make that last line invisible?
-  */
- 
 
 ~~~ step: abuf
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # The last line
-+/* # Append buffer
-  */
- 
- /*** includes ***/
-@@ -6,6 +6,7 @@
+@@ -3,6 +3,7 @@
  #include <ctype.h>
  #include <stdio.h>
  #include <stdlib.h>
@@ -1257,7 +718,7 @@ diff --git a/kilo.c b/kilo.c
  #include <sys/ioctl.h>
  #include <termios.h>
  #include <unistd.h>
-@@ -95,20 +96,45 @@ int getWindowSize(int *rows, int *cols) {
+@@ -92,20 +93,45 @@ int getWindowSize(int *rows, int *cols) {
  
  /*** output ***/
  
@@ -1308,30 +769,12 @@ diff --git a/kilo.c b/kilo.c
  }
  
  /*** input ***/
-@@ -142,6 +168,10 @@ int main() {
- }
- 
- /* Explain:
-- *   - Why does ending the last line with "\r\n" make that last line invisible?
-+ *   - `memcpy()` comes from `<string.h>`.
-+ *   - `realloc()`, `free()` come from `<stdlib.h>`.
-+ *   - The append buffer is used to prevent flickering.
-+ *   - Memory management
-+ *   - Literal struct values
-  */
- 
 
 ~~~ step: hide-cursor
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Append buffer
-+/* # Hide the cursor when repainting
-  */
- 
- /*** includes ***/
-@@ -119,6 +119,7 @@ void abFree(struct abuf *ab) {
+@@ -116,6 +116,7 @@ void abFree(struct abuf *ab) {
  void editorRefreshScreen() {
    struct abuf ab = ABUF_INIT;
  
@@ -1339,7 +782,7 @@ diff --git a/kilo.c b/kilo.c
    abAppend(&ab, "\x1b[2J", 4);
    abAppend(&ab, "\x1b[H", 3);
  
-@@ -132,6 +133,7 @@ void editorRefreshScreen() {
+@@ -129,6 +130,7 @@ void editorRefreshScreen() {
    }
  
    abAppend(&ab, "\x1b[H", 3);
@@ -1347,32 +790,12 @@ diff --git a/kilo.c b/kilo.c
  
    write(STDOUT_FILENO, ab.b, ab.len);
    abFree(&ab);
-@@ -168,10 +170,8 @@ int main() {
- }
- 
- /* Explain:
-- *   - `memcpy()` comes from `<string.h>`.
-- *   - `realloc()`, `free()` come from `<stdlib.h>`.
-- *   - The append buffer is used to prevent flickering.
-- *   - Memory management
-- *   - Literal struct values
-+ *   - Escape sequences `[?25l` and `[?25h`
-+ *   - Try commenting out the `[?25h` part to see if the cursor is actually
-+ *     being hidden
-  */
- 
 
 ~~~ step: welcome
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Hide the cursor when repainting
-+/* # Welcome message
-  */
- 
- /*** includes ***/
-@@ -13,6 +13,8 @@
+@@ -10,6 +10,8 @@
  
  /*** defines ***/
  
@@ -1381,7 +804,7 @@ diff --git a/kilo.c b/kilo.c
  #define CTRL_KEY(k) ((k) & 0x1f)
  
  /*** data ***/
-@@ -125,7 +127,18 @@ void editorRefreshScreen() {
+@@ -122,7 +124,18 @@ void editorRefreshScreen() {
  
    int row;
    for (row = 0; row < E.screenrows; row++) {
@@ -1401,29 +824,12 @@ diff --git a/kilo.c b/kilo.c
        abAppend(&ab, "~", 1);
      } else {
        abAppend(&ab, "~\r\n", 3);
-@@ -170,8 +183,7 @@ int main() {
- }
- 
- /* Explain:
-- *   - Escape sequences `[?25l` and `[?25h`
-- *   - Try commenting out the `[?25h` part to see if the cursor is actually
-- *     being hidden
-+ *   - `snprintf()` comes from `<stdio.h>`
-+ *   - Centering calculations
-  */
- 
 
 ~~~ step: move-cursor
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Welcome message
-+/* # Move the cursor
-  */
- 
- /*** includes ***/
-@@ -20,6 +20,7 @@
+@@ -17,6 +17,7 @@
  /*** data ***/
  
  struct editorConfig {
@@ -1431,7 +837,7 @@ diff --git a/kilo.c b/kilo.c
    int screenrows;
    int screencols;
    struct termios orig_termios;
-@@ -145,7 +146,10 @@ void editorRefreshScreen() {
+@@ -142,7 +143,10 @@ void editorRefreshScreen() {
      }
    }
  
@@ -1443,7 +849,7 @@ diff --git a/kilo.c b/kilo.c
    abAppend(&ab, "\x1b[?25h", 6);
  
    write(STDOUT_FILENO, ab.b, ab.len);
-@@ -154,6 +158,23 @@ void editorRefreshScreen() {
+@@ -151,6 +155,23 @@ void editorRefreshScreen() {
  
  /*** input ***/
  
@@ -1467,7 +873,7 @@ diff --git a/kilo.c b/kilo.c
  void editorProcessKeypress() {
    char c = editorReadKey();
  
-@@ -161,12 +182,22 @@ void editorProcessKeypress() {
+@@ -158,12 +179,22 @@ void editorProcessKeypress() {
      case CTRL_KEY('q'):
        exit(0);
        break;
@@ -1490,30 +896,12 @@ diff --git a/kilo.c b/kilo.c
    if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
  }
  
-@@ -183,7 +214,9 @@ int main() {
- }
- 
- /* Explain:
-- *   - `snprintf()` comes from `<stdio.h>`
-- *   - Centering calculations
-+ *   - `[%d;%dH` sequence
-+ *   - 1-indexing and 0-indexing
-+ *   - What happens when the cursor goes past the screen border
-+ *   - Suggest using 'WASD' or the numpad instead
-  */
- 
 
 ~~~ step: clear-screen-atexit
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Move the cursor
-+/* # Clear the screen on exit
-  */
- 
- /*** includes ***/
-@@ -36,6 +36,9 @@ void die(const char *s) {
+@@ -33,6 +33,9 @@ void die(const char *s) {
  }
  
  void disableRawMode() {
@@ -1523,29 +911,12 @@ diff --git a/kilo.c b/kilo.c
    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &E.orig_termios) == -1)
      die("tcsetattr");
  }
-@@ -214,9 +217,6 @@ int main() {
- }
- 
- /* Explain:
-- *   - `[%d;%dH` sequence
-- *   - 1-indexing and 0-indexing
-- *   - What happens when the cursor goes past the screen border
-- *   - Suggest using 'WASD' or the numpad instead
-+ *   - This should probably be done much earlier
-  */
- 
 
 ~~~ step: arrow-keys
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Clear the screen on exit
-+/* # Arrow keys
-  */
- 
- /*** includes ***/
-@@ -17,6 +17,13 @@
+@@ -14,6 +14,13 @@
  
  #define CTRL_KEY(k) ((k) & 0x1f)
  
@@ -1559,7 +930,7 @@ diff --git a/kilo.c b/kilo.c
  /*** data ***/
  
  struct editorConfig {
-@@ -60,12 +67,31 @@ void enableRawMode() {
+@@ -57,12 +64,31 @@ void enableRawMode() {
    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
  }
  
@@ -1593,7 +964,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  int getCursorPosition(int *rows, int *cols) {
-@@ -161,35 +187,35 @@ void editorRefreshScreen() {
+@@ -158,35 +184,35 @@ void editorRefreshScreen() {
  
  /*** input ***/
  
@@ -1639,29 +1010,12 @@ diff --git a/kilo.c b/kilo.c
        editorMoveCursor(c);
        break;
    }
-@@ -217,6 +243,9 @@ int main() {
- }
- 
- /* Explain:
-- *   - This should probably be done much earlier
-+ *   - enums
-+ *   - Changing `char` to `int`
-+ *   - How special keys like arrows are read as escape sequences
-+ *   - Why seq is 3 chars instead of 2
-  */
- 
 
 ~~~ step: off-screen
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Arrow keys
-+/* # Prevent moving the cursor off screen
-  */
- 
- /*** includes ***/
-@@ -190,16 +190,24 @@ void editorRefreshScreen() {
+@@ -187,16 +187,24 @@ void editorRefreshScreen() {
  void editorMoveCursor(int key) {
    switch (key) {
      case ARROW_LEFT:
@@ -1690,29 +1044,12 @@ diff --git a/kilo.c b/kilo.c
        break;
    }
  }
-@@ -243,9 +251,6 @@ int main() {
- }
- 
- /* Explain:
-- *   - enums
-- *   - Changing `char` to `int`
-- *   - How special keys like arrows are read as escape sequences
-- *   - Why seq is 3 chars instead of 2
-+ *   - Reminder that cx and cy use 0-indexing
-  */
- 
 
 ~~~ step: single-line
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Prevent moving the cursor off screen
-+/* # A line viewer
-  */
- 
- /*** includes ***/
-@@ -8,11 +8,15 @@
+@@ -5,11 +5,15 @@
  #include <stdlib.h>
  #include <string.h>
  #include <sys/ioctl.h>
@@ -1728,7 +1065,7 @@ diff --git a/kilo.c b/kilo.c
  #define KILO_VERSION "0.0.1"
  
  #define CTRL_KEY(k) ((k) & 0x1f)
-@@ -26,11 +30,18 @@ enum {
+@@ -23,11 +27,18 @@ enum {
  
  /*** data ***/
  
@@ -1747,7 +1084,7 @@ diff --git a/kilo.c b/kilo.c
  };
  
  struct editorConfig E;
-@@ -126,6 +137,28 @@ int getWindowSize(int *rows, int *cols) {
+@@ -123,6 +134,28 @@ int getWindowSize(int *rows, int *cols) {
    }
  }
  
@@ -1776,7 +1113,7 @@ diff --git a/kilo.c b/kilo.c
  /*** output ***/
  
  struct abuf {
-@@ -152,26 +185,36 @@ void editorRefreshScreen() {
+@@ -149,26 +182,36 @@ void editorRefreshScreen() {
    struct abuf ab = ABUF_INIT;
  
    abAppend(&ab, "\x1b[?25l", 6);
@@ -1826,7 +1163,7 @@ diff --git a/kilo.c b/kilo.c
      }
    }
  
-@@ -234,13 +277,17 @@ void editorProcessKeypress() {
+@@ -231,13 +274,17 @@ void editorProcessKeypress() {
  void initEditor() {
    E.cx = 0;
    E.cy = 0;
@@ -1845,35 +1182,12 @@ diff --git a/kilo.c b/kilo.c
  
    while (1) {
      editorRefreshScreen();
-@@ -251,6 +298,15 @@ int main() {
- }
- 
- /* Explain:
-- *   - Reminder that cx and cy use 0-indexing
-+ *   - `fopen()`, `fclose()`, `FILE` come from `<stdio.h>`
-+ *   - `getline()` comes from `<stdio.h>` (but may require defining
-+ *   - `size_t`, `ssize_t` come from `<sys/types.h>`
-+ *     `_DEFAULT_SOURCE` and/or `_GNU_SOURCE`
-+ *   - `typedef struct`
-+ *   - We'll store lines without newlines or even NUL terminators at the end,
-+ *     storing the length of each line instead
-+ *   - Replacing `\x1b[2J` with `\x1b[K`
-+ *   - Display welcome message only if new file
-+ *   - `argc` and `argv`
-  */
- 
 
 ~~~ step: multiple-lines
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # A line viewer
-+/* # Multiple lines
-  */
- 
- /*** includes ***/
-@@ -41,7 +41,7 @@ struct editorConfig {
+@@ -38,7 +38,7 @@ struct editorConfig {
    int screencols;
    struct termios orig_termios;
    int numrows;
@@ -1882,7 +1196,7 @@ diff --git a/kilo.c b/kilo.c
  };
  
  struct editorConfig E;
-@@ -139,6 +139,14 @@ int getWindowSize(int *rows, int *cols) {
+@@ -136,6 +136,14 @@ int getWindowSize(int *rows, int *cols) {
  
  /*** editor ***/
  
@@ -1897,7 +1211,7 @@ diff --git a/kilo.c b/kilo.c
  void editorOpen(char *filename) {
    FILE *fp = fopen(filename, "r");
    if (!fp) die("fopen");
-@@ -146,14 +154,10 @@ void editorOpen(char *filename) {
+@@ -143,14 +151,10 @@ void editorOpen(char *filename) {
    char *line = NULL;
    size_t linecap = 0;
    ssize_t linelen;
@@ -1914,7 +1228,7 @@ diff --git a/kilo.c b/kilo.c
    }
    free(line);
    fclose(fp);
-@@ -189,7 +193,8 @@ void editorRefreshScreen() {
+@@ -186,7 +190,8 @@ void editorRefreshScreen() {
  
    int row;
    for (row = 0; row < E.screenrows; row++) {
@@ -1924,7 +1238,7 @@ diff --git a/kilo.c b/kilo.c
        if (E.numrows == 0 && row == E.screenrows / 3) {
          char welcome[80];
          int welcomelen = snprintf(welcome, sizeof(welcome),
-@@ -205,10 +210,10 @@ void editorRefreshScreen() {
+@@ -202,10 +207,10 @@ void editorRefreshScreen() {
          abAppend(&ab, "~", 1);
        }
      } else {
@@ -1937,7 +1251,7 @@ diff --git a/kilo.c b/kilo.c
        }
      }
  
-@@ -278,6 +283,7 @@ void initEditor() {
+@@ -275,6 +280,7 @@ void initEditor() {
    E.cx = 0;
    E.cy = 0;
    E.numrows = 0;
@@ -1945,37 +1259,12 @@ diff --git a/kilo.c b/kilo.c
  
    if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
  }
-@@ -298,15 +304,8 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - `fopen()`, `fclose()`, `FILE` come from `<stdio.h>`
-- *   - `getline()` comes from `<stdio.h>` (but may require defining
-- *   - `size_t`, `ssize_t` come from `<sys/types.h>`
-- *     `_DEFAULT_SOURCE` and/or `_GNU_SOURCE`
-- *   - `typedef struct`
-- *   - We'll store lines without newlines or even NUL terminators at the end,
-- *     storing the length of each line instead
-- *   - Replacing `\x1b[2J` with `\x1b[K`
-- *   - Display welcome message only if new file
-- *   - `argc` and `argv`
-+ *   - How a single `*` turned one row into a dynamic array of rows (and how we
-+ *     use `realloc()` to do it)
-+ *   - What `filerow` is for
-  */
- 
 
 ~~~ step: vertical-scroll
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Multiple lines
-+/* # Vertical scrolling
-  */
- 
- /*** includes ***/
-@@ -37,6 +37,7 @@ typedef struct erow {
+@@ -34,6 +34,7 @@ typedef struct erow {
  
  struct editorConfig {
    int cx, cy;
@@ -1983,7 +1272,7 @@ diff --git a/kilo.c b/kilo.c
    int screenrows;
    int screencols;
    struct termios orig_termios;
-@@ -185,7 +186,18 @@ void abFree(struct abuf *ab) {
+@@ -182,7 +183,18 @@ void abFree(struct abuf *ab) {
    free(ab->b);
  }
  
@@ -2002,7 +1291,7 @@ diff --git a/kilo.c b/kilo.c
    struct abuf ab = ABUF_INIT;
  
    abAppend(&ab, "\x1b[?25l", 6);
-@@ -193,7 +205,8 @@ void editorRefreshScreen() {
+@@ -190,7 +202,8 @@ void editorRefreshScreen() {
  
    int row;
    for (row = 0; row < E.screenrows; row++) {
@@ -2012,7 +1301,7 @@ diff --git a/kilo.c b/kilo.c
      if (filerow >= E.numrows) {
        if (E.numrows == 0 && row == E.screenrows / 3) {
          char welcome[80];
-@@ -224,7 +237,7 @@ void editorRefreshScreen() {
+@@ -221,7 +234,7 @@ void editorRefreshScreen() {
    }
  
    char buf[32];
@@ -2021,7 +1310,7 @@ diff --git a/kilo.c b/kilo.c
    abAppend(&ab, buf, strlen(buf));
  
    abAppend(&ab, "\x1b[?25h", 6);
-@@ -253,7 +266,7 @@ void editorMoveCursor(int key) {
+@@ -250,7 +263,7 @@ void editorMoveCursor(int key) {
        }
        break;
      case ARROW_DOWN:
@@ -2030,7 +1319,7 @@ diff --git a/kilo.c b/kilo.c
          E.cy++;
        }
        break;
-@@ -282,6 +295,7 @@ void editorProcessKeypress() {
+@@ -279,6 +292,7 @@ void editorProcessKeypress() {
  void initEditor() {
    E.cx = 0;
    E.cy = 0;
@@ -2038,33 +1327,12 @@ diff --git a/kilo.c b/kilo.c
    E.numrows = 0;
    E.row = NULL;
  
-@@ -304,8 +318,11 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - How a single `*` turned one row into a dynamic array of rows (and how we
-- *     use `realloc()` to do it)
-- *   - What `filerow` is for
-+ *   - What `E.rowoff` means
-+ *   - Think of `cx` and `cy` as being the cursor position in the file, not the
-+ *     cursor position on the screen
-+ *   - `editorScroll()` checks if the cursor is in the visible window, and
-+ *     corrects the window position if it's not
-+ *   - Another reminder about 0-indexing, off by one errors, etc.
-  */
- 
 
 ~~~ step: horizontal-scroll
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Vertical scrolling
-+/* # Horizontal scrolling
-  */
- 
- /*** includes ***/
-@@ -38,6 +38,7 @@ typedef struct erow {
+@@ -35,6 +35,7 @@ typedef struct erow {
  struct editorConfig {
    int cx, cy;
    int rowoff;
@@ -2072,7 +1340,7 @@ diff --git a/kilo.c b/kilo.c
    int screenrows;
    int screencols;
    struct termios orig_termios;
-@@ -193,6 +194,12 @@ void editorScroll() {
+@@ -190,6 +191,12 @@ void editorScroll() {
    if (E.cy >= E.rowoff + E.screenrows) {
      E.rowoff = E.cy - E.screenrows + 1;
    }
@@ -2085,7 +1353,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  void editorRefreshScreen() {
-@@ -223,10 +230,10 @@ void editorRefreshScreen() {
+@@ -220,10 +227,10 @@ void editorRefreshScreen() {
          abAppend(&ab, "~", 1);
        }
      } else {
@@ -2098,7 +1366,7 @@ diff --git a/kilo.c b/kilo.c
        }
      }
  
-@@ -237,7 +244,8 @@ void editorRefreshScreen() {
+@@ -234,7 +241,8 @@ void editorRefreshScreen() {
    }
  
    char buf[32];
@@ -2108,7 +1376,7 @@ diff --git a/kilo.c b/kilo.c
    abAppend(&ab, buf, strlen(buf));
  
    abAppend(&ab, "\x1b[?25h", 6);
-@@ -256,9 +264,7 @@ void editorMoveCursor(int key) {
+@@ -253,9 +261,7 @@ void editorMoveCursor(int key) {
        }
        break;
      case ARROW_RIGHT:
@@ -2119,7 +1387,7 @@ diff --git a/kilo.c b/kilo.c
        break;
      case ARROW_UP:
        if (E.cy != 0) {
-@@ -296,6 +302,7 @@ void initEditor() {
+@@ -293,6 +299,7 @@ void initEditor() {
    E.cx = 0;
    E.cy = 0;
    E.rowoff = 0;
@@ -2127,32 +1395,12 @@ diff --git a/kilo.c b/kilo.c
    E.numrows = 0;
    E.row = NULL;
  
-@@ -318,11 +325,7 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - What `E.rowoff` means
-- *   - Think of `cx` and `cy` as being the cursor position in the file, not the
-- *     cursor position on the screen
-- *   - `editorScroll()` checks if the cursor is in the visible window, and
-- *     corrects the window position if it's not
-- *   - Another reminder about 0-indexing, off by one errors, etc.
-+ *   - It's all parallel to vertical scrolling code, for now
-+ *   - Except we don't limit scrolling to the right
-  */
- 
 
 ~~~ step: scroll-limits
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Horizontal scrolling
-+/* # Limit scrolling to the right
-  */
- 
- /*** includes ***/
-@@ -257,6 +257,8 @@ void editorRefreshScreen() {
+@@ -254,6 +254,8 @@ void editorRefreshScreen() {
  /*** input ***/
  
  void editorMoveCursor(int key) {
@@ -2161,7 +1409,7 @@ diff --git a/kilo.c b/kilo.c
    switch (key) {
      case ARROW_LEFT:
        if (E.cx != 0) {
-@@ -264,7 +266,9 @@ void editorMoveCursor(int key) {
+@@ -261,7 +263,9 @@ void editorMoveCursor(int key) {
        }
        break;
      case ARROW_RIGHT:
@@ -2172,27 +1420,12 @@ diff --git a/kilo.c b/kilo.c
        break;
      case ARROW_UP:
        if (E.cy != 0) {
-@@ -325,7 +329,6 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - It's all parallel to vertical scrolling code, for now
-- *   - Except we don't limit scrolling to the right
-+ *   - ternary operator
-  */
- 
 
 ~~~ step: snap-cursor
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Limit scrolling to the right
-+/* # Snap cursor to end of line
-  */
- 
- /*** includes ***/
-@@ -281,6 +281,12 @@ void editorMoveCursor(int key) {
+@@ -278,6 +278,12 @@ void editorMoveCursor(int key) {
        }
        break;
    }
@@ -2205,25 +1438,12 @@ diff --git a/kilo.c b/kilo.c
  }
  
  void editorProcessKeypress() {
-@@ -329,6 +335,5 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - ternary operator
-  */
- 
 
 ~~~ step: moving-left
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Snap cursor to end of line
-+/* # Moving left at the start of a line
-  */
- 
- /*** includes ***/
-@@ -263,6 +263,9 @@ void editorMoveCursor(int key) {
+@@ -260,6 +260,9 @@ void editorMoveCursor(int key) {
      case ARROW_LEFT:
        if (E.cx != 0) {
          E.cx--;
@@ -2238,13 +1458,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Moving left at the start of a line
-+/* # Moving right at the end of a line
-  */
- 
- /*** includes ***/
-@@ -271,6 +271,9 @@ void editorMoveCursor(int key) {
+@@ -268,6 +268,9 @@ void editorMoveCursor(int key) {
      case ARROW_RIGHT:
        if (row && E.cx < row->size) {
          E.cx++;
@@ -2259,13 +1473,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Moving right at the end of a line
-+/* # Rendering tabs
-  */
- 
- /*** includes ***/
-@@ -32,7 +32,9 @@ enum {
+@@ -29,7 +29,9 @@ enum {
  
  typedef struct erow {
    int size;
@@ -2275,7 +1483,7 @@ diff --git a/kilo.c b/kilo.c
  } erow;
  
  struct editorConfig {
-@@ -141,11 +143,38 @@ int getWindowSize(int *rows, int *cols) {
+@@ -138,11 +140,38 @@ int getWindowSize(int *rows, int *cols) {
  
  /*** editor ***/
  
@@ -2314,7 +1522,7 @@ diff --git a/kilo.c b/kilo.c
    E.numrows++;
  }
  
-@@ -230,10 +259,10 @@ void editorRefreshScreen() {
+@@ -227,10 +256,10 @@ void editorRefreshScreen() {
          abAppend(&ab, "~", 1);
        }
      } else {
@@ -2327,28 +1535,12 @@ diff --git a/kilo.c b/kilo.c
        }
      }
  
-@@ -341,5 +370,9 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-+ *   - Problem: tabs don't erase anything, you may notice when you start up
-+ *     ./kilo
-+ *   - How tab stops work
-+ *   - What `render` is for
-  */
- 
 
 ~~~ step: rx
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Rendering tabs
-+/* # Tabs and the cursor
-  */
- 
- /*** includes ***/
-@@ -39,6 +39,7 @@ typedef struct erow {
+@@ -36,6 +36,7 @@ typedef struct erow {
  
  struct editorConfig {
    int cx, cy;
@@ -2356,7 +1548,7 @@ diff --git a/kilo.c b/kilo.c
    int rowoff;
    int coloff;
    int screenrows;
-@@ -217,17 +218,28 @@ void abFree(struct abuf *ab) {
+@@ -214,17 +215,28 @@ void abFree(struct abuf *ab) {
  }
  
  void editorScroll() {
@@ -2389,7 +1581,7 @@ diff --git a/kilo.c b/kilo.c
    }
  }
  
-@@ -274,7 +286,7 @@ void editorRefreshScreen() {
+@@ -271,7 +283,7 @@ void editorRefreshScreen() {
  
    char buf[32];
    snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
@@ -2398,7 +1590,7 @@ diff --git a/kilo.c b/kilo.c
    abAppend(&ab, buf, strlen(buf));
  
    abAppend(&ab, "\x1b[?25h", 6);
-@@ -346,6 +358,7 @@ void editorProcessKeypress() {
+@@ -343,6 +355,7 @@ void editorProcessKeypress() {
  void initEditor() {
    E.cx = 0;
    E.cy = 0;
@@ -2406,32 +1598,12 @@ diff --git a/kilo.c b/kilo.c
    E.rowoff = 0;
    E.coloff = 0;
    E.numrows = 0;
-@@ -370,9 +383,9 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - Problem: tabs don't erase anything, you may notice when you start up
-- *     ./kilo
-- *   - How tab stops work
-- *   - What `render` is for
-+ *   - What `rx` (render x) is for
-+ *   - Why we don't need `ry` (although it could be useful for implementing
-+ *     word wrapping...)
-+ *   - Arithmetic
-  */
- 
 
 ~~~ step: page-up-down
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Tabs and the cursor
-+/* # Page Up and Page Down
-  */
- 
- /*** includes ***/
-@@ -25,7 +25,9 @@ enum {
+@@ -22,7 +22,9 @@ enum {
    ARROW_LEFT = 1000,
    ARROW_RIGHT,
    ARROW_UP,
@@ -2442,7 +1614,7 @@ diff --git a/kilo.c b/kilo.c
  };
  
  /*** data ***/
-@@ -96,11 +98,21 @@ int editorReadKey() {
+@@ -93,11 +95,21 @@ int editorReadKey() {
      if (read(STDIN_FILENO, seq + 1, 1) != 1) return '\x1b';
  
      if (seq[0] == '[') {
@@ -2469,7 +1641,7 @@ diff --git a/kilo.c b/kilo.c
        }
      }
  
-@@ -344,6 +356,20 @@ void editorProcessKeypress() {
+@@ -341,6 +353,20 @@ void editorProcessKeypress() {
        exit(0);
        break;
  
@@ -2490,30 +1662,12 @@ diff --git a/kilo.c b/kilo.c
      case ARROW_UP:
      case ARROW_DOWN:
      case ARROW_LEFT:
-@@ -383,9 +409,7 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - What `rx` (render x) is for
-- *   - Why we don't need `ry` (although it could be useful for implementing
-- *     word wrapping...)
-- *   - Arithmetic
-+ *   - Their escape sequences
-+ *   - How we implement them in terms of arrow key movements
-  */
- 
 
 ~~~ step: home-end-keys
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Page Up and Page Down
-+/* # Home and End keys
-  */
- 
- /*** includes ***/
-@@ -26,6 +26,9 @@ enum {
+@@ -23,6 +23,9 @@ enum {
    ARROW_RIGHT,
    ARROW_UP,
    ARROW_DOWN,
@@ -2523,7 +1677,7 @@ diff --git a/kilo.c b/kilo.c
    PAGE_UP,
    PAGE_DOWN
  };
-@@ -102,8 +105,13 @@ int editorReadKey() {
+@@ -99,8 +102,13 @@ int editorReadKey() {
          if (read(STDIN_FILENO, seq + 2, 1) != 1) return '\x1b';
          if (seq[2] == '~') {
            switch (seq[1]) {
@@ -2537,7 +1691,7 @@ diff --git a/kilo.c b/kilo.c
            }
          }
        } else {
-@@ -112,8 +120,15 @@ int editorReadKey() {
+@@ -109,8 +117,15 @@ int editorReadKey() {
            case 'B': return ARROW_DOWN;
            case 'C': return ARROW_RIGHT;
            case 'D': return ARROW_LEFT;
@@ -2553,7 +1707,7 @@ diff --git a/kilo.c b/kilo.c
      }
  
      return '\x1b';
-@@ -356,6 +371,15 @@ void editorProcessKeypress() {
+@@ -353,6 +368,15 @@ void editorProcessKeypress() {
        exit(0);
        break;
  
@@ -2569,28 +1723,12 @@ diff --git a/kilo.c b/kilo.c
      case PAGE_UP:
      case PAGE_DOWN:
        {
-@@ -409,7 +433,7 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - Their escape sequences
-- *   - How we implement them in terms of arrow key movements
-+ *   - Their escape sequences (why are there so many different ways of encoding
-+ *     them??)
-  */
- 
 
 ~~~ step: status-bar
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Home and End keys
-+/* # Status bar
-  */
- 
- /*** includes ***/
-@@ -52,6 +52,7 @@ struct editorConfig {
+@@ -49,6 +49,7 @@ struct editorConfig {
    struct termios orig_termios;
    int numrows;
    erow *row;
@@ -2598,7 +1736,7 @@ diff --git a/kilo.c b/kilo.c
  };
  
  struct editorConfig E;
-@@ -207,6 +208,9 @@ void editorAppendRow(char *s, size_t len) {
+@@ -204,6 +205,9 @@ void editorAppendRow(char *s, size_t len) {
  }
  
  void editorOpen(char *filename) {
@@ -2608,7 +1746,7 @@ diff --git a/kilo.c b/kilo.c
    FILE *fp = fopen(filename, "r");
    if (!fp) die("fopen");
  
-@@ -306,10 +310,27 @@ void editorRefreshScreen() {
+@@ -303,10 +307,27 @@ void editorRefreshScreen() {
      }
  
      abAppend(&ab, "\x1b[K", 3);
@@ -2638,7 +1776,7 @@ diff --git a/kilo.c b/kilo.c
  
    char buf[32];
    snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
-@@ -413,8 +434,10 @@ void initEditor() {
+@@ -410,8 +431,10 @@ void initEditor() {
    E.coloff = 0;
    E.numrows = 0;
    E.row = NULL;
@@ -2649,29 +1787,12 @@ diff --git a/kilo.c b/kilo.c
  }
  
  int main(int argc, char *argv[]) {
-@@ -433,7 +456,9 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - Their escape sequences (why are there so many different ways of encoding
-- *     them??)
-+ *   - `strdup()` comes from `<string.h>`
-+ *   - `snprintf()` comes from `<stdio.h>`
-+ *   - `[7m` inverts colors, `[0m` resets styles
-+ *   - How we right-align the rstatus
-  */
- 
 
 ~~~ step: status-message
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,15 +1,17 @@
--/* # Status bar
-+/* # Status message
-  */
- 
- /*** includes ***/
+@@ -2,11 +2,13 @@
  
  #include <ctype.h>
  #include <stdio.h>
@@ -2685,7 +1806,7 @@ diff --git a/kilo.c b/kilo.c
  #include <unistd.h>
  
  /*** defines ***/
-@@ -53,6 +55,8 @@ struct editorConfig {
+@@ -50,6 +52,8 @@ struct editorConfig {
    int numrows;
    erow *row;
    char *filename;
@@ -2694,7 +1815,7 @@ diff --git a/kilo.c b/kilo.c
  };
  
  struct editorConfig E;
-@@ -331,6 +335,13 @@ void editorRefreshScreen() {
+@@ -328,6 +332,13 @@ void editorRefreshScreen() {
      }
    }
    abAppend(&ab, "\x1b[0m", 4);
@@ -2708,7 +1829,7 @@ diff --git a/kilo.c b/kilo.c
  
    char buf[32];
    snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
-@@ -343,6 +354,14 @@ void editorRefreshScreen() {
+@@ -340,6 +351,14 @@ void editorRefreshScreen() {
    abFree(&ab);
  }
  
@@ -2723,7 +1844,7 @@ diff --git a/kilo.c b/kilo.c
  /*** input ***/
  
  void editorMoveCursor(int key) {
-@@ -435,9 +454,11 @@ void initEditor() {
+@@ -432,9 +451,11 @@ void initEditor() {
    E.numrows = 0;
    E.row = NULL;
    E.filename = NULL;
@@ -2736,7 +1857,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  int main(int argc, char *argv[]) {
-@@ -447,6 +468,8 @@ int main(int argc, char *argv[]) {
+@@ -444,6 +465,8 @@ int main(int argc, char *argv[]) {
      editorOpen(argv[1]);
    }
  
@@ -2745,31 +1866,12 @@ diff --git a/kilo.c b/kilo.c
    while (1) {
      editorRefreshScreen();
      editorProcessKeypress();
-@@ -456,9 +479,8 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - `strdup()` comes from `<string.h>`
-- *   - `snprintf()` comes from `<stdio.h>`
-- *   - `[7m` inverts colors, `[0m` resets styles
-- *   - How we right-align the rstatus
-+ *   - `time_t`, `time()` come from `<time.h>`
-+ *   - `va_list`, `va_start()`, `va_end()` come from `<stdarg.h>`
-+ *   - `vsnprintf()` comes from `<stdio.h>`
-  */
- 
 
 ~~~ step: insert-chars
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Status message
-+/* # Insert ordinary characters
-  */
- 
- /*** includes ***/
-@@ -211,6 +211,23 @@ void editorAppendRow(char *s, size_t len) {
+@@ -208,6 +208,23 @@ void editorAppendRow(char *s, size_t len) {
    E.numrows++;
  }
  
@@ -2793,7 +1895,7 @@ diff --git a/kilo.c b/kilo.c
  void editorOpen(char *filename) {
    free(E.filename);
    E.filename = strdup(filename);
-@@ -440,6 +457,10 @@ void editorProcessKeypress() {
+@@ -437,6 +454,10 @@ void editorProcessKeypress() {
      case ARROW_RIGHT:
        editorMoveCursor(c);
        break;
@@ -2804,28 +1906,12 @@ diff --git a/kilo.c b/kilo.c
    }
  }
  
-@@ -479,8 +500,6 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - `time_t`, `time()` come from `<time.h>`
-- *   - `va_list`, `va_start()`, `va_end()` come from `<stdarg.h>`
-- *   - `vsnprintf()` comes from `<stdio.h>`
-+ *   - `memmove()` comes from `<string.h>`
-  */
- 
 
 ~~~ step: block-special-chars
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Insert ordinary characters
-+/* # Prevent inserting special characters
-  */
- 
- /*** includes ***/
-@@ -24,6 +24,7 @@
+@@ -21,6 +21,7 @@
  #define CTRL_KEY(k) ((k) & 0x1f)
  
  enum {
@@ -2833,7 +1919,7 @@ diff --git a/kilo.c b/kilo.c
    ARROW_LEFT = 1000,
    ARROW_RIGHT,
    ARROW_UP,
-@@ -424,6 +425,10 @@ void editorProcessKeypress() {
+@@ -421,6 +422,10 @@ void editorProcessKeypress() {
    int c = editorReadKey();
  
    switch (c) {
@@ -2844,7 +1930,7 @@ diff --git a/kilo.c b/kilo.c
      case CTRL_KEY('q'):
        exit(0);
        break;
-@@ -437,6 +442,12 @@ void editorProcessKeypress() {
+@@ -434,6 +439,12 @@ void editorProcessKeypress() {
          E.cx = E.row[E.cy].size;
        break;
  
@@ -2857,7 +1943,7 @@ diff --git a/kilo.c b/kilo.c
      case PAGE_UP:
      case PAGE_DOWN:
        {
-@@ -458,6 +469,11 @@ void editorProcessKeypress() {
+@@ -455,6 +466,11 @@ void editorProcessKeypress() {
        editorMoveCursor(c);
        break;
  
@@ -2869,27 +1955,12 @@ diff --git a/kilo.c b/kilo.c
      default:
        editorInsertChar(c);
        break;
-@@ -500,6 +516,9 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - `memmove()` comes from `<string.h>`
-+ *   - `\r` is for the enter key
-+ *   - `\x1b` is escape, we ignore it as well as Ctrl-L (refresh screen) and
-+ *     Ctrl-C
-+ *   - BACKSPACE, Ctrl-H, and DEL_KEY are all ways of deleting the last char
-  */
- 
 
 ~~~ step: save
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,9 +1,11 @@
--/* # Prevent inserting special characters
-+/* # Save to disk
-  */
- 
+@@ -1,6 +1,8 @@
  /*** includes ***/
  
  #include <ctype.h>
@@ -2898,7 +1969,7 @@ diff --git a/kilo.c b/kilo.c
  #include <stdio.h>
  #include <stdarg.h>
  #include <stdlib.h>
-@@ -62,6 +64,10 @@ struct editorConfig {
+@@ -59,6 +61,10 @@ struct editorConfig {
  
  struct editorConfig E;
  
@@ -2909,7 +1980,7 @@ diff --git a/kilo.c b/kilo.c
  /*** terminal ***/
  
  void die(const char *s) {
-@@ -229,6 +235,25 @@ void editorInsertChar(int c) {
+@@ -226,6 +232,25 @@ void editorInsertChar(int c) {
    E.cx++;
  }
  
@@ -2935,7 +2006,7 @@ diff --git a/kilo.c b/kilo.c
  void editorOpen(char *filename) {
    free(E.filename);
    E.filename = strdup(filename);
-@@ -248,6 +273,27 @@ void editorOpen(char *filename) {
+@@ -245,6 +270,27 @@ void editorOpen(char *filename) {
    fclose(fp);
  }
  
@@ -2963,7 +2034,7 @@ diff --git a/kilo.c b/kilo.c
  /*** output ***/
  
  struct abuf {
-@@ -433,6 +479,10 @@ void editorProcessKeypress() {
+@@ -430,6 +476,10 @@ void editorProcessKeypress() {
        exit(0);
        break;
  
@@ -2974,7 +2045,7 @@ diff --git a/kilo.c b/kilo.c
      case HOME_KEY:
        E.cx = 0;
        break;
-@@ -505,7 +555,7 @@ int main(int argc, char *argv[]) {
+@@ -502,7 +552,7 @@ int main(int argc, char *argv[]) {
      editorOpen(argv[1]);
    }
  
@@ -2983,35 +2054,12 @@ diff --git a/kilo.c b/kilo.c
  
    while (1) {
      editorRefreshScreen();
-@@ -516,9 +566,12 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - `\r` is for the enter key
-- *   - `\x1b` is escape, we ignore it as well as Ctrl-L (refresh screen) and
-- *     Ctrl-C
-- *   - BACKSPACE, Ctrl-H, and DEL_KEY are all ways of deleting the last char
-+ *   - `open()`, `O_RDWR`, `O_CREAT` come from `<fnctl.h>`
-+ *   - `ftruncate()`, `close()` come from `<unistd.h>`
-+ *   - `strerror()` comes from `<stdio.h>`
-+ *   - `errno` comes from `<errno.h>`
-+ *   - Function prototypes
-+ *   - Why ftruncate()?
-+ *   - Octal 0644 permissions
-  */
- 
 
 ~~~ step: dirty-flag
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Save to disk
-+/* # Dirty flag
-  */
- 
- /*** includes ***/
-@@ -57,6 +57,7 @@ struct editorConfig {
+@@ -54,6 +54,7 @@ struct editorConfig {
    struct termios orig_termios;
    int numrows;
    erow *row;
@@ -3019,7 +2067,7 @@ diff --git a/kilo.c b/kilo.c
    char *filename;
    char statusmsg[80];
    time_t statusmsg_time;
-@@ -216,6 +217,7 @@ void editorAppendRow(char *s, size_t len) {
+@@ -213,6 +214,7 @@ void editorAppendRow(char *s, size_t len) {
    editorUpdateRow(&E.row[E.numrows]);
  
    E.numrows++;
@@ -3027,7 +2075,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  void editorRowInsertChar(erow *row, int at, int c) {
-@@ -225,6 +227,7 @@ void editorRowInsertChar(erow *row, int at, int c) {
+@@ -222,6 +224,7 @@ void editorRowInsertChar(erow *row, int at, int c) {
    row->size++;
    row->chars[at] = c;
    editorUpdateRow(row);
@@ -3035,7 +2083,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  void editorInsertChar(int c) {
-@@ -233,6 +236,7 @@ void editorInsertChar(int c) {
+@@ -230,6 +233,7 @@ void editorInsertChar(int c) {
    }
    editorRowInsertChar(&E.row[E.cy], E.cx, c);
    E.cx++;
@@ -3043,7 +2091,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  char *editorRowsToString(int *buflen) {
-@@ -271,6 +275,7 @@ void editorOpen(char *filename) {
+@@ -268,6 +272,7 @@ void editorOpen(char *filename) {
    }
    free(line);
    fclose(fp);
@@ -3051,7 +2099,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  void editorSave() {
-@@ -283,6 +288,7 @@ void editorSave() {
+@@ -280,6 +285,7 @@ void editorSave() {
        if (write(fd, buf, len) == len) {
          close(fd);
          free(buf);
@@ -3059,7 +2107,7 @@ diff --git a/kilo.c b/kilo.c
          editorSetStatusMessage("%d bytes written to disk", len);
          return;
        }
-@@ -383,8 +389,9 @@ void editorRefreshScreen() {
+@@ -380,8 +386,9 @@ void editorRefreshScreen() {
  
    abAppend(&ab, "\x1b[7m", 4);
    char status[80], rstatus[80];
@@ -3071,7 +2119,7 @@ diff --git a/kilo.c b/kilo.c
    int rlen = snprintf(rstatus, sizeof(rstatus), "%d/%d",
      E.cy + 1, E.numrows);
    if (len > E.screencols) len = E.screencols;
-@@ -540,6 +547,7 @@ void initEditor() {
+@@ -537,6 +544,7 @@ void initEditor() {
    E.coloff = 0;
    E.numrows = 0;
    E.row = NULL;
@@ -3079,32 +2127,12 @@ diff --git a/kilo.c b/kilo.c
    E.filename = NULL;
    E.statusmsg[0] = '\0';
    E.statusmsg_time = 0;
-@@ -566,12 +574,6 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - `open()`, `O_RDWR`, `O_CREAT` come from `<fnctl.h>`
-- *   - `ftruncate()`, `close()` come from `<unistd.h>`
-- *   - `strerror()` comes from `<stdio.h>`
-- *   - `errno` comes from `<errno.h>`
-- *   - Function prototypes
-- *   - Why ftruncate()?
-- *   - Octal 0644 permissions
-+ *   - Why increment?
-  */
- 
 
 ~~~ step: quit-confirmation
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Dirty flag
-+/* # Quit confirmation
-  */
- 
- /*** includes ***/
-@@ -22,6 +22,7 @@
+@@ -19,6 +19,7 @@
  #define _GNU_SOURCE
  
  #define KILO_VERSION "0.0.1"
@@ -3112,7 +2140,7 @@ diff --git a/kilo.c b/kilo.c
  
  #define CTRL_KEY(k) ((k) & 0x1f)
  
-@@ -475,6 +476,8 @@ void editorMoveCursor(int key) {
+@@ -472,6 +473,8 @@ void editorMoveCursor(int key) {
  }
  
  void editorProcessKeypress() {
@@ -3121,7 +2149,7 @@ diff --git a/kilo.c b/kilo.c
    int c = editorReadKey();
  
    switch (c) {
-@@ -483,6 +486,12 @@ void editorProcessKeypress() {
+@@ -480,6 +483,12 @@ void editorProcessKeypress() {
        break;
  
      case CTRL_KEY('q'):
@@ -3134,7 +2162,7 @@ diff --git a/kilo.c b/kilo.c
        exit(0);
        break;
  
-@@ -535,6 +544,8 @@ void editorProcessKeypress() {
+@@ -532,6 +541,8 @@ void editorProcessKeypress() {
        editorInsertChar(c);
        break;
    }
@@ -3143,27 +2171,12 @@ diff --git a/kilo.c b/kilo.c
  }
  
  /*** init ***/
-@@ -574,6 +585,7 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - Why increment?
-+ *   - Static variables in functions
-+ *   - Concatenating string literals
-  */
- 
 
 ~~~ step: simple-backspace
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Quit confirmation
-+/* # Simple backspace
-  */
- 
- /*** includes ***/
-@@ -231,6 +231,14 @@ void editorRowInsertChar(erow *row, int at, int c) {
+@@ -228,6 +228,14 @@ void editorRowInsertChar(erow *row, int at, int c) {
    E.dirty++;
  }
  
@@ -3178,7 +2191,7 @@ diff --git a/kilo.c b/kilo.c
  void editorInsertChar(int c) {
    while (E.cy >= E.numrows) {
      editorAppendRow("", 0);
-@@ -240,6 +248,16 @@ void editorInsertChar(int c) {
+@@ -237,6 +245,16 @@ void editorInsertChar(int c) {
    E.dirty++;
  }
  
@@ -3195,7 +2208,7 @@ diff --git a/kilo.c b/kilo.c
  char *editorRowsToString(int *buflen) {
    int totlen = 0;
    int j;
-@@ -511,7 +529,7 @@ void editorProcessKeypress() {
+@@ -508,7 +526,7 @@ void editorProcessKeypress() {
      case BACKSPACE:
      case CTRL_KEY('h'):
      case DEL_KEY:
@@ -3204,26 +2217,12 @@ diff --git a/kilo.c b/kilo.c
        break;
  
      case PAGE_UP:
-@@ -585,7 +603,5 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - Static variables in functions
-- *   - Concatenating string literals
-  */
- 
 
 ~~~ step: backspacing-lines
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Simple backspace
-+/* # Backspacing at the start of a line
-  */
- 
- /*** includes ***/
-@@ -221,6 +221,19 @@ void editorAppendRow(char *s, size_t len) {
+@@ -218,6 +218,19 @@ void editorAppendRow(char *s, size_t len) {
    E.dirty++;
  }
  
@@ -3243,7 +2242,7 @@ diff --git a/kilo.c b/kilo.c
  void editorRowInsertChar(erow *row, int at, int c) {
    if (at > row->size) at = row->size;
    row->chars = realloc(row->chars, row->size + 1);
-@@ -231,6 +244,14 @@ void editorRowInsertChar(erow *row, int at, int c) {
+@@ -228,6 +241,14 @@ void editorRowInsertChar(erow *row, int at, int c) {
    E.dirty++;
  }
  
@@ -3258,7 +2257,7 @@ diff --git a/kilo.c b/kilo.c
  void editorRowDelChar(erow *row, int at) {
    if (at >= row->size) return;
    memmove(row->chars + at, row->chars + at + 1, row->size - at - 1);
-@@ -250,9 +271,17 @@ void editorInsertChar(int c) {
+@@ -247,9 +268,17 @@ void editorInsertChar(int c) {
  
  void editorDelChar() {
    if (E.cy >= E.numrows) return;
@@ -3277,26 +2276,12 @@ diff --git a/kilo.c b/kilo.c
    }
    editorUpdateRow(&E.row[E.cy]);
    E.dirty++;
-@@ -603,5 +632,7 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-+ *   - Backspacing at the start of the line joins the two lines, and deletes
-+ *     the one you were on
-  */
- 
 
 ~~~ step: enter-key
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Backspacing at the start of a line
-+/* # Enter key
-  */
- 
- /*** includes ***/
-@@ -206,16 +206,21 @@ void editorUpdateRow(erow *row) {
+@@ -203,16 +203,21 @@ void editorUpdateRow(erow *row) {
    row->rsize = idx;
  }
  
@@ -3325,7 +2310,7 @@ diff --git a/kilo.c b/kilo.c
  
    E.numrows++;
    E.dirty++;
-@@ -262,13 +267,33 @@ void editorRowDelChar(erow *row, int at) {
+@@ -259,13 +264,33 @@ void editorRowDelChar(erow *row, int at) {
  
  void editorInsertChar(int c) {
    while (E.cy >= E.numrows) {
@@ -3360,7 +2345,7 @@ diff --git a/kilo.c b/kilo.c
  void editorDelChar() {
    if (E.cy >= E.numrows) return;
    if (E.cx == 0 && E.cy == 0) return;
-@@ -319,7 +344,7 @@ void editorOpen(char *filename) {
+@@ -316,7 +341,7 @@ void editorOpen(char *filename) {
    while ((linelen = getline(&line, &linecap, fp)) != -1) {
      if (linelen > 0 && (line[linelen - 1] == '\n' || line[linelen - 1] == '\r'))
        linelen--;
@@ -3369,7 +2354,7 @@ diff --git a/kilo.c b/kilo.c
    }
    free(line);
    fclose(fp);
-@@ -529,7 +554,7 @@ void editorProcessKeypress() {
+@@ -526,7 +551,7 @@ void editorProcessKeypress() {
  
    switch (c) {
      case '\r':
@@ -3378,31 +2363,12 @@ diff --git a/kilo.c b/kilo.c
        break;
  
      case CTRL_KEY('q'):
-@@ -632,7 +657,10 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - Backspacing at the start of the line joins the two lines, and deletes
-- *     the one you were on
-+ *   - Adding `at` argument to `editorAppendRow()`, making it more of an
-+ *     `editorInsertRow()`
-+ *   - When calling `editorInsertRow()`, it reallocs `E.row`, so any pointers
-+ *     to rows become invalid, which is why we set the `row` variable again in
-+ *     `editorInsertNewline()`
-  */
- 
 
 ~~~ step: save-as
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Enter key
-+/* # Save as...
-  */
- 
- /*** includes ***/
-@@ -69,6 +69,8 @@ struct editorConfig E;
+@@ -66,6 +66,8 @@ struct editorConfig E;
  /*** prototypes ***/
  
  void editorSetStatusMessage(const char *fmt, ...);
@@ -3411,7 +2377,7 @@ diff --git a/kilo.c b/kilo.c
  
  /*** terminal ***/
  
-@@ -352,6 +354,14 @@ void editorOpen(char *filename) {
+@@ -349,6 +351,14 @@ void editorOpen(char *filename) {
  }
  
  void editorSave() {
@@ -3426,7 +2392,7 @@ diff --git a/kilo.c b/kilo.c
    int len;
    char *buf = editorRowsToString(&len);
  
-@@ -508,6 +518,40 @@ void editorSetStatusMessage(const char *fmt, ...) {
+@@ -505,6 +515,40 @@ void editorSetStatusMessage(const char *fmt, ...) {
  
  /*** input ***/
  
@@ -3467,30 +2433,12 @@ diff --git a/kilo.c b/kilo.c
  void editorMoveCursor(int key) {
    erow *row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
  
-@@ -657,10 +701,6 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - Adding `at` argument to `editorAppendRow()`, making it more of an
-- *     `editorInsertRow()`
-- *   - When calling `editorInsertRow()`, it reallocs `E.row`, so any pointers
-- *     to rows become invalid, which is why we set the `row` variable again in
-- *     `editorInsertNewline()`
-+ *   - Dynamic buffer with `realloc()`
-  */
- 
 
 ~~~ step: basic-search
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Save as...
-+/* # Basic search
-  */
- 
- /*** includes ***/
-@@ -383,6 +383,24 @@ void editorSave() {
+@@ -380,6 +380,24 @@ void editorSave() {
    editorSetStatusMessage("Can't save! I/O error: %s", strerror(errno));
  }
  
@@ -3515,7 +2463,7 @@ diff --git a/kilo.c b/kilo.c
  /*** output ***/
  
  struct abuf {
-@@ -624,6 +642,10 @@ void editorProcessKeypress() {
+@@ -621,6 +639,10 @@ void editorProcessKeypress() {
          E.cx = E.row[E.cy].size;
        break;
  
@@ -3526,7 +2474,7 @@ diff --git a/kilo.c b/kilo.c
      case BACKSPACE:
      case CTRL_KEY('h'):
      case DEL_KEY:
-@@ -690,7 +712,8 @@ int main(int argc, char *argv[]) {
+@@ -687,7 +709,8 @@ int main(int argc, char *argv[]) {
      editorOpen(argv[1]);
    }
  
@@ -3536,28 +2484,12 @@ diff --git a/kilo.c b/kilo.c
  
    while (1) {
      editorRefreshScreen();
-@@ -701,6 +724,8 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - Dynamic buffer with `realloc()`
-+ *   - `strstr()` comes from `<string.h>`
-+ *   - We position the window below the entire file so it scrolls up, and the
-+ *     result row goes to the top of the screen
-  */
- 
 
 ~~~ step: incremental-search
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Basic search
-+/* # Incremental search
-  */
- 
- /*** includes ***/
-@@ -70,7 +70,7 @@ struct editorConfig E;
+@@ -67,7 +67,7 @@ struct editorConfig E;
  
  void editorSetStatusMessage(const char *fmt, ...);
  void editorRefreshScreen();
@@ -3566,7 +2498,7 @@ diff --git a/kilo.c b/kilo.c
  
  /*** terminal ***/
  
-@@ -355,7 +355,7 @@ void editorOpen(char *filename) {
+@@ -352,7 +352,7 @@ void editorOpen(char *filename) {
  
  void editorSave() {
    if (E.filename == NULL) {
@@ -3575,7 +2507,7 @@ diff --git a/kilo.c b/kilo.c
      if (E.filename == NULL) {
        editorSetStatusMessage("Save aborted");
        return;
-@@ -383,9 +383,10 @@ void editorSave() {
+@@ -380,9 +380,10 @@ void editorSave() {
    editorSetStatusMessage("Can't save! I/O error: %s", strerror(errno));
  }
  
@@ -3589,7 +2521,7 @@ diff --git a/kilo.c b/kilo.c
  
    int i;
    for (i = 0; i < E.numrows; i++) {
-@@ -397,8 +398,15 @@ void editorFind() {
+@@ -394,8 +395,15 @@ void editorFind() {
        break;
      }
    }
@@ -3606,7 +2538,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  /*** output ***/
-@@ -536,7 +544,7 @@ void editorSetStatusMessage(const char *fmt, ...) {
+@@ -533,7 +541,7 @@ void editorSetStatusMessage(const char *fmt, ...) {
  
  /*** input ***/
  
@@ -3615,7 +2547,7 @@ diff --git a/kilo.c b/kilo.c
    size_t bufsize = 256;
    char *buf = malloc(bufsize);
  
-@@ -552,11 +560,13 @@ char *editorModalInput(char *prompt) {
+@@ -549,11 +557,13 @@ char *editorModalInput(char *prompt) {
        if (buflen != 0) buf[--buflen] = '\0';
      } else if (c == '\x1b') {
        editorSetStatusMessage("");
@@ -3629,7 +2561,7 @@ diff --git a/kilo.c b/kilo.c
          return buf;
        }
      } else if (isprint(c)) {
-@@ -567,6 +577,8 @@ char *editorModalInput(char *prompt) {
+@@ -564,6 +574,8 @@ char *editorModalInput(char *prompt) {
        buf[buflen++] = c;
        buf[buflen] = '\0';
      }
@@ -3638,28 +2570,12 @@ diff --git a/kilo.c b/kilo.c
    }
  }
  
-@@ -724,8 +736,6 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - `strstr()` comes from `<string.h>`
-- *   - We position the window below the entire file so it scrolls up, and the
-- *     result row goes to the top of the screen
-+ *   - Function pointers and callbacks
-  */
- 
 
 ~~~ step: restore-cursor
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Incremental search
-+/* # Restore cursor position when escaping out of search
-  */
- 
- /*** includes ***/
-@@ -401,11 +401,21 @@ void editorFindCallback(char *query, int key) {
+@@ -398,11 +398,21 @@ void editorFindCallback(char *query, int key) {
  }
  
  void editorFind() {
@@ -3681,25 +2597,12 @@ diff --git a/kilo.c b/kilo.c
    }
  }
  
-@@ -736,6 +746,5 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - Function pointers and callbacks
-  */
- 
 
 ~~~ step: search-arrows
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Restore cursor position when escaping out of search
-+/* # Search forward and backward
-  */
- 
- /*** includes ***/
-@@ -384,16 +384,34 @@ void editorSave() {
+@@ -381,16 +381,34 @@ void editorSave() {
  }
  
  void editorFindCallback(char *query, int key) {
@@ -3737,7 +2640,7 @@ diff --git a/kilo.c b/kilo.c
        E.rowoff = E.numrows;
        break;
      }
-@@ -406,7 +424,7 @@ void editorFind() {
+@@ -403,7 +421,7 @@ void editorFind() {
    int saved_coloff = E.coloff;
    int saved_rowoff = E.rowoff;
  
@@ -3746,27 +2649,12 @@ diff --git a/kilo.c b/kilo.c
                                   editorFindCallback);
  
    if (query) {
-@@ -746,5 +764,8 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-+ *   - What `last_match` and `find_next` are for, why they need to be statics
-+ *   - How `current` lets us wrap around the file when searching forwards or
-+ *     backwards
-  */
- 
 
 ~~~ step: syntax-digits
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Search forward and backward
-+/* # Syntax highlighting: digits
-  */
- 
- /*** includes ***/
-@@ -516,7 +516,17 @@ void editorRefreshScreen() {
+@@ -513,7 +513,17 @@ void editorRefreshScreen() {
        int len = E.row[filerow].rsize - E.coloff;
        if (len > 0) {
          if (len > E.screencols) len = E.screencols;
@@ -3785,28 +2673,12 @@ diff --git a/kilo.c b/kilo.c
        }
      }
  
-@@ -764,8 +774,6 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - What `last_match` and `find_next` are for, why they need to be statics
-- *   - How `current` lets us wrap around the file when searching forwards or
-- *     backwards
-+ *   - How color works in the terminal
-  */
- 
 
 ~~~ step: syntax-refactoring
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Syntax highlighting: digits
-+/* # Syntax highlighting: refactoring
-  */
- 
- /*** includes ***/
-@@ -39,6 +39,11 @@ enum {
+@@ -36,6 +36,11 @@ enum {
    PAGE_DOWN
  };
  
@@ -3818,7 +2690,7 @@ diff --git a/kilo.c b/kilo.c
  /*** data ***/
  
  typedef struct erow {
-@@ -46,6 +51,7 @@ typedef struct erow {
+@@ -43,6 +48,7 @@ typedef struct erow {
    int rsize;
    char *chars;
    char *render;
@@ -3826,7 +2698,7 @@ diff --git a/kilo.c b/kilo.c
  } erow;
  
  struct editorConfig {
-@@ -187,6 +193,25 @@ int getWindowSize(int *rows, int *cols) {
+@@ -184,6 +190,25 @@ int getWindowSize(int *rows, int *cols) {
  
  /*** editor ***/
  
@@ -3852,7 +2724,7 @@ diff --git a/kilo.c b/kilo.c
  void editorUpdateRow(erow *row) {
    int tabs = 0;
    int j;
-@@ -206,6 +231,8 @@ void editorUpdateRow(erow *row) {
+@@ -203,6 +228,8 @@ void editorUpdateRow(erow *row) {
      }
    }
    row->rsize = idx;
@@ -3861,7 +2733,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  void editorInsertRow(int at, char *s, size_t len) {
-@@ -222,6 +249,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -219,6 +246,7 @@ void editorInsertRow(int at, char *s, size_t len) {
  
    E.row[at].rsize = 0;
    E.row[at].render = NULL;
@@ -3869,7 +2741,7 @@ diff --git a/kilo.c b/kilo.c
    editorUpdateRow(&E.row[at]);
  
    E.numrows++;
-@@ -231,6 +259,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -228,6 +256,7 @@ void editorInsertRow(int at, char *s, size_t len) {
  void editorFreeRow(erow *row) {
    free(row->render);
    free(row->chars);
@@ -3877,7 +2749,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  void editorDelRow(int at) {
-@@ -517,16 +546,28 @@ void editorRefreshScreen() {
+@@ -514,16 +543,28 @@ void editorRefreshScreen() {
        if (len > 0) {
          if (len > E.screencols) len = E.screencols;
          char *c = E.row[filerow].render + E.coloff;
@@ -3909,27 +2781,12 @@ diff --git a/kilo.c b/kilo.c
        }
      }
  
-@@ -774,6 +815,7 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - How color works in the terminal
-+ *   - Why `row->hl` is needed
-+ *   - Using `current_color` to minimize formatting sequences
-  */
- 
 
 ~~~ step: search-highlighting
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Syntax highlighting: refactoring
-+/* # Syntax highlighting: search results
-  */
- 
- /*** includes ***/
-@@ -41,7 +41,8 @@ enum {
+@@ -38,7 +38,8 @@ enum {
  
  enum {
    HL_NORMAL = 0,
@@ -3939,7 +2796,7 @@ diff --git a/kilo.c b/kilo.c
  };
  
  /*** data ***/
-@@ -208,6 +209,7 @@ void editorUpdateSyntax(erow *row) {
+@@ -205,6 +206,7 @@ void editorUpdateSyntax(erow *row) {
  int editorSyntaxToColor(int hl) {
    switch (hl) {
      case HL_NUMBER: return 31;
@@ -3947,7 +2804,7 @@ diff --git a/kilo.c b/kilo.c
      default: return 37;
    }
  }
-@@ -438,10 +440,16 @@ void editorFindCallback(char *query, int key) {
+@@ -435,10 +437,16 @@ void editorFindCallback(char *query, int key) {
  
      char *match = strstr(E.row[current].render, query);
      if (match) {
@@ -3965,26 +2822,12 @@ diff --git a/kilo.c b/kilo.c
        break;
      }
    }
-@@ -815,7 +823,5 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - Why `row->hl` is needed
-- *   - Using `current_color` to minimize formatting sequences
-  */
- 
 
 ~~~ step: restore-search-highlight
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Syntax highlighting: search results
-+/* # Syntax highlighting: restore highlighting after search
-  */
- 
- /*** includes ***/
-@@ -418,6 +418,14 @@ void editorFindCallback(char *query, int key) {
+@@ -415,6 +415,14 @@ void editorFindCallback(char *query, int key) {
    static int last_match = -1;
    static int find_next = 1;
  
@@ -3999,7 +2842,7 @@ diff --git a/kilo.c b/kilo.c
    if (key == '\r' || key == '\x1b') {
      last_match = -1;
      find_next = 1;
-@@ -448,6 +456,9 @@ void editorFindCallback(char *query, int key) {
+@@ -445,6 +453,9 @@ void editorFindCallback(char *query, int key) {
        E.rowoff = E.numrows;
  
        if (row->hl) {
@@ -4014,13 +2857,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Syntax highlighting: restore highlighting after search
-+/* # Syntax highlighting: numbers
-  */
- 
- /*** includes ***/
-@@ -194,15 +194,34 @@ int getWindowSize(int *rows, int *cols) {
+@@ -191,15 +191,34 @@ int getWindowSize(int *rows, int *cols) {
  
  /*** editor ***/
  
@@ -4058,29 +2895,12 @@ diff --git a/kilo.c b/kilo.c
    }
  }
  
-@@ -834,5 +853,10 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-+ *   - `isspace()` comes from `<ctype.h>`
-+ *   - `strchr()` comes from `<string.h>`
-+ *   - Purpose of `is_separator()` and `prev_sep`
-+ *   - Why we increment `i` and use `continue` in the while loop
-+ *   - Complex if condition
-  */
- 
 
 ~~~ step: filetype
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Syntax highlighting: numbers
-+/* # Syntax highlighting: detect filetype
-  */
- 
- /*** includes ***/
-@@ -45,8 +45,16 @@ enum {
+@@ -42,8 +42,16 @@ enum {
    HL_MATCH
  };
  
@@ -4097,7 +2917,7 @@ diff --git a/kilo.c b/kilo.c
  typedef struct erow {
    int size;
    int rsize;
-@@ -69,10 +77,25 @@ struct editorConfig {
+@@ -66,10 +74,25 @@ struct editorConfig {
    char *filename;
    char statusmsg[80];
    time_t statusmsg_time;
@@ -4123,7 +2943,7 @@ diff --git a/kilo.c b/kilo.c
  /*** prototypes ***/
  
  void editorSetStatusMessage(const char *fmt, ...);
-@@ -202,6 +225,8 @@ void editorUpdateSyntax(erow *row) {
+@@ -199,6 +222,8 @@ void editorUpdateSyntax(erow *row) {
    row->hl = realloc(row->hl, row->rsize);
    memset(row->hl, HL_NORMAL, row->rsize);
  
@@ -4132,7 +2952,7 @@ diff --git a/kilo.c b/kilo.c
    int prev_sep = 1;
  
    int i = 0;
-@@ -209,15 +234,17 @@ void editorUpdateSyntax(erow *row) {
+@@ -206,15 +231,17 @@ void editorUpdateSyntax(erow *row) {
      char c = row->render[i];
      int prev_hl = (i > 0) ? row->hl[i - 1] : -1;
  
@@ -4158,7 +2978,7 @@ diff --git a/kilo.c b/kilo.c
      }
  
      prev_sep = is_separator(c);
-@@ -233,6 +260,33 @@ int editorSyntaxToColor(int hl) {
+@@ -230,6 +257,33 @@ int editorSyntaxToColor(int hl) {
    }
  }
  
@@ -4192,7 +3012,7 @@ diff --git a/kilo.c b/kilo.c
  void editorUpdateRow(erow *row) {
    int tabs = 0;
    int j;
-@@ -387,6 +441,8 @@ void editorOpen(char *filename) {
+@@ -384,6 +438,8 @@ void editorOpen(char *filename) {
    free(E.filename);
    E.filename = strdup(filename);
  
@@ -4201,7 +3021,7 @@ diff --git a/kilo.c b/kilo.c
    FILE *fp = fopen(filename, "r");
    if (!fp) die("fopen");
  
-@@ -410,6 +466,7 @@ void editorSave() {
+@@ -407,6 +463,7 @@ void editorSave() {
        editorSetStatusMessage("Save aborted");
        return;
      }
@@ -4209,7 +3029,7 @@ diff --git a/kilo.c b/kilo.c
    }
  
    int len;
-@@ -618,8 +675,8 @@ void editorRefreshScreen() {
+@@ -615,8 +672,8 @@ void editorRefreshScreen() {
    int len = snprintf(status, sizeof(status), "%.20s - %d lines %s",
      E.filename ? E.filename : "[No Name]", E.numrows,
      E.dirty ? "(modified)" : "");
@@ -4220,7 +3040,7 @@ diff --git a/kilo.c b/kilo.c
    if (len > E.screencols) len = E.screencols;
    abAppend(&ab, status, len);
    while (len < E.screencols) {
-@@ -829,6 +886,7 @@ void initEditor() {
+@@ -826,6 +883,7 @@ void initEditor() {
    E.filename = NULL;
    E.statusmsg[0] = '\0';
    E.statusmsg_time = 0;
@@ -4228,30 +3048,12 @@ diff --git a/kilo.c b/kilo.c
  
    if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
    E.screenrows -= 2;
-@@ -853,10 +911,6 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - `isspace()` comes from `<ctype.h>`
-- *   - `strchr()` comes from `<string.h>`
-- *   - Purpose of `is_separator()` and `prev_sep`
-- *   - Why we increment `i` and use `continue` in the while loop
-- *   - Complex if condition
-+ *   - bitflags
-  */
- 
 
 ~~~ step: syntax-strings
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Syntax highlighting: detect filetype
-+/* # Syntax highlighting: strings
-  */
- 
- /*** includes ***/
-@@ -41,11 +41,13 @@ enum {
+@@ -38,11 +38,13 @@ enum {
  
  enum {
    HL_NORMAL = 0,
@@ -4265,7 +3067,7 @@ diff --git a/kilo.c b/kilo.c
  
  /*** data ***/
  
-@@ -90,7 +92,7 @@ struct editorSyntax HLDB[] = {
+@@ -87,7 +89,7 @@ struct editorSyntax HLDB[] = {
    {
      "c",
      C_HL_extensions,
@@ -4274,7 +3076,7 @@ diff --git a/kilo.c b/kilo.c
    },
  };
  
-@@ -228,12 +230,36 @@ void editorUpdateSyntax(erow *row) {
+@@ -225,12 +227,36 @@ void editorUpdateSyntax(erow *row) {
    if (E.syntax == NULL) return;
  
    int prev_sep = 1;
@@ -4311,7 +3113,7 @@ diff --git a/kilo.c b/kilo.c
      if (E.syntax->flags & HL_HIGHLIGHT_NUMBERS) {
        if ((isdigit(c) && (prev_sep || prev_hl == HL_NUMBER)) ||
            (c == '.' && prev_hl == HL_NUMBER)) {
-@@ -254,6 +280,7 @@ void editorUpdateSyntax(erow *row) {
+@@ -251,6 +277,7 @@ void editorUpdateSyntax(erow *row) {
  
  int editorSyntaxToColor(int hl) {
    switch (hl) {
@@ -4319,25 +3121,12 @@ diff --git a/kilo.c b/kilo.c
      case HL_NUMBER: return 31;
      case HL_MATCH: return 34;
      default: return 37;
-@@ -911,6 +938,5 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - bitflags
-  */
- 
 
 ~~~ step: syntax-comments
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Syntax highlighting: strings
-+/* # Syntax highlighting: single-line comments
-  */
- 
- /*** includes ***/
-@@ -41,6 +41,7 @@ enum {
+@@ -38,6 +38,7 @@ enum {
  
  enum {
    HL_NORMAL = 0,
@@ -4345,7 +3134,7 @@ diff --git a/kilo.c b/kilo.c
    HL_STRING,
    HL_NUMBER,
    HL_MATCH
-@@ -54,6 +55,7 @@ enum {
+@@ -51,6 +52,7 @@ enum {
  struct editorSyntax {
    char *filetype;
    char **filematch;
@@ -4353,7 +3142,7 @@ diff --git a/kilo.c b/kilo.c
    int flags;
  };
  
-@@ -92,6 +94,7 @@ struct editorSyntax HLDB[] = {
+@@ -89,6 +91,7 @@ struct editorSyntax HLDB[] = {
    {
      "c",
      C_HL_extensions,
@@ -4361,7 +3150,7 @@ diff --git a/kilo.c b/kilo.c
      HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS
    },
  };
-@@ -229,6 +232,9 @@ void editorUpdateSyntax(erow *row) {
+@@ -226,6 +229,9 @@ void editorUpdateSyntax(erow *row) {
  
    if (E.syntax == NULL) return;
  
@@ -4371,7 +3160,7 @@ diff --git a/kilo.c b/kilo.c
    int prev_sep = 1;
    int in_string = 0;
  
-@@ -237,6 +243,14 @@ void editorUpdateSyntax(erow *row) {
+@@ -234,6 +240,14 @@ void editorUpdateSyntax(erow *row) {
      char c = row->render[i];
      int prev_hl = (i > 0) ? row->hl[i - 1] : -1;
  
@@ -4386,7 +3175,7 @@ diff --git a/kilo.c b/kilo.c
      if (E.syntax->flags & HL_HIGHLIGHT_STRINGS) {
        if (in_string) {
          row->hl[i] = HL_STRING;
-@@ -280,6 +294,7 @@ void editorUpdateSyntax(erow *row) {
+@@ -277,6 +291,7 @@ void editorUpdateSyntax(erow *row) {
  
  int editorSyntaxToColor(int hl) {
    switch (hl) {
@@ -4399,13 +3188,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Syntax highlighting: single-line comments
-+/* # Syntax highlighting: keywords
-  */
- 
- /*** includes ***/
-@@ -42,6 +42,8 @@ enum {
+@@ -39,6 +39,8 @@ enum {
  enum {
    HL_NORMAL = 0,
    HL_COMMENT,
@@ -4414,7 +3197,7 @@ diff --git a/kilo.c b/kilo.c
    HL_STRING,
    HL_NUMBER,
    HL_MATCH
-@@ -55,6 +57,7 @@ enum {
+@@ -52,6 +54,7 @@ enum {
  struct editorSyntax {
    char *filetype;
    char **filematch;
@@ -4422,7 +3205,7 @@ diff --git a/kilo.c b/kilo.c
    char *singleline_comment_start;
    int flags;
  };
-@@ -89,11 +92,19 @@ struct editorConfig E;
+@@ -86,11 +89,19 @@ struct editorConfig E;
  /*** syntax data ***/
  
  char *C_HL_extensions[] = { ".c", ".cpp", NULL };
@@ -4442,7 +3225,7 @@ diff --git a/kilo.c b/kilo.c
      "//",
      HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS
    },
-@@ -223,7 +234,7 @@ int getWindowSize(int *rows, int *cols) {
+@@ -220,7 +231,7 @@ int getWindowSize(int *rows, int *cols) {
  /*** editor ***/
  
  int is_separator(int c) {
@@ -4451,7 +3234,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  void editorUpdateSyntax(erow *row) {
-@@ -232,6 +243,8 @@ void editorUpdateSyntax(erow *row) {
+@@ -229,6 +240,8 @@ void editorUpdateSyntax(erow *row) {
  
    if (E.syntax == NULL) return;
  
@@ -4460,7 +3243,7 @@ diff --git a/kilo.c b/kilo.c
    char *scs = E.syntax->singleline_comment_start;
    int scs_len = scs ? strlen(scs) : 0;
  
-@@ -287,6 +300,26 @@ void editorUpdateSyntax(erow *row) {
+@@ -284,6 +297,26 @@ void editorUpdateSyntax(erow *row) {
        }
      }
  
@@ -4487,7 +3270,7 @@ diff --git a/kilo.c b/kilo.c
      prev_sep = is_separator(c);
      i++;
    }
-@@ -295,6 +328,8 @@ void editorUpdateSyntax(erow *row) {
+@@ -292,6 +325,8 @@ void editorUpdateSyntax(erow *row) {
  int editorSyntaxToColor(int hl) {
    switch (hl) {
      case HL_COMMENT: return 36;
@@ -4496,25 +3279,12 @@ diff --git a/kilo.c b/kilo.c
      case HL_STRING: return 35;
      case HL_NUMBER: return 31;
      case HL_MATCH: return 34;
-@@ -953,5 +988,6 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-+ *   - Why we both `break` and `continue` to escape the loops
-  */
- 
 
 ~~~ step: nonprintables
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Syntax highlighting: keywords
-+/* # Syntax highlighting: non-printable characters
-  */
- 
- /*** includes ***/
-@@ -722,7 +722,13 @@ void editorRefreshScreen() {
+@@ -719,7 +719,13 @@ void editorRefreshScreen() {
          int current_color = -1;
          int j;
          for (j = 0; j < len; j++) {
@@ -4529,27 +3299,12 @@ diff --git a/kilo.c b/kilo.c
              if (current_color != -1) {
                abAppend(&ab, "\x1b[39m", 5);
                current_color = -1;
-@@ -988,6 +994,7 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - Why we both `break` and `continue` to escape the loops
-+ *   - Why the chars might be negative
-+ *   - Why we add '@' to chars 0-26 (hint: there's 26 letters in the alphabet)
-  */
- 
 
 ~~~ step: multiline-comments
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,4 +1,4 @@
--/* # Syntax highlighting: non-printable characters
-+/* # Syntax highlighting: multiline comments
-  */
- 
- /*** includes ***/
-@@ -42,6 +42,7 @@ enum {
+@@ -39,6 +39,7 @@ enum {
  enum {
    HL_NORMAL = 0,
    HL_COMMENT,
@@ -4557,7 +3312,7 @@ diff --git a/kilo.c b/kilo.c
    HL_KEYWORD1,
    HL_KEYWORD2,
    HL_STRING,
-@@ -59,15 +60,19 @@ struct editorSyntax {
+@@ -56,15 +57,19 @@ struct editorSyntax {
    char **filematch;
    char **keywords;
    char *singleline_comment_start;
@@ -4577,7 +3332,7 @@ diff --git a/kilo.c b/kilo.c
  } erow;
  
  struct editorConfig {
-@@ -105,7 +110,7 @@ struct editorSyntax HLDB[] = {
+@@ -102,7 +107,7 @@ struct editorSyntax HLDB[] = {
      "c",
      C_HL_extensions,
      C_HL_keywords,
@@ -4586,7 +3341,7 @@ diff --git a/kilo.c b/kilo.c
      HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS
    },
  };
-@@ -246,10 +251,15 @@ void editorUpdateSyntax(erow *row) {
+@@ -243,10 +248,15 @@ void editorUpdateSyntax(erow *row) {
    char **keywords = E.syntax->keywords;
  
    char *scs = E.syntax->singleline_comment_start;
@@ -4602,7 +3357,7 @@ diff --git a/kilo.c b/kilo.c
  
    int i = 0;
    while (i < row->rsize) {
-@@ -264,6 +274,31 @@ void editorUpdateSyntax(erow *row) {
+@@ -261,6 +271,31 @@ void editorUpdateSyntax(erow *row) {
        }
      }
  
@@ -4634,7 +3389,7 @@ diff --git a/kilo.c b/kilo.c
      if (E.syntax->flags & HL_HIGHLIGHT_STRINGS) {
        if (in_string) {
          row->hl[i] = HL_STRING;
-@@ -323,11 +358,17 @@ void editorUpdateSyntax(erow *row) {
+@@ -320,11 +355,17 @@ void editorUpdateSyntax(erow *row) {
      prev_sep = is_separator(c);
      i++;
    }
@@ -4653,7 +3408,7 @@ diff --git a/kilo.c b/kilo.c
      case HL_KEYWORD1: return 33;
      case HL_KEYWORD2: return 32;
      case HL_STRING: return 35;
-@@ -393,8 +434,11 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -390,8 +431,11 @@ void editorInsertRow(int at, char *s, size_t len) {
    E.row = realloc(E.row, sizeof(erow) * (E.numrows + 1));
    if (at < E.numrows) {
      memmove(E.row + at + 1, E.row + at, sizeof(E.row[0]) * (E.numrows - at));
@@ -4665,7 +3420,7 @@ diff --git a/kilo.c b/kilo.c
    E.row[at].size = len;
    E.row[at].chars = malloc(len);
    memcpy(E.row[at].chars, s, len);
-@@ -402,6 +446,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -399,6 +443,7 @@ void editorInsertRow(int at, char *s, size_t len) {
    E.row[at].rsize = 0;
    E.row[at].render = NULL;
    E.row[at].hl = NULL;
@@ -4673,7 +3428,7 @@ diff --git a/kilo.c b/kilo.c
    editorUpdateRow(&E.row[at]);
  
    E.numrows++;
-@@ -418,6 +463,7 @@ void editorDelRow(int at) {
+@@ -415,6 +460,7 @@ void editorDelRow(int at) {
    if (at >= E.numrows) return;
    editorFreeRow(&E.row[at]);
    memmove(E.row + at, E.row + at + 1, sizeof(E.row[0]) * (E.numrows - at - 1));
@@ -4681,12 +3436,3 @@ diff --git a/kilo.c b/kilo.c
    E.numrows--;
    E.dirty++;
  }
-@@ -994,7 +1040,6 @@ int main(int argc, char *argv[]) {
- }
- 
- /* Explain:
-- *   - Why the chars might be negative
-- *   - Why we add '@' to chars 0-26 (hint: there's 26 letters in the alphabet)
-+ *   - Why multiline comments are complicated
-  */
- 
