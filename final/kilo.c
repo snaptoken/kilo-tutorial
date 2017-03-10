@@ -627,6 +627,7 @@ void editorFindCallback(char *query, int key) {
 
   if (saved_hl) {
     memcpy(E.row[saved_hl_line].hl, saved_hl, E.row[saved_hl_line].rsize);
+    free(saved_hl);
     saved_hl = NULL;
   }
 
