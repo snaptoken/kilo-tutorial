@@ -1094,7 +1094,7 @@ diff --git a/kilo.c b/kilo.c
  #define KILO_VERSION "0.0.1"
  
  #define CTRL_KEY(k) ((k) & 0x1f)
-@@ -23,11 +28,18 @@ enum {
+@@ -23,10 +28,17 @@ enum {
  
  /*** data ***/
  
@@ -1107,12 +1107,11 @@ diff --git a/kilo.c b/kilo.c
    int cx, cy;
    int screenrows;
    int screencols;
-   struct termios orig_termios;
 +  int numrows;
 +  erow row;
+   struct termios orig_termios;
  };
  
- struct editorConfig E;
 @@ -131,6 +143,28 @@ int getWindowSize(int *rows, int *cols) {
    }
  }
@@ -1183,7 +1182,15 @@ diff --git a/kilo.c b/kilo.c
      if (y < E.screenrows - 1) {
        abAppend(ab, "\r\n", 2);
      }
-@@ -247,13 +290,17 @@ void editorProcessKeypress() {
+@@ -183,7 +226,6 @@ void editorRefreshScreen() {
+   struct abuf ab = ABUF_INIT;
+ 
+   abAppend(&ab, "\x1b[?25l", 6);
+-  abAppend(&ab, "\x1b[2J", 4);
+   abAppend(&ab, "\x1b[H", 3);
+ 
+   editorDrawRows(&ab);
+@@ -247,13 +289,17 @@ void editorProcessKeypress() {
  void initEditor() {
    E.cx = 0;
    E.cy = 0;
@@ -1207,15 +1214,15 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -39,7 +39,7 @@ struct editorConfig {
+@@ -38,7 +38,7 @@ struct editorConfig {
+   int screenrows;
    int screencols;
-   struct termios orig_termios;
    int numrows;
 -  erow row;
 +  erow *row;
+   struct termios orig_termios;
  };
  
- struct editorConfig E;
 @@ -143,6 +143,16 @@ int getWindowSize(int *rows, int *cols) {
    }
  }
@@ -1273,7 +1280,7 @@ diff --git a/kilo.c b/kilo.c
        }
      }
  
-@@ -291,6 +298,7 @@ void initEditor() {
+@@ -290,6 +297,7 @@ void initEditor() {
    E.cx = 0;
    E.cy = 0;
    E.numrows = 0;
@@ -1293,7 +1300,7 @@ diff --git a/kilo.c b/kilo.c
 +  int rowoff;
    int screenrows;
    int screencols;
-   struct termios orig_termios;
+   int numrows;
 @@ -195,10 +196,19 @@ void abFree(struct abuf *ab) {
  
  /*** output ***/
@@ -1324,7 +1331,7 @@ diff --git a/kilo.c b/kilo.c
    struct abuf ab = ABUF_INIT;
  
    abAppend(&ab, "\x1b[?25l", 6);
-@@ -239,7 +251,7 @@ void editorRefreshScreen() {
+@@ -238,7 +250,7 @@ void editorRefreshScreen() {
    editorDrawRows(&ab);
  
    char buf[32];
@@ -1333,7 +1340,7 @@ diff --git a/kilo.c b/kilo.c
    abAppend(&ab, buf, strlen(buf));
  
    abAppend(&ab, "\x1b[?25h", 6);
-@@ -268,7 +280,7 @@ void editorMoveCursor(int key) {
+@@ -267,7 +279,7 @@ void editorMoveCursor(int key) {
        }
        break;
      case ARROW_DOWN:
@@ -1342,7 +1349,7 @@ diff --git a/kilo.c b/kilo.c
          E.cy++;
        }
        break;
-@@ -297,6 +309,7 @@ void editorProcessKeypress() {
+@@ -296,6 +308,7 @@ void editorProcessKeypress() {
  void initEditor() {
    E.cx = 0;
    E.cy = 0;
@@ -1362,7 +1369,7 @@ diff --git a/kilo.c b/kilo.c
 +  int coloff;
    int screenrows;
    int screencols;
-   struct termios orig_termios;
+   int numrows;
 @@ -203,6 +204,12 @@ void editorScroll() {
    if (E.cy >= E.rowoff + E.screenrows) {
      E.rowoff = E.cy - E.screenrows + 1;
@@ -1389,7 +1396,7 @@ diff --git a/kilo.c b/kilo.c
        }
      }
  
-@@ -251,7 +258,8 @@ void editorRefreshScreen() {
+@@ -250,7 +257,8 @@ void editorRefreshScreen() {
    editorDrawRows(&ab);
  
    char buf[32];
@@ -1399,7 +1406,7 @@ diff --git a/kilo.c b/kilo.c
    abAppend(&ab, buf, strlen(buf));
  
    abAppend(&ab, "\x1b[?25h", 6);
-@@ -270,9 +278,7 @@ void editorMoveCursor(int key) {
+@@ -269,9 +277,7 @@ void editorMoveCursor(int key) {
        }
        break;
      case ARROW_RIGHT:
@@ -1410,7 +1417,7 @@ diff --git a/kilo.c b/kilo.c
        break;
      case ARROW_UP:
        if (E.cy != 0) {
-@@ -310,6 +316,7 @@ void initEditor() {
+@@ -309,6 +315,7 @@ void initEditor() {
    E.cx = 0;
    E.cy = 0;
    E.rowoff = 0;
@@ -1423,7 +1430,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -271,6 +271,8 @@ void editorRefreshScreen() {
+@@ -270,6 +270,8 @@ void editorRefreshScreen() {
  /*** input ***/
  
  void editorMoveCursor(int key) {
@@ -1432,7 +1439,7 @@ diff --git a/kilo.c b/kilo.c
    switch (key) {
      case ARROW_LEFT:
        if (E.cx != 0) {
-@@ -278,7 +280,9 @@ void editorMoveCursor(int key) {
+@@ -277,7 +279,9 @@ void editorMoveCursor(int key) {
        }
        break;
      case ARROW_RIGHT:
@@ -1448,7 +1455,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -295,6 +295,12 @@ void editorMoveCursor(int key) {
+@@ -294,6 +294,12 @@ void editorMoveCursor(int key) {
        }
        break;
    }
@@ -1466,7 +1473,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -277,6 +277,9 @@ void editorMoveCursor(int key) {
+@@ -276,6 +276,9 @@ void editorMoveCursor(int key) {
      case ARROW_LEFT:
        if (E.cx != 0) {
          E.cx--;
@@ -1481,7 +1488,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -285,6 +285,9 @@ void editorMoveCursor(int key) {
+@@ -284,6 +284,9 @@ void editorMoveCursor(int key) {
      case ARROW_RIGHT:
        if (row && E.cx < row->size) {
          E.cx++;
@@ -1603,7 +1610,7 @@ diff --git a/kilo.c b/kilo.c
    }
  }
  
-@@ -288,7 +299,7 @@ void editorRefreshScreen() {
+@@ -287,7 +298,7 @@ void editorRefreshScreen() {
  
    char buf[32];
    snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
@@ -1612,7 +1619,7 @@ diff --git a/kilo.c b/kilo.c
    abAppend(&ab, buf, strlen(buf));
  
    abAppend(&ab, "\x1b[?25h", 6);
-@@ -360,6 +371,7 @@ void editorProcessKeypress() {
+@@ -359,6 +370,7 @@ void editorProcessKeypress() {
  void initEditor() {
    E.cx = 0;
    E.cy = 0;
@@ -1663,7 +1670,7 @@ diff --git a/kilo.c b/kilo.c
        }
      }
  
-@@ -357,6 +369,20 @@ void editorProcessKeypress() {
+@@ -356,6 +368,20 @@ void editorProcessKeypress() {
        exit(0);
        break;
  
@@ -1729,7 +1736,7 @@ diff --git a/kilo.c b/kilo.c
      }
  
      return '\x1b';
-@@ -369,6 +384,15 @@ void editorProcessKeypress() {
+@@ -368,6 +383,15 @@ void editorProcessKeypress() {
        exit(0);
        break;
  
@@ -1750,14 +1757,14 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -50,6 +50,7 @@ struct editorConfig {
-   struct termios orig_termios;
+@@ -49,6 +49,7 @@ struct editorConfig {
+   int screencols;
    int numrows;
    erow *row;
 +  char *filename;
+   struct termios orig_termios;
  };
  
- struct editorConfig E;
 @@ -215,6 +216,9 @@ void editorAppendRow(char *s, size_t len) {
  /*** file i/o ***/
  
@@ -1800,7 +1807,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  void editorRefreshScreen() {
-@@ -323,6 +346,7 @@ void editorRefreshScreen() {
+@@ -322,6 +345,7 @@ void editorRefreshScreen() {
    abAppend(&ab, "\x1b[H", 3);
  
    editorDrawRows(&ab);
@@ -1808,7 +1815,7 @@ diff --git a/kilo.c b/kilo.c
  
    char buf[32];
    snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
-@@ -426,8 +450,10 @@ void initEditor() {
+@@ -425,8 +449,10 @@ void initEditor() {
    E.coloff = 0;
    E.numrows = 0;
    E.row = NULL;
@@ -1838,15 +1845,15 @@ diff --git a/kilo.c b/kilo.c
  #include <unistd.h>
  
  /*** defines ***/
-@@ -51,6 +53,8 @@ struct editorConfig {
+@@ -50,6 +52,8 @@ struct editorConfig {
    int numrows;
    erow *row;
    char *filename;
 +  char statusmsg[80];
 +  time_t statusmsg_time;
+   struct termios orig_termios;
  };
  
- struct editorConfig E;
 @@ -334,6 +338,15 @@ void editorDrawStatusBar(struct abuf *ab) {
      }
    }
@@ -1863,7 +1870,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  void editorRefreshScreen() {
-@@ -347,6 +360,7 @@ void editorRefreshScreen() {
+@@ -346,6 +359,7 @@ void editorRefreshScreen() {
  
    editorDrawRows(&ab);
    editorDrawStatusBar(&ab);
@@ -1871,7 +1878,7 @@ diff --git a/kilo.c b/kilo.c
  
    char buf[32];
    snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
-@@ -359,6 +373,14 @@ void editorRefreshScreen() {
+@@ -358,6 +372,14 @@ void editorRefreshScreen() {
    abFree(&ab);
  }
  
@@ -1886,7 +1893,7 @@ diff --git a/kilo.c b/kilo.c
  /*** input ***/
  
  void editorMoveCursor(int key) {
-@@ -451,9 +473,11 @@ void initEditor() {
+@@ -450,9 +472,11 @@ void initEditor() {
    E.numrows = 0;
    E.row = NULL;
    E.filename = NULL;
@@ -1899,7 +1906,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  int main(int argc, char *argv[]) {
-@@ -463,6 +487,8 @@ int main(int argc, char *argv[]) {
+@@ -462,6 +486,8 @@ int main(int argc, char *argv[]) {
      editorOpen(argv[1]);
    }
  
@@ -1939,7 +1946,7 @@ diff --git a/kilo.c b/kilo.c
  /*** file i/o ***/
  
  void editorOpen(char *filename) {
-@@ -459,6 +478,10 @@ void editorProcessKeypress() {
+@@ -458,6 +477,10 @@ void editorProcessKeypress() {
      case ARROW_RIGHT:
        editorMoveCursor(c);
        break;
@@ -1963,7 +1970,7 @@ diff --git a/kilo.c b/kilo.c
    ARROW_LEFT = 1000,
    ARROW_RIGHT,
    ARROW_UP,
-@@ -445,6 +446,10 @@ void editorProcessKeypress() {
+@@ -444,6 +445,10 @@ void editorProcessKeypress() {
    int c = editorReadKey();
  
    switch (c) {
@@ -1974,7 +1981,7 @@ diff --git a/kilo.c b/kilo.c
      case CTRL_KEY('q'):
        exit(0);
        break;
-@@ -458,6 +463,12 @@ void editorProcessKeypress() {
+@@ -457,6 +462,12 @@ void editorProcessKeypress() {
          E.cx = E.row[E.cy].size;
        break;
  
@@ -1987,7 +1994,7 @@ diff --git a/kilo.c b/kilo.c
      case PAGE_UP:
      case PAGE_DOWN:
        {
-@@ -479,6 +490,11 @@ void editorProcessKeypress() {
+@@ -478,6 +489,11 @@ void editorProcessKeypress() {
        editorMoveCursor(c);
        break;
  
@@ -2075,7 +2082,7 @@ diff --git a/kilo.c b/kilo.c
  /*** append buffer ***/
  
  struct abuf {
-@@ -454,6 +497,10 @@ void editorProcessKeypress() {
+@@ -453,6 +496,10 @@ void editorProcessKeypress() {
        exit(0);
        break;
  
@@ -2086,7 +2093,7 @@ diff --git a/kilo.c b/kilo.c
      case HOME_KEY:
        E.cx = 0;
        break;
-@@ -526,7 +573,7 @@ int main(int argc, char *argv[]) {
+@@ -525,7 +572,7 @@ int main(int argc, char *argv[]) {
      editorOpen(argv[1]);
    }
  
@@ -2100,8 +2107,8 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -55,6 +55,7 @@ struct editorConfig {
-   struct termios orig_termios;
+@@ -54,6 +54,7 @@ struct editorConfig {
+   int screencols;
    int numrows;
    erow *row;
 +  int dirty;
@@ -2152,7 +2159,7 @@ diff --git a/kilo.c b/kilo.c
    int rlen = snprintf(rstatus, sizeof(rstatus), "%d/%d",
      E.cy + 1, E.numrows);
    if (len > E.screencols) len = E.screencols;
-@@ -558,6 +564,7 @@ void initEditor() {
+@@ -557,6 +563,7 @@ void initEditor() {
    E.coloff = 0;
    E.numrows = 0;
    E.row = NULL;
@@ -2173,7 +2180,7 @@ diff --git a/kilo.c b/kilo.c
  
  #define CTRL_KEY(k) ((k) & 0x1f)
  
-@@ -492,6 +493,8 @@ void editorMoveCursor(int key) {
+@@ -491,6 +492,8 @@ void editorMoveCursor(int key) {
  }
  
  void editorProcessKeypress() {
@@ -2182,7 +2189,7 @@ diff --git a/kilo.c b/kilo.c
    int c = editorReadKey();
  
    switch (c) {
-@@ -500,6 +503,12 @@ void editorProcessKeypress() {
+@@ -499,6 +502,12 @@ void editorProcessKeypress() {
        break;
  
      case CTRL_KEY('q'):
@@ -2195,7 +2202,7 @@ diff --git a/kilo.c b/kilo.c
        exit(0);
        break;
  
-@@ -552,6 +561,8 @@ void editorProcessKeypress() {
+@@ -551,6 +560,8 @@ void editorProcessKeypress() {
        editorInsertChar(c);
        break;
    }
@@ -2240,7 +2247,7 @@ diff --git a/kilo.c b/kilo.c
  /*** file i/o ***/
  
  char *editorRowsToString(int *buflen) {
-@@ -528,7 +545,7 @@ void editorProcessKeypress() {
+@@ -527,7 +544,7 @@ void editorProcessKeypress() {
      case BACKSPACE:
      case CTRL_KEY('h'):
      case DEL_KEY:
@@ -2308,6 +2315,19 @@ diff --git a/kilo.c b/kilo.c
    }
    editorUpdateRow(&E.row[E.cy]);
  }
+
+~~~ step: delete-forward
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -573,6 +573,7 @@ void editorProcessKeypress() {
+     case BACKSPACE:
+     case CTRL_KEY('h'):
+     case DEL_KEY:
++      if (c == DEL_KEY) editorMoveCursor(ARROW_RIGHT);
+       editorDelChar();
+       break;
+ 
 
 ~~~ step: enter-key
 diff --git a/kilo.c b/kilo.c
@@ -2381,7 +2401,7 @@ diff --git a/kilo.c b/kilo.c
    }
    free(line);
    fclose(fp);
-@@ -545,7 +564,7 @@ void editorProcessKeypress() {
+@@ -544,7 +563,7 @@ void editorProcessKeypress() {
  
    switch (c) {
      case '\r':
@@ -2419,7 +2439,7 @@ diff --git a/kilo.c b/kilo.c
    int len;
    char *buf = editorRowsToString(&len);
  
-@@ -518,6 +528,40 @@ void editorSetStatusMessage(const char *fmt, ...) {
+@@ -517,6 +527,40 @@ void editorSetStatusMessage(const char *fmt, ...) {
  
  /*** input ***/
  
@@ -2492,7 +2512,7 @@ diff --git a/kilo.c b/kilo.c
  /*** append buffer ***/
  
  struct abuf {
-@@ -634,6 +654,10 @@ void editorProcessKeypress() {
+@@ -633,6 +653,10 @@ void editorProcessKeypress() {
          E.cx = E.row[E.cy].size;
        break;
  
@@ -2566,7 +2586,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  /*** append buffer ***/
-@@ -548,7 +555,7 @@ void editorSetStatusMessage(const char *fmt, ...) {
+@@ -547,7 +554,7 @@ void editorSetStatusMessage(const char *fmt, ...) {
  
  /*** input ***/
  
@@ -2575,7 +2595,7 @@ diff --git a/kilo.c b/kilo.c
    size_t bufsize = 256;
    char *buf = malloc(bufsize);
  
-@@ -564,11 +571,13 @@ char *editorPrompt(char *prompt) {
+@@ -563,11 +570,13 @@ char *editorPrompt(char *prompt) {
        if (buflen != 0) buf[--buflen] = '\0';
      } else if (c == '\x1b') {
        editorSetStatusMessage("");
@@ -2589,7 +2609,7 @@ diff --git a/kilo.c b/kilo.c
          return buf;
        }
      } else if (isprint(c)) {
-@@ -579,6 +588,8 @@ char *editorPrompt(char *prompt) {
+@@ -578,6 +587,8 @@ char *editorPrompt(char *prompt) {
        buf[buflen++] = c;
        buf[buflen] = '\0';
      }
@@ -2726,10 +2746,12 @@ diff --git a/kilo.c b/kilo.c
  } erow;
  
  struct editorConfig {
-@@ -190,6 +196,25 @@ int getWindowSize(int *rows, int *cols) {
+@@ -188,6 +194,27 @@ int getWindowSize(int *rows, int *cols) {
+   }
+ }
  
- /*** row operations ***/
- 
++/*** syntax highlighting ***/
++
 +void editorUpdateSyntax(erow *row) {
 +  row->hl = realloc(row->hl, row->rsize);
 +  memset(row->hl, HL_NORMAL, row->rsize);
@@ -2749,10 +2771,10 @@ diff --git a/kilo.c b/kilo.c
 +  }
 +}
 +
+ /*** row operations ***/
+ 
  void editorUpdateRow(erow *row) {
-   int tabs = 0;
-   int j;
-@@ -209,6 +234,8 @@ void editorUpdateRow(erow *row) {
+@@ -209,6 +236,8 @@ void editorUpdateRow(erow *row) {
      }
    }
    row->rsize = idx;
@@ -2761,7 +2783,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  void editorInsertRow(int at, char *s, size_t len) {
-@@ -225,6 +252,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -225,6 +254,7 @@ void editorInsertRow(int at, char *s, size_t len) {
  
    E.row[at].rsize = 0;
    E.row[at].render = NULL;
@@ -2769,7 +2791,7 @@ diff --git a/kilo.c b/kilo.c
    editorUpdateRow(&E.row[at]);
  
    E.numrows++;
-@@ -234,6 +262,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -234,6 +264,7 @@ void editorInsertRow(int at, char *s, size_t len) {
  void editorFreeRow(erow *row) {
    free(row->render);
    free(row->chars);
@@ -2777,7 +2799,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  void editorDelRow(int at) {
-@@ -511,16 +540,28 @@ void editorDrawRows(struct abuf *ab) {
+@@ -511,16 +542,28 @@ void editorDrawRows(struct abuf *ab) {
        if (len > 0) {
          if (len > E.screencols) len = E.screencols;
          char *c = &E.row[filerow].render[E.coloff];
@@ -2832,7 +2854,7 @@ diff --git a/kilo.c b/kilo.c
      default: return 37;
    }
  }
-@@ -439,10 +441,16 @@ void editorFindCallback(char *query, int key) {
+@@ -441,10 +443,16 @@ void editorFindCallback(char *query, int key) {
  
      char *match = strstr(E.row[current].render, query);
      if (match) {
@@ -2855,7 +2877,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -419,6 +419,15 @@ void editorFindCallback(char *query, int key) {
+@@ -421,6 +421,15 @@ void editorFindCallback(char *query, int key) {
    static int last_match = -1;
    static int find_next = 1;
  
@@ -2871,7 +2893,7 @@ diff --git a/kilo.c b/kilo.c
    if (key == '\r' || key == '\x1b') {
      last_match = -1;
      find_next = 1;
-@@ -449,6 +458,9 @@ void editorFindCallback(char *query, int key) {
+@@ -451,6 +460,9 @@ void editorFindCallback(char *query, int key) {
        E.rowoff = E.numrows;
  
        if (row->hl) {
@@ -2888,7 +2910,7 @@ diff --git a/kilo.c b/kilo.c
 +++ b/kilo.c
 @@ -197,15 +197,34 @@ int getWindowSize(int *rows, int *cols) {
  
- /*** row operations ***/
+ /*** syntax highlighting ***/
  
 +int is_separator(int c) {
 +  return isspace(c) || strchr(",.()+-/*=~%[];", c) != NULL;
@@ -2946,11 +2968,12 @@ diff --git a/kilo.c b/kilo.c
  typedef struct erow {
    int size;
    int rsize;
-@@ -67,10 +75,25 @@ struct editorConfig {
+@@ -66,11 +74,26 @@ struct editorConfig {
    char *filename;
    char statusmsg[80];
    time_t statusmsg_time;
 +  struct editorSyntax *syntax;
+   struct termios orig_termios;
  };
  
  struct editorConfig E;
@@ -3038,10 +3061,10 @@ diff --git a/kilo.c b/kilo.c
 +  }
 +}
 +
+ /*** row operations ***/
+ 
  void editorUpdateRow(erow *row) {
-   int tabs = 0;
-   int j;
-@@ -386,6 +440,8 @@ void editorOpen(char *filename) {
+@@ -388,6 +442,8 @@ void editorOpen(char *filename) {
    free(E.filename);
    E.filename = strdup(filename);
  
@@ -3050,7 +3073,7 @@ diff --git a/kilo.c b/kilo.c
    FILE *fp = fopen(filename, "r");
    if (!fp) die("fopen");
  
-@@ -409,6 +465,7 @@ void editorSave() {
+@@ -411,6 +467,7 @@ void editorSave() {
        editorSetStatusMessage("Save aborted");
        return;
      }
@@ -3058,7 +3081,7 @@ diff --git a/kilo.c b/kilo.c
    }
  
    int len;
-@@ -615,8 +672,8 @@ void editorDrawStatusBar(struct abuf *ab) {
+@@ -617,8 +674,8 @@ void editorDrawStatusBar(struct abuf *ab) {
    int len = snprintf(status, sizeof(status), "%.20s - %d lines %s",
      E.filename ? E.filename : "[No Name]", E.numrows,
      E.dirty ? "(modified)" : "");
@@ -3069,7 +3092,7 @@ diff --git a/kilo.c b/kilo.c
    if (len > E.screencols) len = E.screencols;
    abAppend(ab, status, len);
    while (len < E.screencols) {
-@@ -842,6 +899,7 @@ void initEditor() {
+@@ -844,6 +901,7 @@ void initEditor() {
    E.filename = NULL;
    E.statusmsg[0] = '\0';
    E.statusmsg_time = 0;
@@ -3255,7 +3278,7 @@ diff --git a/kilo.c b/kilo.c
      HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS
    },
 @@ -226,7 +237,7 @@ int getWindowSize(int *rows, int *cols) {
- /*** row operations ***/
+ /*** syntax highlighting ***/
  
  int is_separator(int c) {
 -  return isspace(c) || strchr(",.()+-/*=~%[];", c) != NULL;
@@ -3314,7 +3337,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -718,7 +718,13 @@ void editorDrawRows(struct abuf *ab) {
+@@ -720,7 +720,13 @@ void editorDrawRows(struct abuf *ab) {
          int current_color = -1;
          int j;
          for (j = 0; j < len; j++) {
@@ -3449,7 +3472,7 @@ diff --git a/kilo.c b/kilo.c
      case HL_KEYWORD1: return 33;
      case HL_KEYWORD2: return 32;
      case HL_STRING: return 35;
-@@ -397,8 +439,11 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -399,8 +441,11 @@ void editorInsertRow(int at, char *s, size_t len) {
    E.row = realloc(E.row, sizeof(erow) * (E.numrows + 1));
    if (at < E.numrows) {
      memmove(&E.row[at + 1], &E.row[at], sizeof(erow) * (E.numrows - at));
@@ -3461,7 +3484,7 @@ diff --git a/kilo.c b/kilo.c
    E.row[at].size = len;
    E.row[at].chars = malloc(len);
    memcpy(E.row[at].chars, s, len);
-@@ -406,6 +451,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -408,6 +453,7 @@ void editorInsertRow(int at, char *s, size_t len) {
    E.row[at].rsize = 0;
    E.row[at].render = NULL;
    E.row[at].hl = NULL;
@@ -3469,7 +3492,7 @@ diff --git a/kilo.c b/kilo.c
    editorUpdateRow(&E.row[at]);
  
    E.numrows++;
-@@ -422,6 +468,7 @@ void editorDelRow(int at) {
+@@ -424,6 +470,7 @@ void editorDelRow(int at) {
    if (at >= E.numrows) return;
    editorFreeRow(&E.row[at]);
    memmove(&E.row[at], &E.row[at + 1], sizeof(erow) * (E.numrows - at - 1));
