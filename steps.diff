@@ -586,7 +586,7 @@ diff --git a/kilo.c b/kilo.c
    while (1) {
      editorRefreshScreen();
 
-~~~ step: bottom-left
+~~~ step: bottom-right
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c

@@ -1,9 +1,6 @@
-# Build Your Own Text Editor
+# Notes
 
 ## The `main()` function
-
-Create a new file named `kilo.c` and give it a `main()` function to start
-out with.
 
 Explain:
   - `main()` is a special function
