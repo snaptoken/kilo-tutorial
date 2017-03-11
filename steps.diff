@@ -77,16 +77,16 @@ diff --git a/kilo.c b/kilo.c
  #include <termios.h>
  #include <unistd.h>
  
--void enableRawMode() {
--  struct termios raw;
 +struct termios orig_termios;
 +
 +void disableRawMode() {
 +  tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
 +}
- 
++
+ void enableRawMode() {
+-  struct termios raw;
+-
 -  tcgetattr(STDIN_FILENO, &raw);
-+void enableRawMode() {
 +  tcgetattr(STDIN_FILENO, &orig_termios);
 +  atexit(disableRawMode);
  
