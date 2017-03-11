@@ -15,7 +15,7 @@ new file mode 100644
 +++ b/Makefile
 @@ -0,0 +1,2 @@
 +kilo: kilo.c
-+	$(CC) -o kilo kilo.c -Wall -W -pedantic -std=c99
++	$(CC) -o kilo kilo.c -Wall -Wextra -pedantic -std=c99
 
 ~~~ step: canonical
 diff --git a/kilo.c b/kilo.c
