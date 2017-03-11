@@ -128,6 +128,11 @@ Explain:
   - Importance of checking return values
   - How to make it fail (run `cat kilo.c | ./kilo`)
 
+## Clear the screen on exit
+
+Explain:
+  - Why this is important
+
 ## Sections
 
 Explain:
@@ -249,11 +254,6 @@ Explain:
   - 1-indexing and 0-indexing
   - What happens when the cursor goes past the screen border
   - Suggest using 'WASD' or the numpad instead
-
-## Clear the screen on exit
-
-Explain:
-  - This should probably be done much earlier
 
 ## Arrow keys
 
@@ -393,6 +393,7 @@ Explain:
 
 Explain:
   - Why increment?
+  - Why does it go in row operations but not in editor operations?
 
 ## Quit confirmation
 
@@ -409,6 +410,11 @@ Explain:
 Explain:
   - Backspacing at the start of the line joins the two lines, and deletes
     the one you were on
+
+## Deleting forward with the delete key
+
+Explain:
+  - How moving the cursor to the right solves each case
 
 ## Enter key
 
