@@ -74,20 +74,19 @@ FileUtils.cd("../steps") do
 
         if line[1..-1] =~ /^\/\*\*\* (.+) \*\*\*\/$/
           section_stack = [section_stack[0]]
-          section_stack.last[:content] << {type: :section, section_type: :comment, summary: line_hl, content: []}
+          section_stack.last[:content] << {type: :section, section_type: :comment, summary: line[1..-1].chomp, content: []}
           section_stack.push(section_stack.last[:content].last)
         elsif line[1] =~ /\S/ && line.chomp[-1] == "{"
-          summary = line[1..-1].chomp + " ... }"
-          summary_hl = formatter.format(lexer.lex(summary)).gsub("\n", "")
           section_stack.pop if section_stack.length > 1 && section_stack.last[:section_type] == :braces
-          section_stack.last[:content] << {type: :section, section_type: :braces, summary: summary_hl, content: []}
+          section_stack.last[:content] << {type: :section, section_type: :braces, summary: line[1..-1].chomp + " ... ", content: []}
           section_stack.push(section_stack.last[:content].last)
         end
 
         section_stack.last[:content] << {type: type, content: line_hl}
 
-        if line[1..-1] =~ /^}$/ && section_stack.last[:section_type] == :braces
-          section_stack.pop
+        if line[1..-1] =~ /^(};?)$/ && section_stack.last[:section_type] == :braces
+          s = section_stack.pop
+          s[:summary] << $1
         end
 
         section_stack.each { |s| s[:dirty] = true } if type != :nochange
@@ -109,7 +108,8 @@ FileUtils.cd("../steps") do
           if cur[:dirty]
             to_render = cur[:content] + to_render
           else
-            html << "<div class=\"line folded\">#{cur[:summary]}</div>"
+            summary = formatter.format(lexer.lex(cur[:summary])).gsub("\n", "")
+            html << "<div class=\"line folded\">#{summary}</div>"
           end
         else
           html << "<div class=\"line #{cur[:type]}\">#{cur[:content]}</div>"

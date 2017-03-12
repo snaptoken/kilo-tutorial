@@ -572,16 +572,17 @@ diff --git a/kilo.c b/kilo.c
      write(STDOUT_FILENO, "~\r\n", 3);
    }
  }
-@@ -98,8 +113,12 @@ void editorProcessKeypress() {
+@@ -98,8 +113,13 @@ void editorProcessKeypress() {
  
  /*** init ***/
  
 +void initEditor() {
++  if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
 +}
 +
  int main() {
    enableRawMode();
-+  if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
++  initEditor();
  
    while (1) {
      editorRefreshScreen();
@@ -600,20 +601,6 @@ diff --git a/kilo.c b/kilo.c
      return -1;
    } else {
      *cols = ws.ws_col;
-@@ -114,11 +115,12 @@ void editorProcessKeypress() {
- /*** init ***/
- 
- void initEditor() {
-+  if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
- }
- 
- int main() {
-   enableRawMode();
--  if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
-+  initEditor();
- 
-   while (1) {
-     editorRefreshScreen();
 
 ~~~ step: cursor-query
 diff --git a/kilo.c b/kilo.c
