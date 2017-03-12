@@ -138,7 +138,8 @@ FileUtils.cd("../steps") do
             html << "<div class=\"line folded\">#{summary}</div>"
           end
         elsif !cur[:omit]
-          html << "<div class=\"line #{cur[:type]}\">#{cur[:content]}</div>"
+          tag = {nochange: :div, add: :ins, remove: :del}[cur[:type]]
+          html << "<#{tag} class=\"line\">#{cur[:content]}</#{tag}>"
         end
       end
 
