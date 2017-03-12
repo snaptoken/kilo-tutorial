@@ -132,6 +132,10 @@ code .line {
   padding: 0 5px;
 }
 
+code .folded {
+  /*background-color: #eef;*/
+}
+
 code .nochange {
 }
 
