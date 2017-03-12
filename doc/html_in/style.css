@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css?family=Fira+Mono');
+
+html {
+  overflow-y: scroll;
+}
+
+body {
+  font-family: Utopia, Georgia, Times, serif;
+  line-height: 150%;
+  margin: 0;
+  padding: 0;
+  background-image: url(bg.png);
+  background-attachment: fixed;
+  color: #222;
+  font-size: 18px;
+}
+
+#container {
+  width: 800px;
+  margin: 0 auto;
+  margin-bottom: 40px;
+  padding: 0px 40px 20px 40px;
+  background-color: #fff;
+  box-shadow: 0px 0px 5px 1px #ccc;
+  border-top: 4px solid #d84;
+  border-bottom: 4px solid #d84;
+}
+
+@media screen and (max-width: 800px) {
+  #container {
+    width: auto;
+    margin: 0;
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: futura, helvetica, arial, sans-serif;
+  line-height: 100%;
+  color: #222;
+}
+
+heading {
+  display: inline;
+}
+
+h1 {
+  font-size: 38px;
+}
+
+h2 {
+  font-size: 26px;
+}
+
+hr {
+  border: none;
+  border-bottom: 1px solid #888;
+}
+
+heading > nav {
+  display: block;
+  float: right;
+  height: 18px;
+  margin-top: 38px;
+}
+
+heading > nav > a:hover {
+  text-decoration: none;
+  color: #d84;
+}
+
+a {
+  color: #26d;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+ul {
+  list-style-type: square;
+}
+
+table {
+  margin-bottom: 10px;
+  border-collapse: collapse;
+}
+
+td, th {
+  padding: 5px;
+  vertical-align: top;
+  text-align: left;
+  margin: 0;
+  border: 1px solid #d84;
+}
+
+code {
+  font-family: 'Fira Mono', monospace;
+  font-size: inherit;
+  background-color: #eee;
+  padding: 3px;
+}
+
+.diff code {
+  font-size: 18px;
+  line-height: 24px;
+  background-color: none;
+  padding: 0;
+  margin-bottom: 18px;
+}
+
+.diff {
+  border: 2px solid #666;
+  border-radius: 3px;
+}
+
+.diff .filename {
+  /*border-bottom: 2px solid #666;*/
+  color: white;
+  padding-left: 5px;
+  /*margin-bottom: 14px;*/
+  background-color: #666;
+}
+
+.highlight {
+  margin: 0;
+  background-color: #f9f9f9;
+}
+
+code .line {
+  height: 24px;
+  padding: 0 5px;
+}
+
+code .nochange {
+}
+
+code .add {
+  background-color: #ffd;
+}
+
+code .remove {
+  display: none;
+  background-color: #fdd;
+}
+
