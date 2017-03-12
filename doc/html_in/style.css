@@ -144,7 +144,6 @@ code .add {
 }
 
 code .remove {
-  display: none;
   background-color: #fdd;
 }
 

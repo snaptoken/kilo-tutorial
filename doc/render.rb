@@ -95,13 +95,39 @@ FileUtils.cd("../steps") do
       end
     end
 
+    change_chain = []
+    diffout.each do |file|
+      to_render = file[:content].dup
+      until to_render.empty?
+        cur = to_render.shift
+        if cur[:type] == :section
+          if cur[:dirty]
+            to_render = cur[:content] + to_render
+          else
+            change_chain = []
+          end
+        else
+          if cur[:type] == :nochange
+            change_chain = []
+          else
+            change_chain << cur
+            if cur[:type] == :add
+              change_chain.each { |c| c[:omit] = true if c[:type] == :remove }
+            elsif cur[:type] == :remove
+              cur[:omit] = true if change_chain.any? { |c| c[:type] == :add }
+            end
+          end
+        end
+      end
+    end
+
     html = ""
     diffout.each do |file|
       html << "<div class=\"diff\">\n"
       html << "<div class=\"filename\">#{file[:summary]}</div>\n"
       html << "<pre class=\"highlight\"><code>"
 
-      to_render = file[:content]
+      to_render = file[:content].dup
       until to_render.empty?
         cur = to_render.shift
         if cur[:type] == :section
@@ -111,7 +137,7 @@ FileUtils.cd("../steps") do
             summary = formatter.format(lexer.lex(cur[:summary])).gsub("\n", "")
             html << "<div class=\"line folded\">#{summary}</div>"
           end
-        else
+        elsif !cur[:omit]
           html << "<div class=\"line #{cur[:type]}\">#{cur[:content]}</div>"
         end
       end
