@@ -57,7 +57,7 @@ FileUtils.cd("../steps") do
     lexer = nil
     formatter = Rouge::Formatters::HTML.new
 
-    diff = `git diff --histogram --unified=100000 --no-index #{last_step} #{step}`
+    diff = `git diff --histogram --unified=100000 --ignore-space-change --no-index #{last_step} #{step}`
     diff.lines.each do |line|
       if !in_diff && line =~ /^\+\+\+ (.+)$/
         filename = File.basename($1)
@@ -84,7 +84,7 @@ FileUtils.cd("../steps") do
 
         section_stack.last[:content] << {type: type, content: line_hl}
 
-        if line[1..-1] =~ /^(};?)$/ && section_stack.last[:section_type] == :braces
+        if line[1..-1] =~ /^(}( \w+)?;?)$/ && section_stack.last[:section_type] == :braces
           s = section_stack.pop
           s[:summary] << $1
         end
@@ -104,10 +104,22 @@ FileUtils.cd("../steps") do
           if cur[:dirty]
             to_render = cur[:content] + to_render
           else
+            if change_chain.first && change_chain.first[:content].empty?
+              change_chain.first[:type] = :nochange
+            end
+            if change_chain.last && change_chain.last[:content].empty?
+              change_chain.last[:type] = :nochange
+            end
             change_chain = []
           end
         else
           if cur[:type] == :nochange
+            if change_chain.first && change_chain.first[:content].empty?
+              change_chain.first[:type] = :nochange
+            end
+            if change_chain.last && change_chain.last[:content].empty?
+              change_chain.last[:type] = :nochange
+            end
             change_chain = []
           else
             change_chain << cur
