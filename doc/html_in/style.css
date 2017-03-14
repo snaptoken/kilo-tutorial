@@ -9,7 +9,7 @@ body {
   line-height: 150%;
   margin: 0;
   padding: 0;
-  background-image: url(bg.png);
+  background-image: url(i/bg.png);
   background-attachment: fixed;
   color: #222;
   font-size: 18px;
@@ -98,12 +98,12 @@ code {
   font-family: 'Fira Mono', monospace;
   font-size: inherit;
   background-color: #eee;
-  padding: 3px;
+  padding: 1px 3px;
 }
 
 .diff code {
   font-size: 14px;
-  line-height: 18px;
+  line-height: 20px;
   background-color: none;
   padding: 0;
   margin-bottom: 18px;
@@ -128,7 +128,7 @@ code {
 
 .diff .line {
   display: block;
-  height: 18px;
+  height: 20px;
   padding: 0 5px;
 }
 
