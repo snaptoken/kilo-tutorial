@@ -263,29 +263,32 @@ diff --git a/kilo.c b/kilo.c
  
    return 0;
 
-~~~ step: error-handling
+~~~ step: die
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -6,12 +6,26 @@
+@@ -6,6 +6,11 @@
  
  struct termios orig_termios;
  
-+void disableRawMode();
-+
 +void die(const char *s) {
-+  disableRawMode();
 +  perror(s);
 +  exit(1);
 +}
 +
  void disableRawMode() {
+   tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
+ }
+
+~~~ step: error-handling
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -12,11 +12,12 @@ void die(const char *s) {
+ }
+ 
+ void disableRawMode() {
 -  tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
-+  static int disabled_once = 0;
-+
-+  if (disabled_once) return;
-+  disabled_once = 1;
-+
 +  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1)
 +    die("tcsetattr");
  }
@@ -296,7 +299,7 @@ diff --git a/kilo.c b/kilo.c
    atexit(disableRawMode);
  
    struct termios raw = orig_termios;
-@@ -22,7 +36,7 @@ void enableRawMode() {
+@@ -27,7 +28,7 @@ void enableRawMode() {
    raw.c_cc[VMIN] = 0;
    raw.c_cc[VTIME] = 1;
  
@@ -305,7 +308,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  int main() {
-@@ -30,7 +44,7 @@ int main() {
+@@ -35,7 +36,7 @@ int main() {
  
    while (1) {
      char c = '\0';
@@ -319,16 +322,42 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -20,6 +20,9 @@ void disableRawMode() {
-   if (disabled_once) return;
-   disabled_once = 1;
+@@ -12,6 +12,9 @@ void die(const char *s) {
+ }
  
+ void disableRawMode() {
 +  write(STDOUT_FILENO, "\x1b[H", 3);
 +  write(STDOUT_FILENO, "\x1b[2J", 4);
 +
    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1)
      die("tcsetattr");
  }
+
+~~~ step: disabled-once
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -6,12 +6,20 @@
+ 
+ struct termios orig_termios;
+ 
++void disableRawMode();
++
+ void die(const char *s) {
++  disableRawMode();
+   perror(s);
+   exit(1);
+ }
+ 
+ void disableRawMode() {
++  static int disabled_once = 0;
++
++  if (disabled_once) return;
++  disabled_once = 1;
++
+   write(STDOUT_FILENO, "\x1b[H", 3);
+   write(STDOUT_FILENO, "\x1b[2J", 4);
+ 
 
 ~~~ step: sections
 diff --git a/kilo.c b/kilo.c

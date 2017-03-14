@@ -116,9 +116,12 @@ code {
 }
 
 .diff .filename {
-  color: white;
   padding-left: 5px;
   background-color: #666;
+}
+
+.diff .filename a {
+  color: white;
 }
 
 .highlight {
