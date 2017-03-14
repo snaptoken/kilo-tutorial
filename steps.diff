@@ -104,7 +104,7 @@ diff --git a/kilo.c b/kilo.c
  
    struct termios raw = orig_termios;
 -  raw.c_lflag &= ~(ECHO);
-+  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN);
++  raw.c_lflag &= ~(ECHO | ICANON);
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
  }
@@ -143,8 +143,8 @@ diff --git a/kilo.c b/kilo.c
    atexit(disableRawMode);
  
    struct termios raw = orig_termios;
--  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN);
-+  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+-  raw.c_lflag &= ~(ECHO | ICANON);
++  raw.c_lflag &= ~(ECHO | ICANON | ISIG);
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
  }
@@ -158,7 +158,7 @@ diff --git a/kilo.c b/kilo.c
  
    struct termios raw = orig_termios;
 +  raw.c_iflag &= ~(IXON);
-   raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+   raw.c_lflag &= ~(ECHO | ICANON | ISIG);
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 
@@ -172,7 +172,7 @@ diff --git a/kilo.c b/kilo.c
    struct termios raw = orig_termios;
 -  raw.c_iflag &= ~(IXON);
 +  raw.c_iflag &= ~(ICRNL | IXON);
-   raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+   raw.c_lflag &= ~(ECHO | ICANON | ISIG);
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 
@@ -185,7 +185,7 @@ diff --git a/kilo.c b/kilo.c
    struct termios raw = orig_termios;
    raw.c_iflag &= ~(ICRNL | IXON);
 +  raw.c_oflag &= ~(OPOST);
-   raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+   raw.c_lflag &= ~(ECHO | ICANON | ISIG);
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 @@ -27,9 +28,9 @@ int main() {
@@ -213,9 +213,23 @@ diff --git a/kilo.c b/kilo.c
 +  raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
    raw.c_oflag &= ~(OPOST);
 +  raw.c_cflag |= (CS8);
-   raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+   raw.c_lflag &= ~(ECHO | ICANON | ISIG);
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+
+~~~ step: iexten
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -18,7 +18,7 @@ void enableRawMode() {
+   raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+   raw.c_oflag &= ~(OPOST);
+   raw.c_cflag |= (CS8);
+-  raw.c_lflag &= ~(ECHO | ICANON | ISIG);
++  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+ 
+   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+ }
 
 ~~~ step: vmin-vtime
 diff --git a/kilo.c b/kilo.c
