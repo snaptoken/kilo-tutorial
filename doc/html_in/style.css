@@ -6,10 +6,6 @@
   box-sizing: border-box;
 }
 
-html {
-  overflow-y: scroll;
-}
-
 body {
   font-family: Utopia, Georgia, Times, serif;
   line-height: 140%;
@@ -18,17 +14,8 @@ body {
 }
 
 #container {
-  width: 800px;
-  margin: 0 auto;
-  padding: 18px 36px;
-  background-color: #fff;
-}
-
-@media screen and (max-width: 800px) {
-  #container {
-    width: auto;
-    margin: 0;
-  }
+  width: 700px;
+  margin: 18px auto;
 }
 
 .bar {
@@ -40,7 +27,7 @@ body {
 .bar > nav {
   display: flex;
   justify-content: space-between;
-  width: 728px;
+  width: 700px;
   margin: 0 auto;
 }
 
@@ -120,7 +107,6 @@ code {
   border: 1px solid #afb4aa;
   border-radius: 3px;
   margin-top: 18px;
-  /*overflow-x: scroll;*/
 }
 
 .diff .filename {
@@ -159,12 +145,21 @@ code {
   text-decoration: line-through;
 }
 
-img {
-  display: block;
-  margin: 0 auto;
-  background-color: #eff4ea;
-  padding: 5px;
-  border: 1px solid #ceb;
-  border-radius: 3px;
+@media screen and (max-width: 700px) {
+  #container {
+    width: auto;
+    margin: 18px 0;
+    padding: 0 5px;
+  }
+
+  .bar > nav {
+    width: auto;
+    margin: 0;
+    padding: 0 5px;
+  }
+
+  .diff {
+    overflow-x: scroll;
+  }
 }
 
