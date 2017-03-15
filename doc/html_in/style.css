@@ -1,29 +1,27 @@
 @import url('https://fonts.googleapis.com/css?family=Fira+Mono');
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 html {
   overflow-y: scroll;
 }
 
 body {
   font-family: Utopia, Georgia, Times, serif;
-  line-height: 150%;
-  margin: 0;
-  padding: 0;
-  background-image: url(i/bg.png);
-  background-attachment: fixed;
-  color: #222;
+  line-height: 140%;
+  color: #333;
   font-size: 18px;
 }
 
 #container {
   width: 800px;
   margin: 0 auto;
-  margin-bottom: 40px;
-  padding: 0px 40px 20px 40px;
+  padding: 18px 36px;
   background-color: #fff;
-  box-shadow: 0px 0px 5px 1px #ccc;
-  border-top: 4px solid #d84;
-  border-bottom: 4px solid #d84;
 }
 
 @media screen and (max-width: 800px) {
@@ -33,17 +31,42 @@ body {
   }
 }
 
+.bar {
+  display: block;
+  width: 100%;
+  background-color: #ceb;
+}
+
+.bar > nav {
+  display: flex;
+  justify-content: space-between;
+  width: 728px;
+  margin: 0 auto;
+}
+
+footer.bar > nav {
+  justify-content: center;
+}
+
+.bar > nav > a {
+  display: block;
+  padding: 2px 0 4px 0;
+  color: #152;
+}
+
+.bar > nav > a:hover {
+  color: #374;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: futura, helvetica, arial, sans-serif;
   line-height: 100%;
   color: #222;
-}
-
-heading {
-  display: inline;
+  margin-top: 32px;
 }
 
 h1 {
+  margin-top: 0;
   font-size: 38px;
 }
 
@@ -51,53 +74,32 @@ h2 {
   font-size: 26px;
 }
 
+p {
+  margin-top: 18px;
+}
+
+ul, ol {
+  margin-top: 18px;
+  margin-left: 36px;
+}
+
 hr {
   border: none;
   border-bottom: 1px solid #888;
 }
 
-heading > nav {
-  display: block;
-  float: right;
-  height: 18px;
-  margin-top: 38px;
-}
-
-heading > nav > a:hover {
-  text-decoration: none;
-  color: #d84;
-}
-
 a {
   color: #26d;
-  text-decoration: none;
 }
 
 a:hover {
-  text-decoration: underline;
-}
-
-ul {
-  list-style-type: square;
-}
-
-table {
-  margin-bottom: 10px;
-  border-collapse: collapse;
-}
-
-td, th {
-  padding: 5px;
-  vertical-align: top;
-  text-align: left;
-  margin: 0;
-  border: 1px solid #d84;
+  color: #6b2;
 }
 
 code {
   font-family: 'Fira Mono', monospace;
   font-size: inherit;
-  background-color: #eee;
+  background-color: #eff4ea;
   padding: 1px 3px;
 }
 
@@ -109,13 +111,20 @@ code {
   margin-bottom: 18px;
 }
 
+.diff pre {
+  background-color: #fffcfa;
+  padding: 5px 0;
+}
+
 .diff {
-  border: 2px solid #666;
+  border: 1px solid #afb4aa;
   border-radius: 3px;
-  overflow-x: scroll;
+  margin-top: 18px;
+  /*overflow-x: scroll;*/
 }
 
 .diff .filename {
+  display: none;
   padding-left: 5px;
   background-color: #666;
 }
@@ -148,5 +157,14 @@ code {
 .diff del.line {
   background-color: #fdd;
   text-decoration: line-through;
+}
+
+img {
+  display: block;
+  margin: 0 auto;
+  background-color: #eff4ea;
+  padding: 5px;
+  border: 1px solid #ceb;
+  border-radius: 3px;
 }
 
