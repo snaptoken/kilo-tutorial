@@ -1780,7 +1780,7 @@ diff --git a/kilo.c b/kilo.c
        break;
      case ARROW_UP:
 
-~~~ step: render-tabs
+~~~ step: render-chars
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1794,27 +1794,34 @@ diff --git a/kilo.c b/kilo.c
  } erow;
  
  struct editorConfig {
-@@ -137,6 +139,27 @@ int getWindowSize(int *rows, int *cols) {
+@@ -144,6 +146,10 @@ void editorAppendRow(char *s, size_t len) {
+   E.row[at].size = len;
+   E.row[at].chars = malloc(len);
+   memcpy(E.row[at].chars, s, len);
++
++  E.row[at].rsize = 0;
++  E.row[at].render = NULL;
++
+   E.numrows++;
+ }
+ 
+
+~~~ step: editor-update-row
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -139,6 +139,18 @@ int getWindowSize(int *rows, int *cols) {
  
  /*** row operations ***/
  
 +void editorUpdateRow(erow *row) {
-+  int tabs = 0;
-+  int j;
-+  for (j = 0; j < row->size; j++)
-+    if (row->chars[j] == '\t') tabs++;
-+
 +  free(row->render);
-+  row->render = malloc(row->size + tabs*7);
++  row->render = malloc(row->size);
 +
++  int j;
 +  int idx = 0;
 +  for (j = 0; j < row->size; j++) {
-+    if (row->chars[j] == '\t') {
-+      row->render[idx++] = ' ';
-+      while (idx % 8 != 0) row->render[idx++] = ' ';
-+    } else {
-+      row->render[idx++] = row->chars[j];
-+    }
++    row->render[idx++] = row->chars[j];
 +  }
 +  row->rsize = idx;
 +}
@@ -1822,19 +1829,20 @@ diff --git a/kilo.c b/kilo.c
  void editorAppendRow(char *s, size_t len) {
    E.row = realloc(E.row, sizeof(erow) * (E.numrows + 1));
  
-@@ -144,6 +167,11 @@ void editorAppendRow(char *s, size_t len) {
-   E.row[at].size = len;
-   E.row[at].chars = malloc(len);
-   memcpy(E.row[at].chars, s, len);
-+
-+  E.row[at].rsize = 0;
-+  E.row[at].render = NULL;
+@@ -149,6 +161,7 @@ void editorAppendRow(char *s, size_t len) {
+ 
+   E.row[at].rsize = 0;
+   E.row[at].render = NULL;
 +  editorUpdateRow(&E.row[at]);
-+
+ 
    E.numrows++;
  }
- 
-@@ -225,10 +253,10 @@ void editorDrawRows(struct abuf *ab) {
+
+~~~ step: render-render
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -244,10 +244,10 @@ void editorDrawRows(struct abuf *ab) {
          abAppend(ab, "~", 1);
        }
      } else {
@@ -1848,6 +1856,38 @@ diff --git a/kilo.c b/kilo.c
  
      abAppend(ab, "\x1b[K", 3);
 
+~~~ step: render-tabs
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -140,13 +140,22 @@ int getWindowSize(int *rows, int *cols) {
+ /*** row operations ***/
+ 
+ void editorUpdateRow(erow *row) {
+-  free(row->render);
+-  row->render = malloc(row->size);
+-
++  int tabs = 0;
+   int j;
++  for (j = 0; j < row->size; j++)
++    if (row->chars[j] == '\t') tabs++;
++
++  free(row->render);
++  row->render = malloc(row->size + tabs*7);
++
+   int idx = 0;
+   for (j = 0; j < row->size; j++) {
+-    row->render[idx++] = row->chars[j];
++    if (row->chars[j] == '\t') {
++      row->render[idx++] = ' ';
++      while (idx % 8 != 0) row->render[idx++] = ' ';
++    } else {
++      row->render[idx++] = row->chars[j];
++    }
+   }
+   row->rsize = idx;
+ }
+
 ~~~ step: rx
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1860,19 +1900,24 @@ diff --git a/kilo.c b/kilo.c
    int rowoff;
    int coloff;
    int screenrows;
-@@ -218,17 +219,27 @@ void abFree(struct abuf *ab) {
+@@ -352,6 +353,7 @@ void editorProcessKeypress() {
+ void initEditor() {
+   E.cx = 0;
+   E.cy = 0;
++  E.rx = 0;
+   E.rowoff = 0;
+   E.coloff = 0;
+   E.numrows = 0;
+
+~~~ step: cx-to-rx
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -219,17 +219,19 @@ void abFree(struct abuf *ab) {
  /*** output ***/
  
  void editorScroll() {
-+  E.rx = 0;
-+  if (E.cy < E.numrows) {
-+    int j;
-+    for (j = 0; j < E.cx; j++) {
-+      if (E.row[E.cy].chars[j] == '\t')
-+        E.rx += 7 - (E.rx % 8);
-+      E.rx++;
-+    }
-+  }
++  E.rx = E.cx;
 +
    if (E.cy < E.rowoff) {
      E.rowoff = E.cy;
@@ -1892,7 +1937,12 @@ diff --git a/kilo.c b/kilo.c
    }
  }
  
-@@ -278,7 +289,7 @@ void editorRefreshScreen() {
+
+~~~ step: render-rx
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -281,7 +281,7 @@ void editorRefreshScreen() {
  
    char buf[32];
    snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
@@ -1901,16 +1951,30 @@ diff --git a/kilo.c b/kilo.c
    abAppend(&ab, buf, strlen(buf));
  
    abAppend(&ab, "\x1b[?25h", 6);
-@@ -352,6 +363,7 @@ void editorProcessKeypress() {
- void initEditor() {
-   E.cx = 0;
-   E.cy = 0;
-+  E.rx = 0;
-   E.rowoff = 0;
-   E.coloff = 0;
-   E.numrows = 0;
 
-~~~ step: page-up-down
+~~~ step: rx-tabs
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -219,7 +219,15 @@ void abFree(struct abuf *ab) {
+ /*** output ***/
+ 
+ void editorScroll() {
+-  E.rx = E.cx;
++  E.rx = 0;
++  if (E.cy < E.numrows) {
++    int j;
++    for (j = 0; j < E.cx; j++) {
++      if (E.row[E.cy].chars[j] == '\t')
++        E.rx += 7 - (E.rx % 8);
++      E.rx++;
++    }
++  }
+ 
+   if (E.cy < E.rowoff) {
+     E.rowoff = E.cy;
+
+~~~ step: detect-page-up-down
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1952,7 +2016,12 @@ diff --git a/kilo.c b/kilo.c
        }
      }
  
-@@ -349,6 +361,20 @@ void editorProcessKeypress() {
+
+~~~ step: page-up-down
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -361,6 +361,20 @@ void editorProcessKeypress() {
        exit(0);
        break;
  
@@ -1974,7 +2043,7 @@ diff --git a/kilo.c b/kilo.c
      case ARROW_DOWN:
      case ARROW_LEFT:
 
-~~~ step: home-end-keys
+~~~ step: detect-home-end-keys
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2018,7 +2087,12 @@ diff --git a/kilo.c b/kilo.c
      }
  
      return '\x1b';
-@@ -361,6 +376,15 @@ void editorProcessKeypress() {
+
+~~~ step: home-end-keys
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -376,6 +376,15 @@ void editorProcessKeypress() {
        exit(0);
        break;
  
@@ -2035,7 +2109,61 @@ diff --git a/kilo.c b/kilo.c
      case PAGE_DOWN:
        {
 
-~~~ step: status-bar
+~~~ step: status-bar-make-room
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -298,9 +298,7 @@ void editorDrawRows(struct abuf *ab) {
+     }
+ 
+     abAppend(ab, "\x1b[K", 3);
+-    if (y < E.screenrows - 1) {
+-      abAppend(ab, "\r\n", 2);
+-    }
++    abAppend(ab, "\r\n", 2);
+   }
+ }
+ 
+@@ -420,6 +418,7 @@ void initEditor() {
+   E.row = NULL;
+ 
+   if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
++  E.screenrows -= 1;
+ }
+ 
+ int main(int argc, char *argv[]) {
+
+~~~ step: blank-status-bar
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -302,6 +302,16 @@ void editorDrawRows(struct abuf *ab) {
+   }
+ }
+ 
++void editorDrawStatusBar(struct abuf *ab) {
++  abAppend(ab, "\x1b[7m", 4);
++  int len = 0;
++  while (len < E.screencols) {
++    abAppend(ab, " ", 1);
++    len++;
++  }
++  abAppend(ab, "\x1b[m", 3);
++}
++
+ void editorRefreshScreen() {
+   editorScroll();
+ 
+@@ -311,6 +321,7 @@ void editorRefreshScreen() {
+   abAppend(&ab, "\x1b[H", 3);
+ 
+   editorDrawRows(&ab);
++  editorDrawStatusBar(&ab);
+ 
+   char buf[32];
+   snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
+
+~~~ step: filename
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2057,69 +2185,68 @@ diff --git a/kilo.c b/kilo.c
    FILE *fp = fopen(filename, "r");
    if (!fp) die("fopen");
  
-@@ -298,10 +302,29 @@ void editorDrawRows(struct abuf *ab) {
-     }
- 
-     abAppend(ab, "\x1b[K", 3);
--    if (y < E.screenrows - 1) {
--      abAppend(ab, "\r\n", 2);
-+    abAppend(ab, "\r\n", 2);
-+  }
-+}
-+
-+void editorDrawStatusBar(struct abuf *ab) {
-+  abAppend(ab, "\x1b[7m", 4);
-+  char status[80], rstatus[80];
-+  int len = snprintf(status, sizeof(status), "%.20s - %d lines",
-+    E.filename ? E.filename : "[No Name]", E.numrows);
-+  int rlen = snprintf(rstatus, sizeof(rstatus), "%d/%d",
-+    E.cy + 1, E.numrows);
-+  if (len > E.screencols) len = E.screencols;
-+  abAppend(ab, status, len);
-+  while (len < E.screencols) {
-+    if (E.screencols - len == rlen) {
-+      abAppend(ab, rstatus, rlen);
-+      break;
-+    } else {
-+      abAppend(ab, " ", 1);
-+      len++;
-     }
-   }
-+  abAppend(ab, "\x1b[0m", 4);
- }
- 
- void editorRefreshScreen() {
-@@ -313,6 +336,7 @@ void editorRefreshScreen() {
-   abAppend(&ab, "\x1b[H", 3);
- 
-   editorDrawRows(&ab);
-+  editorDrawStatusBar(&ab);
- 
-   char buf[32];
-   snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
-@@ -418,8 +442,10 @@ void initEditor() {
+@@ -427,6 +431,7 @@ void initEditor() {
    E.coloff = 0;
    E.numrows = 0;
    E.row = NULL;
 +  E.filename = NULL;
  
    if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
-+  E.screenrows -= 1;
- }
- 
- int main(int argc, char *argv[]) {
+   E.screenrows -= 1;
 
-~~~ step: status-message
+~~~ step: status-bar-left
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -6,11 +6,13 @@
+@@ -308,7 +308,11 @@ void editorDrawRows(struct abuf *ab) {
  
- #include <ctype.h>
- #include <stdio.h>
-+#include <stdarg.h>
- #include <stdlib.h>
- #include <string.h>
+ void editorDrawStatusBar(struct abuf *ab) {
+   abAppend(ab, "\x1b[7m", 4);
+-  int len = 0;
++  char status[80];
++  int len = snprintf(status, sizeof(status), "%.20s - %d lines",
++    E.filename ? E.filename : "[No Name]", E.numrows);
++  if (len > E.screencols) len = E.screencols;
++  abAppend(ab, status, len);
+   while (len < E.screencols) {
+     abAppend(ab, " ", 1);
+     len++;
+
+~~~ step: status-bar-right
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -308,14 +308,21 @@ void editorDrawRows(struct abuf *ab) {
+ 
+ void editorDrawStatusBar(struct abuf *ab) {
+   abAppend(ab, "\x1b[7m", 4);
+-  char status[80];
++  char status[80], rstatus[80];
+   int len = snprintf(status, sizeof(status), "%.20s - %d lines",
+     E.filename ? E.filename : "[No Name]", E.numrows);
++  int rlen = snprintf(rstatus, sizeof(rstatus), "%d/%d",
++    E.cy + 1, E.numrows);
+   if (len > E.screencols) len = E.screencols;
+   abAppend(ab, status, len);
+   while (len < E.screencols) {
+-    abAppend(ab, " ", 1);
+-    len++;
++    if (E.screencols - len == rlen) {
++      abAppend(ab, rstatus, rlen);
++      break;
++    } else {
++      abAppend(ab, " ", 1);
++      len++;
++    }
+   }
+   abAppend(ab, "\x1b[m", 3);
+ }
+
+~~~ step: status-message-data
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -11,6 +11,7 @@
  #include <sys/ioctl.h>
  #include <sys/types.h>
  #include <termios.h>
@@ -2127,7 +2254,7 @@ diff --git a/kilo.c b/kilo.c
  #include <unistd.h>
  
  /*** defines ***/
-@@ -50,6 +52,8 @@ struct editorConfig {
+@@ -50,6 +51,8 @@ struct editorConfig {
    int numrows;
    erow *row;
    char *filename;
@@ -2136,31 +2263,29 @@ diff --git a/kilo.c b/kilo.c
    struct termios orig_termios;
  };
  
-@@ -325,6 +329,15 @@ void editorDrawStatusBar(struct abuf *ab) {
-     }
-   }
-   abAppend(ab, "\x1b[0m", 4);
-+  abAppend(ab, "\r\n", 2);
-+}
-+
-+void editorDrawMessageBar(struct abuf *ab) {
-+  abAppend(ab, "\x1b[K", 3);
-+  int msglen = strlen(E.statusmsg);
-+  if (msglen > E.screencols) msglen = E.screencols;
-+  if (msglen && time(NULL) - E.statusmsg_time < 5)
-+    abAppend(ab, E.statusmsg, msglen);
- }
+@@ -443,6 +446,8 @@ void initEditor() {
+   E.numrows = 0;
+   E.row = NULL;
+   E.filename = NULL;
++  E.statusmsg[0] = '\0';
++  E.statusmsg_time = 0;
  
- void editorRefreshScreen() {
-@@ -337,6 +350,7 @@ void editorRefreshScreen() {
+   if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
+   E.screenrows -= 1;
+
+~~~ step: set-status-message
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -6,6 +6,7 @@
  
-   editorDrawRows(&ab);
-   editorDrawStatusBar(&ab);
-+  editorDrawMessageBar(&ab);
- 
-   char buf[32];
-   snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
-@@ -349,6 +363,14 @@ void editorRefreshScreen() {
+ #include <ctype.h>
+ #include <stdio.h>
++#include <stdarg.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <sys/ioctl.h>
+@@ -352,6 +353,14 @@ void editorRefreshScreen() {
    abFree(&ab);
  }
  
@@ -2175,20 +2300,7 @@ diff --git a/kilo.c b/kilo.c
  /*** input ***/
  
  void editorMoveCursor(int key) {
-@@ -443,9 +465,11 @@ void initEditor() {
-   E.numrows = 0;
-   E.row = NULL;
-   E.filename = NULL;
-+  E.statusmsg[0] = '\0';
-+  E.statusmsg_time = 0;
- 
-   if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
--  E.screenrows -= 1;
-+  E.screenrows -= 2;
- }
- 
- int main(int argc, char *argv[]) {
-@@ -455,6 +479,8 @@ int main(int argc, char *argv[]) {
+@@ -460,6 +469,8 @@ int main(int argc, char *argv[]) {
      editorOpen(argv[1]);
    }
  
@@ -2197,6 +2309,56 @@ diff --git a/kilo.c b/kilo.c
    while (1) {
      editorRefreshScreen();
      editorProcessKeypress();
+
+~~~ step: message-bar-make-room
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -329,6 +329,7 @@ void editorDrawStatusBar(struct abuf *ab) {
+     }
+   }
+   abAppend(ab, "\x1b[m", 3);
++  abAppend(ab, "\r\n", 2);
+ }
+ 
+ void editorRefreshScreen() {
+@@ -459,7 +460,7 @@ void initEditor() {
+   E.statusmsg_time = 0;
+ 
+   if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
+-  E.screenrows -= 1;
++  E.screenrows -= 2;
+ }
+ 
+ int main(int argc, char *argv[]) {
+
+~~~ step: render-message-bar
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -332,6 +332,14 @@ void editorDrawStatusBar(struct abuf *ab) {
+   abAppend(ab, "\r\n", 2);
+ }
+ 
++void editorDrawMessageBar(struct abuf *ab) {
++  abAppend(ab, "\x1b[K", 3);
++  int msglen = strlen(E.statusmsg);
++  if (msglen > E.screencols) msglen = E.screencols;
++  if (msglen && time(NULL) - E.statusmsg_time < 5)
++    abAppend(ab, E.statusmsg, msglen);
++}
++
+ void editorRefreshScreen() {
+   editorScroll();
+ 
+@@ -342,6 +350,7 @@ void editorRefreshScreen() {
+ 
+   editorDrawRows(&ab);
+   editorDrawStatusBar(&ab);
++  editorDrawMessageBar(&ab);
+ 
+   char buf[32];
+   snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
 
 ~~~ step: insert-chars
 diff --git a/kilo.c b/kilo.c
