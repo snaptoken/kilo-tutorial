@@ -22,6 +22,7 @@ body {
   display: block;
   width: 100%;
   background-color: #ceb;
+  box-shadow: 0px 0px 15px 1px #ddd;
 }
 
 .bar > nav {
@@ -41,10 +42,6 @@ footer.bar > nav {
   color: #152;
 }
 
-.bar > nav > a:hover {
-  color: #374;
-}
-
 h1, h2, h3, h4, h5, h6 {
   font-family: futura, helvetica, arial, sans-serif;
   line-height: 100%;
@@ -55,6 +52,8 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
   margin-top: 0;
   font-size: 38px;
+  border-bottom: 5px solid #e7c;
+  padding-bottom: 3px;
 }
 
 h2 {
@@ -77,10 +76,6 @@ hr {
 
 a {
   color: #26d;
-}
-
-a:hover {
-  color: #6b2;
 }
 
 code {
@@ -128,6 +123,7 @@ code {
   display: block;
   height: 20px;
   padding: 0 5px;
+  position: relative;
 }
 
 .diff .line.folded {
@@ -138,6 +134,14 @@ code {
 .diff ins.line {
   background-color: #ffd;
   text-decoration: none;
+}
+
+.diff ins.line::after {
+  content: '\2190'; /* left arrow (&larr;) */
+  display: block;
+  position: absolute;
+  right: -18px;
+  top: -2px;
 }
 
 .diff del.line {
