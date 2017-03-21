@@ -3782,20 +3782,12 @@ diff --git a/kilo.c b/kilo.c
 +          char sym = (c[j] >= 0 && c[j] <= 26) ? '@' + c[j] : '?';
 +          abAppend(ab, "\x1b[7m", 4);
 +          abAppend(ab, &sym, 1);
-+          abAppend(ab, "\x1b[0m", 4);
++          abAppend(ab, "\x1b[m", 4);
 +          current_color = -1;
 +        } else if (hl[j] == HL_NORMAL) {
            if (current_color != -1) {
              abAppend(ab, "\x1b[39m", 5);
              current_color = -1;
-@@ -730,6 +736,7 @@ void editorDrawRows(struct abuf *ab) {
-           }
-           abAppend(ab, &c[j], 1);
-         }
-+        abAppend(ab, &c[j], 1);
-       }
-       abAppend(ab, "\x1b[39m", 5);
-     }
 
 ~~~ step: multiline-comments
 diff --git a/kilo.c b/kilo.c
