@@ -149,6 +149,14 @@ code {
   text-decoration: line-through;
 }
 
+.diff del.line::after {
+  content: '\2715';
+  display: block;
+  position: absolute;
+  right: -18px;
+  top: -1px;
+}
+
 @media screen and (max-width: 700px) {
   #container {
     width: auto;

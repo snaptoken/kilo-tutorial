@@ -2360,11 +2360,11 @@ diff --git a/kilo.c b/kilo.c
    char buf[32];
    snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
 
-~~~ step: insert-chars
+~~~ step: row-insert-char
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -208,6 +208,25 @@ void editorAppendRow(char *s, size_t len) {
+@@ -208,6 +208,15 @@ void editorAppendRow(char *s, size_t len) {
    E.numrows++;
  }
  
@@ -2377,6 +2377,18 @@ diff --git a/kilo.c b/kilo.c
 +  editorUpdateRow(row);
 +}
 +
+ /*** file i/o ***/
+ 
+ void editorOpen(char *filename) {
+
+~~~ step: editor-insert-char
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -217,6 +217,16 @@ void editorRowInsertChar(erow *row, int at, int c) {
+   editorUpdateRow(row);
+ }
+ 
 +/*** editor operations ***/
 +
 +void editorInsertChar(int c) {
@@ -2390,7 +2402,12 @@ diff --git a/kilo.c b/kilo.c
  /*** file i/o ***/
  
  void editorOpen(char *filename) {
-@@ -451,6 +470,10 @@ void editorProcessKeypress() {
+
+~~~ step: key-insert-char
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -470,6 +470,10 @@ void editorProcessKeypress() {
      case ARROW_RIGHT:
        editorMoveCursor(c);
        break;
@@ -2451,31 +2468,11 @@ diff --git a/kilo.c b/kilo.c
        editorInsertChar(c);
        break;
 
-~~~ step: save
+~~~ step: rows-to-string
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -5,6 +5,8 @@
- #define _GNU_SOURCE
- 
- #include <ctype.h>
-+#include <errno.h>
-+#include <fcntl.h>
- #include <stdio.h>
- #include <stdarg.h>
- #include <stdlib.h>
-@@ -60,6 +62,10 @@ struct editorConfig {
- 
- struct editorConfig E;
- 
-+/*** prototypes ***/
-+
-+void editorSetStatusMessage(const char *fmt, ...);
-+
- /*** terminal ***/
- 
- void die(const char *s) {
-@@ -230,6 +236,25 @@ void editorInsertChar(int c) {
+@@ -230,6 +230,25 @@ void editorInsertChar(int c) {
  
  /*** file i/o ***/
  
@@ -2501,35 +2498,45 @@ diff --git a/kilo.c b/kilo.c
  void editorOpen(char *filename) {
    free(E.filename);
    E.filename = strdup(filename);
-@@ -249,6 +274,27 @@ void editorOpen(char *filename) {
+
+~~~ step: editor-save
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -5,6 +5,7 @@
+ #define _GNU_SOURCE
+ 
+ #include <ctype.h>
++#include <fcntl.h>
+ #include <stdio.h>
+ #include <stdarg.h>
+ #include <stdlib.h>
+@@ -268,6 +269,19 @@ void editorOpen(char *filename) {
    fclose(fp);
  }
  
 +void editorSave() {
++  if (E.filename == NULL) return;
++
 +  int len;
 +  char *buf = editorRowsToString(&len);
 +
 +  int fd = open(E.filename, O_RDWR | O_CREAT, 0644);
-+  if (fd != -1) {
-+    if (ftruncate(fd, len) != -1) {
-+      if (write(fd, buf, len) == len) {
-+        close(fd);
-+        free(buf);
-+        editorSetStatusMessage("%d bytes written to disk", len);
-+        return;
-+      }
-+    }
-+    close(fd);
-+  }
-+
++  ftruncate(fd, len);
++  write(fd, buf, len);
++  close(fd);
 +  free(buf);
-+  editorSetStatusMessage("Can't save! I/O error: %s", strerror(errno));
 +}
 +
  /*** append buffer ***/
  
  struct abuf {
-@@ -446,6 +492,10 @@ void editorProcessKeypress() {
+
+~~~ step: ctrl-s-save
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -479,6 +479,10 @@ void editorProcessKeypress() {
        exit(0);
        break;
  
@@ -2540,7 +2547,62 @@ diff --git a/kilo.c b/kilo.c
      case HOME_KEY:
        E.cx = 0;
        break;
-@@ -518,7 +568,7 @@ int main(int argc, char *argv[]) {
+
+~~~ step: editor-save-errors
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -276,9 +276,17 @@ void editorSave() {
+   char *buf = editorRowsToString(&len);
+ 
+   int fd = open(E.filename, O_RDWR | O_CREAT, 0644);
+-  ftruncate(fd, len);
+-  write(fd, buf, len);
+-  close(fd);
++  if (fd != -1) {
++    if (ftruncate(fd, len) != -1) {
++      if (write(fd, buf, len) == len) {
++        close(fd);
++        free(buf);
++        return;
++      }
++    }
++    close(fd);
++  }
++
+   free(buf);
+ }
+ 
+
+~~~ step: save-status-message
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -5,6 +5,7 @@
+ #define _GNU_SOURCE
+ 
+ #include <ctype.h>
++#include <errno.h>
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdarg.h>
+@@ -281,6 +282,7 @@ void editorSave() {
+       if (write(fd, buf, len) == len) {
+         close(fd);
+         free(buf);
++        editorSetStatusMessage("%d bytes written to disk", len);
+         return;
+       }
+     }
+@@ -288,6 +290,7 @@ void editorSave() {
+   }
+ 
+   free(buf);
++  editorSetStatusMessage("Can't save! I/O error: %s", strerror(errno));
+ }
+ 
+ /*** append buffer ***/
+@@ -563,7 +566,7 @@ int main(int argc, char *argv[]) {
      editorOpen(argv[1]);
    }
  
@@ -2550,7 +2612,23 @@ diff --git a/kilo.c b/kilo.c
    while (1) {
      editorRefreshScreen();
 
-~~~ step: dirty-flag
+~~~ step: prototypes
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -62,6 +62,10 @@ struct editorConfig {
+ 
+ struct editorConfig E;
+ 
++/*** prototypes ***/
++
++void editorSetStatusMessage(const char *fmt, ...);
++
+ /*** terminal ***/
+ 
+ void die(const char *s) {
+
+~~~ step: dirty-variable
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2562,39 +2640,20 @@ diff --git a/kilo.c b/kilo.c
    char *filename;
    char statusmsg[80];
    time_t statusmsg_time;
-@@ -213,6 +214,7 @@ void editorAppendRow(char *s, size_t len) {
-   editorUpdateRow(&E.row[at]);
- 
-   E.numrows++;
-+  E.dirty++;
- }
- 
- void editorRowInsertChar(erow *row, int at, int c) {
-@@ -222,6 +224,7 @@ void editorRowInsertChar(erow *row, int at, int c) {
-   row->size++;
-   row->chars[at] = c;
-   editorUpdateRow(row);
-+  E.dirty++;
- }
- 
- /*** editor operations ***/
-@@ -272,6 +275,7 @@ void editorOpen(char *filename) {
-   }
-   free(line);
-   fclose(fp);
+@@ -555,6 +556,7 @@ void initEditor() {
+   E.coloff = 0;
+   E.numrows = 0;
+   E.row = NULL;
 +  E.dirty = 0;
- }
- 
- void editorSave() {
-@@ -284,6 +288,7 @@ void editorSave() {
-       if (write(fd, buf, len) == len) {
-         close(fd);
-         free(buf);
-+        E.dirty = 0;
-         editorSetStatusMessage("%d bytes written to disk", len);
-         return;
-       }
-@@ -379,8 +384,9 @@ void editorDrawRows(struct abuf *ab) {
+   E.filename = NULL;
+   E.statusmsg[0] = '\0';
+   E.statusmsg_time = 0;
+
+~~~ step: show-dirty
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -382,8 +382,9 @@ void editorDrawRows(struct abuf *ab) {
  void editorDrawStatusBar(struct abuf *ab) {
    abAppend(ab, "\x1b[7m", 4);
    char status[80], rstatus[80];
@@ -2606,14 +2665,48 @@ diff --git a/kilo.c b/kilo.c
    int rlen = snprintf(rstatus, sizeof(rstatus), "%d/%d",
      E.cy + 1, E.numrows);
    if (len > E.screencols) len = E.screencols;
-@@ -553,6 +559,7 @@ void initEditor() {
-   E.coloff = 0;
-   E.numrows = 0;
-   E.row = NULL;
+
+~~~ step: increment-dirty
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -214,6 +214,7 @@ void editorAppendRow(char *s, size_t len) {
+   editorUpdateRow(&E.row[at]);
+ 
+   E.numrows++;
++  E.dirty++;
+ }
+ 
+ void editorRowInsertChar(erow *row, int at, int c) {
+@@ -223,6 +224,7 @@ void editorRowInsertChar(erow *row, int at, int c) {
+   row->size++;
+   row->chars[at] = c;
+   editorUpdateRow(row);
++  E.dirty++;
+ }
+ 
+ /*** editor operations ***/
+
+~~~ step: reset-dirty
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -275,6 +275,7 @@ void editorOpen(char *filename) {
+   }
+   free(line);
+   fclose(fp);
 +  E.dirty = 0;
-   E.filename = NULL;
-   E.statusmsg[0] = '\0';
-   E.statusmsg_time = 0;
+ }
+ 
+ void editorSave() {
+@@ -289,6 +290,7 @@ void editorSave() {
+       if (write(fd, buf, len) == len) {
+         close(fd);
+         free(buf);
++        E.dirty = 0;
+         editorSetStatusMessage("%d bytes written to disk", len);
+         return;
+       }
 
 ~~~ step: quit-confirmation
 diff --git a/kilo.c b/kilo.c
@@ -2627,7 +2720,7 @@ diff --git a/kilo.c b/kilo.c
  
  #define CTRL_KEY(k) ((k) & 0x1f)
  
-@@ -485,6 +486,8 @@ void editorMoveCursor(int key) {
+@@ -487,6 +488,8 @@ void editorMoveCursor(int key) {
  }
  
  void editorProcessKeypress() {
@@ -2636,7 +2729,7 @@ diff --git a/kilo.c b/kilo.c
    int c = editorReadKey();
  
    switch (c) {
-@@ -493,6 +496,12 @@ void editorProcessKeypress() {
+@@ -495,6 +498,12 @@ void editorProcessKeypress() {
        break;
  
      case CTRL_KEY('q'):
@@ -2649,7 +2742,7 @@ diff --git a/kilo.c b/kilo.c
        write(STDOUT_FILENO, "\x1b[2J", 4);
        write(STDOUT_FILENO, "\x1b[H", 3);
        exit(0);
-@@ -547,6 +556,8 @@ void editorProcessKeypress() {
+@@ -549,6 +558,8 @@ void editorProcessKeypress() {
        editorInsertChar(c);
        break;
    }
@@ -2659,7 +2752,7 @@ diff --git a/kilo.c b/kilo.c
  
  /*** init ***/
 
-~~~ step: simple-backspace
+~~~ step: row-del-char
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2678,23 +2771,34 @@ diff --git a/kilo.c b/kilo.c
  /*** editor operations ***/
  
  void editorInsertChar(int c) {
-@@ -238,6 +246,15 @@ void editorInsertChar(int c) {
+
+~~~ step: editor-del-char
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -246,6 +246,16 @@ void editorInsertChar(int c) {
    E.cx++;
  }
  
 +void editorDelChar() {
 +  if (E.cy == E.numrows) return;
++
++  erow *row = &E.row[E.cy];
 +  if (E.cx > 0) {
-+    editorRowDelChar(&E.row[E.cy], E.cx - 1);
++    editorRowDelChar(row, E.cx - 1);
 +    E.cx--;
 +  }
-+  editorUpdateRow(&E.row[E.cy]);
 +}
 +
  /*** file i/o ***/
  
  char *editorRowsToString(int *buflen) {
-@@ -523,7 +540,7 @@ void editorProcessKeypress() {
+
+~~~ step: key-del-char
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -543,7 +543,7 @@ void editorProcessKeypress() {
      case BACKSPACE:
      case CTRL_KEY('h'):
      case DEL_KEY:
@@ -2704,7 +2808,7 @@ diff --git a/kilo.c b/kilo.c
  
      case PAGE_UP:
 
-~~~ step: backspacing-lines
+~~~ step: del-row
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2728,7 +2832,12 @@ diff --git a/kilo.c b/kilo.c
  void editorRowInsertChar(erow *row, int at, int c) {
    if (at > row->size) at = row->size;
    row->chars = realloc(row->chars, row->size + 1);
-@@ -228,6 +241,14 @@ void editorRowInsertChar(erow *row, int at, int c) {
+
+~~~ step: row-append-string
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -241,6 +241,14 @@ void editorRowInsertChar(erow *row, int at, int c) {
    E.dirty++;
  }
  
@@ -2743,16 +2852,20 @@ diff --git a/kilo.c b/kilo.c
  void editorRowDelChar(erow *row, int at) {
    if (at >= row->size) return;
    memmove(&row->chars[at], &row->chars[at + 1], row->size - at - 1);
-@@ -248,9 +269,17 @@ void editorInsertChar(int c) {
+
+~~~ step: del-char-row
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -269,11 +269,17 @@ void editorInsertChar(int c) {
  
  void editorDelChar() {
    if (E.cy == E.numrows) return;
 +  if (E.cx == 0 && E.cy == 0) return;
-+
-+  erow *row = &E.row[E.cy];
+ 
+   erow *row = &E.row[E.cy];
    if (E.cx > 0) {
--    editorRowDelChar(&E.row[E.cy], E.cx - 1);
-+    editorRowDelChar(row, E.cx - 1);
+     editorRowDelChar(row, E.cx - 1);
      E.cx--;
 +  } else {
 +    E.cx = E.row[E.cy - 1].size;
@@ -2760,14 +2873,14 @@ diff --git a/kilo.c b/kilo.c
 +    editorDelRow(E.cy);
 +    E.cy--;
    }
-   editorUpdateRow(&E.row[E.cy]);
  }
+ 
 
 ~~~ step: delete-forward
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -569,6 +569,7 @@ void editorProcessKeypress() {
+@@ -570,6 +570,7 @@ void editorProcessKeypress() {
      case BACKSPACE:
      case CTRL_KEY('h'):
      case DEL_KEY:
@@ -2776,7 +2889,7 @@ diff --git a/kilo.c b/kilo.c
        break;
  
 
-~~~ step: enter-key
+~~~ step: append-row-to-insert
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2798,7 +2911,12 @@ diff --git a/kilo.c b/kilo.c
    E.row[at].size = len;
    E.row[at].chars = malloc(len);
    memcpy(E.row[at].chars, s, len);
-@@ -260,13 +264,27 @@ void editorRowDelChar(erow *row, int at) {
+
+~~~ step: use-insert-row
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -264,8 +264,8 @@ void editorRowDelChar(erow *row, int at) {
  /*** editor operations ***/
  
  void editorInsertChar(int c) {
@@ -2808,6 +2926,22 @@ diff --git a/kilo.c b/kilo.c
 +    editorInsertRow(E.numrows, "", 0);
    }
    editorRowInsertChar(&E.row[E.cy], E.cx, c);
+   E.cx++;
+@@ -321,7 +321,7 @@ void editorOpen(char *filename) {
+   while ((linelen = getline(&line, &linecap, fp)) != -1) {
+     if (linelen > 0 && (line[linelen - 1] == '\n' || line[linelen - 1] == '\r'))
+       linelen--;
+-    editorAppendRow(line, linelen);
++    editorInsertRow(E.numrows, line, linelen);
+   }
+   free(line);
+   fclose(fp);
+
+~~~ step: insert-newline
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -271,6 +271,20 @@ void editorInsertChar(int c) {
    E.cx++;
  }
  
@@ -2828,16 +2962,12 @@ diff --git a/kilo.c b/kilo.c
  void editorDelChar() {
    if (E.cy == E.numrows) return;
    if (E.cx == 0 && E.cy == 0) return;
-@@ -318,7 +336,7 @@ void editorOpen(char *filename) {
-   while ((linelen = getline(&line, &linecap, fp)) != -1) {
-     if (linelen > 0 && (line[linelen - 1] == '\n' || line[linelen - 1] == '\r'))
-       linelen--;
--    editorAppendRow(line, linelen);
-+    editorInsertRow(E.numrows, line, linelen);
-   }
-   free(line);
-   fclose(fp);
-@@ -538,7 +556,7 @@ void editorProcessKeypress() {
+
+~~~ step: enter-key
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -557,7 +557,7 @@ void editorProcessKeypress() {
  
    switch (c) {
      case '\r':
@@ -2847,40 +2977,24 @@ diff --git a/kilo.c b/kilo.c
  
      case CTRL_KEY('q'):
 
-~~~ step: save-as
+~~~ step: editor-prompt
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -67,6 +67,8 @@ struct editorConfig E;
+@@ -67,6 +67,7 @@ struct editorConfig E;
  /*** prototypes ***/
  
  void editorSetStatusMessage(const char *fmt, ...);
 +void editorRefreshScreen();
-+char *editorPrompt(char *prompt);
  
  /*** terminal ***/
  
-@@ -344,6 +346,14 @@ void editorOpen(char *filename) {
- }
- 
- void editorSave() {
-+  if (E.filename == NULL) {
-+    E.filename = editorPrompt("Save as: %s (ESC to cancel)");
-+    if (E.filename == NULL) {
-+      editorSetStatusMessage("Save aborted");
-+      return;
-+    }
-+  }
-+
-   int len;
-   char *buf = editorRowsToString(&len);
- 
-@@ -510,6 +520,40 @@ void editorSetStatusMessage(const char *fmt, ...) {
+@@ -511,6 +512,34 @@ void editorSetStatusMessage(const char *fmt, ...) {
  
  /*** input ***/
  
 +char *editorPrompt(char *prompt) {
-+  size_t bufsize = 256;
++  size_t bufsize = 128;
 +  char *buf = malloc(bufsize);
 +
 +  size_t buflen = 0;
@@ -2891,13 +3005,7 @@ diff --git a/kilo.c b/kilo.c
 +    editorRefreshScreen();
 +
 +    int c = editorReadKey();
-+    if (c == DEL_KEY || c == CTRL_KEY('h') || c == BACKSPACE) {
-+      if (buflen != 0) buf[--buflen] = '\0';
-+    } else if (c == '\x1b') {
-+      editorSetStatusMessage("");
-+      free(buf);
-+      return NULL;
-+    } else if (c == '\r') {
++    if (c == '\r') {
 +      if (buflen != 0) {
 +        editorSetStatusMessage("");
 +        return buf;
@@ -2917,11 +3025,87 @@ diff --git a/kilo.c b/kilo.c
    erow *row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
  
 
+~~~ step: save-as
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -68,6 +68,7 @@ struct editorConfig E;
+ 
+ void editorSetStatusMessage(const char *fmt, ...);
+ void editorRefreshScreen();
++char *editorPrompt(char *prompt);
+ 
+ /*** terminal ***/
+ 
+@@ -344,7 +345,9 @@ void editorOpen(char *filename) {
+ }
+ 
+ void editorSave() {
+-  if (E.filename == NULL) return;
++  if (E.filename == NULL) {
++    E.filename = editorPrompt("Save as: %s");
++  }
+ 
+   int len;
+   char *buf = editorRowsToString(&len);
+
+~~~ step: editor-prompt-escape
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -527,7 +527,11 @@ char *editorPrompt(char *prompt) {
+     editorRefreshScreen();
+ 
+     int c = editorReadKey();
+-    if (c == '\r') {
++    if (c == '\x1b') {
++      editorSetStatusMessage("");
++      free(buf);
++      return NULL;
++    } else if (c == '\r') {
+       if (buflen != 0) {
+         editorSetStatusMessage("");
+         return buf;
+
+~~~ step: abort-save
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -346,7 +346,11 @@ void editorOpen(char *filename) {
+ 
+ void editorSave() {
+   if (E.filename == NULL) {
+-    E.filename = editorPrompt("Save as: %s");
++    E.filename = editorPrompt("Save as: %s (ESC to cancel)");
++    if (E.filename == NULL) {
++      editorSetStatusMessage("Save aborted");
++      return;
++    }
+   }
+ 
+   int len;
+
+~~~ step: prompt-backspace
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -531,7 +531,9 @@ char *editorPrompt(char *prompt) {
+     editorRefreshScreen();
+ 
+     int c = editorReadKey();
+-    if (c == '\x1b') {
++    if (c == DEL_KEY || c == CTRL_KEY('h') || c == BACKSPACE) {
++      if (buflen != 0) buf[--buflen] = '\0';
++    } else if (c == '\x1b') {
+       editorSetStatusMessage("");
+       free(buf);
+       return NULL;
+
 ~~~ step: basic-search
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -375,6 +375,26 @@ void editorSave() {
+@@ -374,6 +374,26 @@ void editorSave() {
    editorSetStatusMessage("Can't save! I/O error: %s", strerror(errno));
  }
  
@@ -2948,7 +3132,7 @@ diff --git a/kilo.c b/kilo.c
  /*** append buffer ***/
  
  struct abuf {
-@@ -628,6 +648,10 @@ void editorProcessKeypress() {
+@@ -627,6 +647,10 @@ void editorProcessKeypress() {
          E.cx = E.row[E.cy].size;
        break;
  
@@ -2959,7 +3143,7 @@ diff --git a/kilo.c b/kilo.c
      case BACKSPACE:
      case CTRL_KEY('h'):
      case DEL_KEY:
-@@ -695,7 +719,8 @@ int main(int argc, char *argv[]) {
+@@ -694,7 +718,8 @@ int main(int argc, char *argv[]) {
      editorOpen(argv[1]);
    }
  
@@ -2983,7 +3167,7 @@ diff --git a/kilo.c b/kilo.c
  
  /*** terminal ***/
  
-@@ -347,7 +347,7 @@ void editorOpen(char *filename) {
+@@ -346,7 +346,7 @@ void editorOpen(char *filename) {
  
  void editorSave() {
    if (E.filename == NULL) {
@@ -2992,7 +3176,7 @@ diff --git a/kilo.c b/kilo.c
      if (E.filename == NULL) {
        editorSetStatusMessage("Save aborted");
        return;
-@@ -377,9 +377,10 @@ void editorSave() {
+@@ -376,9 +376,10 @@ void editorSave() {
  
  /*** find ***/
  
@@ -3006,7 +3190,7 @@ diff --git a/kilo.c b/kilo.c
  
    int i;
    for (i = 0; i < E.numrows; i++) {
-@@ -391,8 +392,14 @@ void editorFind() {
+@@ -390,8 +391,14 @@ void editorFind() {
        break;
      }
    }
@@ -3022,16 +3206,16 @@ diff --git a/kilo.c b/kilo.c
  }
  
  /*** append buffer ***/
-@@ -540,7 +547,7 @@ void editorSetStatusMessage(const char *fmt, ...) {
+@@ -539,7 +546,7 @@ void editorSetStatusMessage(const char *fmt, ...) {
  
  /*** input ***/
  
 -char *editorPrompt(char *prompt) {
 +char *editorPrompt(char *prompt, void (*callback)(char *, int)) {
-   size_t bufsize = 256;
+   size_t bufsize = 128;
    char *buf = malloc(bufsize);
  
-@@ -556,11 +563,13 @@ char *editorPrompt(char *prompt) {
+@@ -555,11 +562,13 @@ char *editorPrompt(char *prompt) {
        if (buflen != 0) buf[--buflen] = '\0';
      } else if (c == '\x1b') {
        editorSetStatusMessage("");
@@ -3045,7 +3229,7 @@ diff --git a/kilo.c b/kilo.c
          return buf;
        }
      } else if (isprint(c)) {
-@@ -571,6 +580,8 @@ char *editorPrompt(char *prompt) {
+@@ -570,6 +579,8 @@ char *editorPrompt(char *prompt) {
        buf[buflen++] = c;
        buf[buflen] = '\0';
      }
@@ -3059,7 +3243,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -395,10 +395,20 @@ void editorFindCallback(char *query, int key) {
+@@ -394,10 +394,20 @@ void editorFindCallback(char *query, int key) {
  }
  
  void editorFind() {
@@ -3085,7 +3269,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -378,16 +378,34 @@ void editorSave() {
+@@ -377,16 +377,34 @@ void editorSave() {
  /*** find ***/
  
  void editorFindCallback(char *query, int key) {
@@ -3123,7 +3307,7 @@ diff --git a/kilo.c b/kilo.c
        E.rowoff = E.numrows;
        break;
      }
-@@ -400,7 +418,8 @@ void editorFind() {
+@@ -399,7 +417,8 @@ void editorFind() {
    int saved_coloff = E.coloff;
    int saved_rowoff = E.rowoff;
  
@@ -3138,7 +3322,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -504,7 +504,17 @@ void editorDrawRows(struct abuf *ab) {
+@@ -503,7 +503,17 @@ void editorDrawRows(struct abuf *ab) {
        int len = E.row[filerow].rsize - E.coloff;
        if (len < 0) len = 0;
        if (len > E.screencols) len = E.screencols;
@@ -3235,7 +3419,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  void editorDelRow(int at) {
-@@ -505,16 +536,28 @@ void editorDrawRows(struct abuf *ab) {
+@@ -504,16 +535,28 @@ void editorDrawRows(struct abuf *ab) {
        if (len < 0) len = 0;
        if (len > E.screencols) len = E.screencols;
        char *c = &E.row[filerow].render[E.coloff];
@@ -3290,7 +3474,7 @@ diff --git a/kilo.c b/kilo.c
      default: return 37;
    }
  }
-@@ -434,10 +436,16 @@ void editorFindCallback(char *query, int key) {
+@@ -433,10 +435,16 @@ void editorFindCallback(char *query, int key) {
  
      char *match = strstr(E.row[current].render, query);
      if (match) {
@@ -3313,7 +3497,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -414,6 +414,15 @@ void editorFindCallback(char *query, int key) {
+@@ -413,6 +413,15 @@ void editorFindCallback(char *query, int key) {
    static int last_match = -1;
    static int find_next = 1;
  
@@ -3329,7 +3513,7 @@ diff --git a/kilo.c b/kilo.c
    if (key == '\r' || key == '\x1b') {
      last_match = -1;
      find_next = 1;
-@@ -444,6 +453,9 @@ void editorFindCallback(char *query, int key) {
+@@ -443,6 +452,9 @@ void editorFindCallback(char *query, int key) {
        E.rowoff = E.numrows;
  
        if (row->hl) {
@@ -3500,7 +3684,7 @@ diff --git a/kilo.c b/kilo.c
  /*** row operations ***/
  
  void editorUpdateRow(erow *row) {
-@@ -381,6 +435,8 @@ void editorOpen(char *filename) {
+@@ -380,6 +434,8 @@ void editorOpen(char *filename) {
    free(E.filename);
    E.filename = strdup(filename);
  
@@ -3509,7 +3693,7 @@ diff --git a/kilo.c b/kilo.c
    FILE *fp = fopen(filename, "r");
    if (!fp) die("fopen");
  
-@@ -404,6 +460,7 @@ void editorSave() {
+@@ -403,6 +459,7 @@ void editorSave() {
        editorSetStatusMessage("Save aborted");
        return;
      }
@@ -3517,7 +3701,7 @@ diff --git a/kilo.c b/kilo.c
    }
  
    int len;
-@@ -610,8 +667,8 @@ void editorDrawStatusBar(struct abuf *ab) {
+@@ -609,8 +666,8 @@ void editorDrawStatusBar(struct abuf *ab) {
    int len = snprintf(status, sizeof(status), "%.20s - %d lines %s",
      E.filename ? E.filename : "[No Name]", E.numrows,
      E.dirty ? "(modified)" : "");
@@ -3528,7 +3712,7 @@ diff --git a/kilo.c b/kilo.c
    if (len > E.screencols) len = E.screencols;
    abAppend(ab, status, len);
    while (len < E.screencols) {
-@@ -839,6 +896,7 @@ void initEditor() {
+@@ -838,6 +895,7 @@ void initEditor() {
    E.filename = NULL;
    E.statusmsg[0] = '\0';
    E.statusmsg_time = 0;
@@ -3773,7 +3957,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -714,7 +714,13 @@ void editorDrawRows(struct abuf *ab) {
+@@ -713,7 +713,13 @@ void editorDrawRows(struct abuf *ab) {
        int current_color = -1;
        int j;
        for (j = 0; j < len; j++) {
