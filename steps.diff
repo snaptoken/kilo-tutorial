@@ -2437,7 +2437,7 @@ diff --git a/kilo.c b/kilo.c
 +/*** editor operations ***/
 +
 +void editorInsertChar(int c) {
-+  if (E.cy >= E.numrows) {
++  if (E.cy == E.numrows) {
 +    editorAppendRow("", 0);
 +  }
 +  editorRowInsertChar(&E.row[E.cy], E.cx, c);
@@ -2500,11 +2500,10 @@ diff --git a/kilo.c b/kilo.c
      case PAGE_UP:
      case PAGE_DOWN:
        {
-@@ -471,6 +482,11 @@ void editorProcessKeypress() {
+@@ -471,6 +482,10 @@ void editorProcessKeypress() {
        editorMoveCursor(c);
        break;
  
-+    case CTRL_KEY('c'):
 +    case CTRL_KEY('l'):
 +    case '\x1b':
 +      break;
@@ -2647,7 +2646,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  /*** append buffer ***/
-@@ -563,7 +566,7 @@ int main(int argc, char *argv[]) {
+@@ -562,7 +565,7 @@ int main(int argc, char *argv[]) {
      editorOpen(argv[1]);
    }
  
@@ -2685,7 +2684,7 @@ diff --git a/kilo.c b/kilo.c
    char *filename;
    char statusmsg[80];
    time_t statusmsg_time;
-@@ -555,6 +556,7 @@ void initEditor() {
+@@ -554,6 +555,7 @@ void initEditor() {
    E.coloff = 0;
    E.numrows = 0;
    E.row = NULL;
@@ -2787,7 +2786,7 @@ diff --git a/kilo.c b/kilo.c
        write(STDOUT_FILENO, "\x1b[2J", 4);
        write(STDOUT_FILENO, "\x1b[H", 3);
        exit(0);
-@@ -549,6 +558,8 @@ void editorProcessKeypress() {
+@@ -548,6 +557,8 @@ void editorProcessKeypress() {
        editorInsertChar(c);
        break;
    }
@@ -2961,13 +2960,11 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -264,8 +264,8 @@ void editorRowDelChar(erow *row, int at) {
- /*** editor operations ***/
+@@ -265,7 +265,7 @@ void editorRowDelChar(erow *row, int at) {
  
  void editorInsertChar(int c) {
--  if (E.cy >= E.numrows) {
+   if (E.cy == E.numrows) {
 -    editorAppendRow("", 0);
-+  if (E.cy == E.numrows) {
 +    editorInsertRow(E.numrows, "", 0);
    }
    editorRowInsertChar(&E.row[E.cy], E.cx, c);
@@ -3188,7 +3185,7 @@ diff --git a/kilo.c b/kilo.c
      case BACKSPACE:
      case CTRL_KEY('h'):
      case DEL_KEY:
-@@ -694,7 +718,8 @@ int main(int argc, char *argv[]) {
+@@ -693,7 +717,8 @@ int main(int argc, char *argv[]) {
      editorOpen(argv[1]);
    }
  
@@ -3757,7 +3754,7 @@ diff --git a/kilo.c b/kilo.c
    if (len > E.screencols) len = E.screencols;
    abAppend(ab, status, len);
    while (len < E.screencols) {
-@@ -838,6 +895,7 @@ void initEditor() {
+@@ -837,6 +894,7 @@ void initEditor() {
    E.filename = NULL;
    E.statusmsg[0] = '\0';
    E.statusmsg_time = 0;
