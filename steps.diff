@@ -3140,7 +3140,7 @@ diff --git a/kilo.c b/kilo.c
 +/*** find ***/
 +
 +void editorFind() {
-+  char *query = editorModalInput("Search: %s (ESC to cancel)");
++  char *query = editorPrompt("Search: %s (ESC to cancel)");
 +  if (query == NULL) return;
 +
 +  int i;
@@ -3160,7 +3160,12 @@ diff --git a/kilo.c b/kilo.c
  /*** append buffer ***/
  
  struct abuf {
-@@ -625,6 +645,10 @@ void editorProcessKeypress() {
+
+~~~ step: basic-search-key
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -645,6 +645,10 @@ void editorProcessKeypress() {
          E.cx = E.row[E.cy].size;
        break;
  
@@ -3171,7 +3176,7 @@ diff --git a/kilo.c b/kilo.c
      case BACKSPACE:
      case CTRL_KEY('h'):
      case DEL_KEY:
-@@ -691,7 +715,8 @@ int main(int argc, char *argv[]) {
+@@ -711,7 +715,8 @@ int main(int argc, char *argv[]) {
      editorOpen(argv[1]);
    }
  
@@ -3182,7 +3187,7 @@ diff --git a/kilo.c b/kilo.c
    while (1) {
      editorRefreshScreen();
 
-~~~ step: incremental-search
+~~~ step: editor-prompt-callback
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3195,6 +3200,43 @@ diff --git a/kilo.c b/kilo.c
  
  /*** terminal ***/
  
+@@ -537,7 +537,7 @@ void editorSetStatusMessage(const char *fmt, ...) {
+ 
+ /*** input ***/
+ 
+-char *editorPrompt(char *prompt) {
++char *editorPrompt(char *prompt, void (*callback)(char *, int)) {
+   size_t bufsize = 128;
+   char *buf = malloc(bufsize);
+ 
+@@ -553,11 +553,13 @@ char *editorPrompt(char *prompt) {
+       if (buflen != 0) buf[--buflen] = '\0';
+     } else if (c == '\x1b') {
+       editorSetStatusMessage("");
++      if (callback) callback(buf, c);
+       free(buf);
+       return NULL;
+     } else if (c == '\r') {
+       if (buflen != 0) {
+         editorSetStatusMessage("");
++        if (callback) callback(buf, c);
+         return buf;
+       }
+     } else if (isprint(c)) {
+@@ -568,6 +570,8 @@ char *editorPrompt(char *prompt) {
+       buf[buflen++] = c;
+       buf[buflen] = '\0';
+     }
++
++    if (callback) callback(buf, c);
+   }
+ }
+ 
+
+~~~ step: null-callback
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
 @@ -344,7 +344,7 @@ void editorOpen(char *filename) {
  
  void editorSave() {
@@ -3204,12 +3246,26 @@ diff --git a/kilo.c b/kilo.c
      if (E.filename == NULL) {
        editorSetStatusMessage("Save aborted");
        return;
+@@ -375,7 +375,7 @@ void editorSave() {
+ /*** find ***/
+ 
+ void editorFind() {
+-  char *query = editorPrompt("Search: %s (ESC to cancel)");
++  char *query = editorPrompt("Search: %s (ESC to cancel)", NULL);
+   if (query == NULL) return;
+ 
+   int i;
+
+~~~ step: incremental-search
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
 @@ -374,9 +374,10 @@ void editorSave() {
  
  /*** find ***/
  
 -void editorFind() {
--  char *query = editorModalInput("Search: %s (ESC to cancel)");
+-  char *query = editorPrompt("Search: %s (ESC to cancel)", NULL);
 -  if (query == NULL) return;
 +void editorFindCallback(char *query, int key) {
 +  if (key == '\r' || key == '\x1b') {
@@ -3234,38 +3290,6 @@ diff --git a/kilo.c b/kilo.c
  }
  
  /*** append buffer ***/
-@@ -537,7 +544,7 @@ void editorSetStatusMessage(const char *fmt, ...) {
- 
- /*** input ***/
- 
--char *editorPrompt(char *prompt) {
-+char *editorPrompt(char *prompt, void (*callback)(char *, int)) {
-   size_t bufsize = 128;
-   char *buf = malloc(bufsize);
- 
-@@ -553,11 +560,13 @@ char *editorPrompt(char *prompt) {
-       if (buflen != 0) buf[--buflen] = '\0';
-     } else if (c == '\x1b') {
-       editorSetStatusMessage("");
-+      if (callback) callback(buf, c);
-       free(buf);
-       return NULL;
-     } else if (c == '\r') {
-       if (buflen != 0) {
-         editorSetStatusMessage("");
-+        if (callback) callback(buf, c);
-         return buf;
-       }
-     } else if (isprint(c)) {
-@@ -568,6 +577,8 @@ char *editorPrompt(char *prompt) {
-       buf[buflen++] = c;
-       buf[buflen] = '\0';
-     }
-+
-+    if (callback) callback(buf, c);
-   }
- }
- 
 
 ~~~ step: restore-cursor
 diff --git a/kilo.c b/kilo.c
@@ -3293,11 +3317,11 @@ diff --git a/kilo.c b/kilo.c
  }
  
 
-~~~ step: search-arrows
+~~~ step: search-arrows-statics
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -375,16 +375,34 @@ void editorSave() {
+@@ -375,8 +375,20 @@ void editorSave() {
  /*** find ***/
  
  void editorFindCallback(char *query, int key) {
@@ -3315,6 +3339,16 @@ diff --git a/kilo.c b/kilo.c
 +  } else {
 +    last_match = -1;
 +    find_next = 1;
+   }
+ 
+   int i;
+
+~~~ step: search-arrows
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -391,12 +391,18 @@ void editorFindCallback(char *query, int key) {
+     find_next = 1;
    }
  
 +  int current = last_match;
@@ -3335,7 +3369,12 @@ diff --git a/kilo.c b/kilo.c
        E.rowoff = E.numrows;
        break;
      }
-@@ -397,7 +415,8 @@ void editorFind() {
+
+~~~ step: search-arrows-help
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -415,7 +415,8 @@ void editorFind() {
    int saved_coloff = E.coloff;
    int saved_rowoff = E.rowoff;
  
