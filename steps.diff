@@ -3394,19 +3394,19 @@ diff --git a/kilo.c b/kilo.c
  
  void editorFindCallback(char *query, int key) {
 +  static int last_match = -1;
-+  static int find_next = 1;
++  static int direction = 1;
 +
    if (key == '\r' || key == '\x1b') {
 +    last_match = -1;
-+    find_next = 1;
++    direction = 1;
      return;
 +  } else if (key == ARROW_RIGHT || key == ARROW_DOWN) {
-+    find_next = 1;
++    direction = 1;
 +  } else if (key == ARROW_LEFT || key == ARROW_UP) {
-+    find_next = -1;
++    direction = -1;
 +  } else {
 +    last_match = -1;
-+    find_next = 1;
++    direction = 1;
    }
  
    int i;
@@ -3416,14 +3416,14 @@ diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
 @@ -419,12 +419,18 @@ void editorFindCallback(char *query, int key) {
-     find_next = 1;
+     direction = 1;
    }
  
 +  int current = last_match;
    int i;
    for (i = 0; i < E.numrows; i++) {
 -    erow *row = &E.row[i];
-+    current += find_next;
++    current += direction;
 +    if (current == -1) current = E.numrows - 1;
 +    else if (current == E.numrows) current = 0;
 +
@@ -3687,7 +3687,7 @@ diff --git a/kilo.c b/kilo.c
 +++ b/kilo.c
 @@ -439,6 +439,15 @@ void editorFindCallback(char *query, int key) {
    static int last_match = -1;
-   static int find_next = 1;
+   static int direction = 1;
  
 +  static int saved_hl_line;
 +  static char *saved_hl = NULL;
@@ -3700,7 +3700,7 @@ diff --git a/kilo.c b/kilo.c
 +
    if (key == '\r' || key == '\x1b') {
      last_match = -1;
-     find_next = 1;
+     direction = 1;
 @@ -467,6 +476,9 @@ void editorFindCallback(char *query, int key) {
        E.cx = editorRowRxToCx(row, match - row->render);
        E.rowoff = E.numrows;
