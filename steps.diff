@@ -4404,15 +4404,6 @@ diff --git a/kilo.c b/kilo.c
        if (prev_sep && !strncmp(&row->render[i], scs, scs_len)) {
          memset(&row->hl[i], HL_COMMENT, row->rsize - i);
          return;
-@@ -291,7 +291,7 @@ void editorUpdateSyntax(erow *row) {
-       }
-     }
- 
--    if (E.syntax->flags & HL_HIGHLIGHT_STRINGS) {
-+    if ((E.syntax->flags & HL_HIGHLIGHT_STRINGS) && !in_comment) {
-       if (in_string) {
-         row->hl[i] = HL_STRING;
-         if (c == '\\' && i + 1 < row->rsize) {
 
 ~~~ step: idx-and-hloc
 diff --git a/kilo.c b/kilo.c
