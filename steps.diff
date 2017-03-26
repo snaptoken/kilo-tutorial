@@ -2108,7 +2108,7 @@ diff --git a/kilo.c b/kilo.c
  
    abAppend(&ab, "\x1b[?25h", 6);
 
-~~~ step: rx-tabs
+~~~ step: editor-row-cx-to-rx
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2130,7 +2130,12 @@ diff --git a/kilo.c b/kilo.c
  void editorUpdateRow(erow *row) {
    int tabs = 0;
    int j;
-@@ -248,7 +259,10 @@ void abFree(struct abuf *ab) {
+
+~~~ step: set-rx
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -259,7 +259,10 @@ void abFree(struct abuf *ab) {
  /*** output ***/
  
  void editorScroll() {
