@@ -2440,7 +2440,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
 +void editorRowInsertChar(erow *row, int at, int c) {
-+  if (at > row->size) at = row->size;
++  if (at < 0 || at > row->size) at = row->size;
 +  row->chars = realloc(row->chars, row->size + 2);
 +  memmove(&row->chars[at + 1], &row->chars[at], row->size - at + 1);
 +  row->size++;
@@ -2831,7 +2831,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
 +void editorRowDelChar(erow *row, int at) {
-+  if (at >= row->size) return;
++  if (at < 0 || at >= row->size) return;
 +  memmove(&row->chars[at], &row->chars[at + 1], row->size - at);
 +  row->size--;
 +  editorUpdateRow(row);
@@ -2893,7 +2893,7 @@ diff --git a/kilo.c b/kilo.c
 +}
 +
 +void editorDelRow(int at) {
-+  if (at >= E.numrows) return;
++  if (at < 0 || at >= E.numrows) return;
 +  editorFreeRow(&E.row[at]);
 +  memmove(&E.row[at], &E.row[at + 1], sizeof(erow) * (E.numrows - at - 1));
 +  E.numrows--;
@@ -2901,7 +2901,7 @@ diff --git a/kilo.c b/kilo.c
 +}
 +
  void editorRowInsertChar(erow *row, int at, int c) {
-   if (at > row->size) at = row->size;
+   if (at < 0 || at > row->size) at = row->size;
    row->chars = realloc(row->chars, row->size + 2);
 
 ~~~ step: row-append-string
@@ -2922,7 +2922,7 @@ diff --git a/kilo.c b/kilo.c
 +}
 +
  void editorRowDelChar(erow *row, int at) {
-   if (at >= row->size) return;
+   if (at < 0 || at >= row->size) return;
    memmove(&row->chars[at], &row->chars[at + 1], row->size - at);
 
 ~~~ step: del-char-row
@@ -2959,7 +2959,7 @@ diff --git a/kilo.c b/kilo.c
 -void editorAppendRow(char *s, size_t len) {
 -  E.row = realloc(E.row, sizeof(erow) * (E.numrows + 1));
 +void editorInsertRow(int at, char *s, size_t len) {
-+  if (at > E.numrows) return;
++  if (at < 0 || at > E.numrows) return;
 +
 +  E.row = realloc(E.row, sizeof(erow) * (E.numrows + 1));
 +  memmove(&E.row[at + 1], &E.row[at], sizeof(erow) * (E.numrows - at));
@@ -4459,7 +4459,7 @@ diff --git a/kilo.c b/kilo.c
    E.row[at].idx = at;
  
 @@ -474,6 +475,7 @@ void editorDelRow(int at) {
-   if (at >= E.numrows) return;
+   if (at < 0 || at >= E.numrows) return;
    editorFreeRow(&E.row[at]);
    memmove(&E.row[at], &E.row[at + 1], sizeof(erow) * (E.numrows - at - 1));
 +  for (int j = at; j < E.numrows - 1; j++) E.row[j].idx--;
