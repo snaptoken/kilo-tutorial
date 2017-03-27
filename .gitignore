@@ -1,4 +1,5 @@
 ftp.yml
+.cached-diffs
 steps/
 repo/
 doc/html_out/

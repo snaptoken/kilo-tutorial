@@ -4051,13 +4051,13 @@ diff --git a/kilo.c b/kilo.c
 +        row->hl[i] = HL_STRING;
 +        if (c == in_string) in_string = 0;
 +        i++;
++        prev_sep = 1;
 +        continue;
 +      } else {
 +        if (c == '"' || c == '\'') {
 +          in_string = c;
 +          row->hl[i] = HL_STRING;
 +          i++;
-+          prev_sep = 0;
 +          continue;
 +        }
 +      }
@@ -4071,19 +4071,18 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -236,6 +236,12 @@ void editorUpdateSyntax(erow *row) {
+@@ -236,6 +236,11 @@ void editorUpdateSyntax(erow *row) {
      if (E.syntax->flags & HL_HIGHLIGHT_STRINGS) {
        if (in_string) {
          row->hl[i] = HL_STRING;
 +        if (c == '\\' && i + 1 < row->rsize) {
 +          row->hl[i + 1] = HL_STRING;
 +          i += 2;
-+          prev_sep = 0;
 +          continue;
 +        }
          if (c == in_string) in_string = 0;
          i++;
-         continue;
+         prev_sep = 1;
 
 ~~~ step: hl-comment
 diff --git a/kilo.c b/kilo.c
@@ -4097,7 +4096,7 @@ diff --git a/kilo.c b/kilo.c
    HL_STRING,
    HL_NUMBER,
    HL_MATCH
-@@ -273,6 +274,7 @@ void editorUpdateSyntax(erow *row) {
+@@ -272,6 +273,7 @@ void editorUpdateSyntax(erow *row) {
  
  int editorSyntaxToColor(int hl) {
    switch (hl) {
@@ -4169,7 +4168,7 @@ diff --git a/kilo.c b/kilo.c
    HL_STRING,
    HL_NUMBER,
    HL_MATCH
-@@ -287,6 +289,8 @@ void editorUpdateSyntax(erow *row) {
+@@ -286,6 +288,8 @@ void editorUpdateSyntax(erow *row) {
  int editorSyntaxToColor(int hl) {
    switch (hl) {
      case HL_COMMENT: return 36;
@@ -4225,7 +4224,7 @@ diff --git a/kilo.c b/kilo.c
    char *scs = E.syntax->singleline_comment_start;
    int scs_len = scs ? strlen(scs) : 0;
  
-@@ -290,6 +292,26 @@ void editorUpdateSyntax(erow *row) {
+@@ -289,6 +291,26 @@ void editorUpdateSyntax(erow *row) {
        }
      }
  
@@ -4257,7 +4256,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -726,7 +726,12 @@ void editorDrawRows(struct abuf *ab) {
+@@ -725,7 +725,12 @@ void editorDrawRows(struct abuf *ab) {
        int current_color = -1;
        int j;
        for (j = 0; j < len; j++) {
@@ -4276,7 +4275,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -731,6 +731,11 @@ void editorDrawRows(struct abuf *ab) {
+@@ -730,6 +730,11 @@ void editorDrawRows(struct abuf *ab) {
            abAppend(ab, "\x1b[7m", 4);
            abAppend(ab, &sym, 1);
            abAppend(ab, "\x1b[m", 4);
@@ -4301,7 +4300,7 @@ diff --git a/kilo.c b/kilo.c
    HL_KEYWORD1,
    HL_KEYWORD2,
    HL_STRING,
-@@ -319,7 +320,8 @@ void editorUpdateSyntax(erow *row) {
+@@ -318,7 +319,8 @@ void editorUpdateSyntax(erow *row) {
  
  int editorSyntaxToColor(int hl) {
    switch (hl) {
@@ -4365,7 +4364,7 @@ diff --git a/kilo.c b/kilo.c
  
    int i = 0;
    while (i < row->rsize) {
-@@ -267,6 +268,29 @@ void editorUpdateSyntax(erow *row) {
+@@ -267,6 +268,27 @@ void editorUpdateSyntax(erow *row) {
        }
      }
  
@@ -4379,7 +4378,6 @@ diff --git a/kilo.c b/kilo.c
 +          prev_sep = 1;
 +          continue;
 +        } else {
-+          prev_sep = 0;
 +          i++;
 +          continue;
 +        }
@@ -4387,7 +4385,6 @@ diff --git a/kilo.c b/kilo.c
 +        memset(&row->hl[i], HL_MLCOMMENT, mcs_len);
 +        i += mcs_len;
 +        in_comment = 1;
-+        prev_sep = 0;
 +        continue;
 +      }
 +    }
@@ -4428,7 +4425,7 @@ diff --git a/kilo.c b/kilo.c
  } erow;
  
  struct editorConfig {
-@@ -445,6 +447,8 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -442,6 +444,8 @@ void editorInsertRow(int at, char *s, size_t len) {
    E.row = realloc(E.row, sizeof(erow) * (E.numrows + 1));
    memmove(&E.row[at + 1], &E.row[at], sizeof(erow) * (E.numrows - at));
  
@@ -4437,7 +4434,7 @@ diff --git a/kilo.c b/kilo.c
    E.row[at].size = len;
    E.row[at].chars = malloc(len + 1);
    memcpy(E.row[at].chars, s, len);
-@@ -453,6 +457,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -450,6 +454,7 @@ void editorInsertRow(int at, char *s, size_t len) {
    E.row[at].rsize = 0;
    E.row[at].render = NULL;
    E.row[at].hl = NULL;
@@ -4450,7 +4447,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -446,6 +446,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -443,6 +443,7 @@ void editorInsertRow(int at, char *s, size_t len) {
  
    E.row = realloc(E.row, sizeof(erow) * (E.numrows + 1));
    memmove(&E.row[at + 1], &E.row[at], sizeof(erow) * (E.numrows - at));
@@ -4458,7 +4455,7 @@ diff --git a/kilo.c b/kilo.c
  
    E.row[at].idx = at;
  
-@@ -474,6 +475,7 @@ void editorDelRow(int at) {
+@@ -471,6 +472,7 @@ void editorDelRow(int at) {
    if (at < 0 || at >= E.numrows) return;
    editorFreeRow(&E.row[at]);
    memmove(&E.row[at], &E.row[at + 1], sizeof(erow) * (E.numrows - at - 1));
@@ -4480,7 +4477,7 @@ diff --git a/kilo.c b/kilo.c
  
    int i = 0;
    while (i < row->rsize) {
-@@ -349,6 +349,11 @@ void editorUpdateSyntax(erow *row) {
+@@ -346,6 +346,11 @@ void editorUpdateSyntax(erow *row) {
      prev_sep = is_separator(c);
      i++;
    }
