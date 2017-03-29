@@ -176,7 +176,7 @@ diff --git a/kilo.c b/kilo.c
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 
-~~~ step: opost c1
+~~~ step: opost c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -188,7 +188,12 @@ diff --git a/kilo.c b/kilo.c
    raw.c_lflag &= ~(ECHO | ICANON | ISIG);
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
-@@ -27,9 +28,9 @@ int main() {
+
+~~~ step: carriage-returns c2
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -28,9 +28,9 @@ int main() {
    char c;
    while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q') {
      if (isprint(c)) {
@@ -201,7 +206,21 @@ diff --git a/kilo.c b/kilo.c
    }
  
 
-~~~ step: misc-flags c2
+~~~ step: iexten c2
+diff --git a/kilo.c b/kilo.c
+--- a/kilo.c
++++ b/kilo.c
+@@ -17,7 +17,7 @@ void enableRawMode() {
+   struct termios raw = orig_termios;
+   raw.c_iflag &= ~(ICRNL | IXON);
+   raw.c_oflag &= ~(OPOST);
+-  raw.c_lflag &= ~(ECHO | ICANON | ISIG);
++  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+ 
+   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+ }
+
+~~~ step: misc-flags c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -213,23 +232,9 @@ diff --git a/kilo.c b/kilo.c
 +  raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
    raw.c_oflag &= ~(OPOST);
 +  raw.c_cflag |= (CS8);
-   raw.c_lflag &= ~(ECHO | ICANON | ISIG);
+   raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
-
-~~~ step: iexten c2
-diff --git a/kilo.c b/kilo.c
---- a/kilo.c
-+++ b/kilo.c
-@@ -18,7 +18,7 @@ void enableRawMode() {
-   raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-   raw.c_oflag &= ~(OPOST);
-   raw.c_cflag |= (CS8);
--  raw.c_lflag &= ~(ECHO | ICANON | ISIG);
-+  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
- 
-   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
- }
 
 ~~~ step: vmin-vtime c2
 diff --git a/kilo.c b/kilo.c

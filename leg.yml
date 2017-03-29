@@ -5,6 +5,6 @@
 :tags:
   :c0: "♏&#xFE0E; doesn’t compile"
   :c1: "♎&#xFE0E; compiles, but with no observable effects"
-  :c2: "♈&#xFE0E; compiles"
+  :c2: "♐&#xFE0E; compiles"
   :c-unknown: "♋&#xFE0E; may or may not compile"
 ...
