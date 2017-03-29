@@ -1,4 +1,4 @@
-~~~ step: main
+~~~ step: main c2
 diff --git a/kilo.c b/kilo.c
 new file mode 100644
 --- /dev/null
@@ -8,7 +8,7 @@ new file mode 100644
 +  return 0;
 +}
 
-~~~ step: makefile
+~~~ step: makefile c2
 diff --git a/Makefile b/Makefile
 new file mode 100644
 --- /dev/null
@@ -17,7 +17,7 @@ new file mode 100644
 +kilo: kilo.c
 +	$(CC) kilo.c -o kilo -Wall -Wextra -pedantic -std=c99
 
-~~~ step: canonical
+~~~ step: canonical c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -30,7 +30,7 @@ diff --git a/kilo.c b/kilo.c
    return 0;
  }
 
-~~~ step: press-q
+~~~ step: press-q c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -43,7 +43,7 @@ diff --git a/kilo.c b/kilo.c
    return 0;
  }
 
-~~~ step: echo
+~~~ step: echo c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -68,7 +68,7 @@ diff --git a/kilo.c b/kilo.c
    while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q');
    return 0;
 
-~~~ step: atexit
+~~~ step: atexit c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -95,7 +95,7 @@ diff --git a/kilo.c b/kilo.c
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 
-~~~ step: canonical-off
+~~~ step: canonical-off c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -109,7 +109,7 @@ diff --git a/kilo.c b/kilo.c
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
  }
 
-~~~ step: keypresses
+~~~ step: keypresses c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -135,7 +135,7 @@ diff --git a/kilo.c b/kilo.c
    return 0;
  }
 
-~~~ step: isig
+~~~ step: isig c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -149,7 +149,7 @@ diff --git a/kilo.c b/kilo.c
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
  }
 
-~~~ step: ixon
+~~~ step: ixon c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -162,7 +162,7 @@ diff --git a/kilo.c b/kilo.c
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 
-~~~ step: ctrl-m
+~~~ step: ctrl-m c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -176,7 +176,7 @@ diff --git a/kilo.c b/kilo.c
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 
-~~~ step: opost
+~~~ step: opost c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -201,7 +201,7 @@ diff --git a/kilo.c b/kilo.c
    }
  
 
-~~~ step: misc-flags
+~~~ step: misc-flags c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -217,7 +217,7 @@ diff --git a/kilo.c b/kilo.c
  
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 
-~~~ step: iexten
+~~~ step: iexten c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -231,7 +231,7 @@ diff --git a/kilo.c b/kilo.c
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
  }
 
-~~~ step: vmin-vtime
+~~~ step: vmin-vtime c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -263,7 +263,7 @@ diff --git a/kilo.c b/kilo.c
  
    return 0;
 
-~~~ step: die
+~~~ step: die c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -280,7 +280,7 @@ diff --git a/kilo.c b/kilo.c
    tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
  }
 
-~~~ step: error-handling
+~~~ step: error-handling c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -318,7 +318,7 @@ diff --git a/kilo.c b/kilo.c
        printf("%d ('%c')\r\n", c, c);
      } else {
 
-~~~ step: sections
+~~~ step: sections c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -350,7 +350,7 @@ diff --git a/kilo.c b/kilo.c
    enableRawMode();
  
 
-~~~ step: ctrl-q
+~~~ step: ctrl-q c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -380,7 +380,7 @@ diff --git a/kilo.c b/kilo.c
  
    return 0;
 
-~~~ step: refactor-input
+~~~ step: refactor-input c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -422,7 +422,7 @@ diff --git a/kilo.c b/kilo.c
  
    return 0;
 
-~~~ step: clear-screen
+~~~ step: clear-screen c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -448,7 +448,7 @@ diff --git a/kilo.c b/kilo.c
    }
  
 
-~~~ step: cursor-home
+~~~ step: cursor-home c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -461,7 +461,7 @@ diff --git a/kilo.c b/kilo.c
  
  /*** input ***/
 
-~~~ step: clear-screen-exit
+~~~ step: clear-screen-exit c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -485,7 +485,7 @@ diff --git a/kilo.c b/kilo.c
        break;
    }
 
-~~~ step: tildes
+~~~ step: tildes c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -511,7 +511,7 @@ diff --git a/kilo.c b/kilo.c
  
  /*** input ***/
 
-~~~ step: global-state
+~~~ step: global-state c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -548,7 +548,7 @@ diff --git a/kilo.c b/kilo.c
    raw.c_oflag &= ~(OPOST);
    raw.c_cflag |= (CS8);
 
-~~~ step: window-size-ioctl
+~~~ step: window-size-ioctl c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -580,7 +580,7 @@ diff --git a/kilo.c b/kilo.c
  
  void editorDrawRows() {
 
-~~~ step: init-editor
+~~~ step: init-editor c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -608,7 +608,7 @@ diff --git a/kilo.c b/kilo.c
    while (1) {
      editorRefreshScreen();
 
-~~~ step: window-size-screenrows
+~~~ step: window-size-screenrows c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -622,7 +622,7 @@ diff --git a/kilo.c b/kilo.c
    }
  }
 
-~~~ step: bottom-right
+~~~ step: bottom-right c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -637,7 +637,7 @@ diff --git a/kilo.c b/kilo.c
    } else {
      *cols = ws.ws_col;
 
-~~~ step: cursor-query
+~~~ step: cursor-query c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -672,7 +672,7 @@ diff --git a/kilo.c b/kilo.c
      *cols = ws.ws_col;
      *rows = ws.ws_row;
 
-~~~ step: response-buffer
+~~~ step: response-buffer c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -705,7 +705,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
 
-~~~ step: parse-response
+~~~ step: parse-response c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -723,7 +723,7 @@ diff --git a/kilo.c b/kilo.c
  
  int getWindowSize(int *rows, int *cols) {
 
-~~~ step: cleanup-window-size
+~~~ step: cleanup-window-size c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -737,7 +737,7 @@ diff --git a/kilo.c b/kilo.c
      return getCursorPosition(rows, cols);
    } else {
 
-~~~ step: last-line
+~~~ step: last-line c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -755,7 +755,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
 
-~~~ step: abuf-struct
+~~~ step: abuf-struct c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -776,7 +776,7 @@ diff --git a/kilo.c b/kilo.c
  
  void editorDrawRows() {
 
-~~~ step: abuf-append
+~~~ step: abuf-append c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -809,7 +809,7 @@ diff --git a/kilo.c b/kilo.c
  
  void editorDrawRows() {
 
-~~~ step: abuf-ab
+~~~ step: abuf-ab c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -851,7 +851,7 @@ diff --git a/kilo.c b/kilo.c
  
  /*** input ***/
 
-~~~ step: hide-cursor
+~~~ step: hide-cursor c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -871,7 +871,7 @@ diff --git a/kilo.c b/kilo.c
    write(STDOUT_FILENO, ab.b, ab.len);
    abFree(&ab);
 
-~~~ step: clear-rest-of-line
+~~~ step: clear-rest-of-line c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -892,7 +892,7 @@ diff --git a/kilo.c b/kilo.c
  
    editorDrawRows(&ab);
 
-~~~ step: welcome
+~~~ step: welcome c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -923,7 +923,7 @@ diff --git a/kilo.c b/kilo.c
      abAppend(ab, "\x1b[K", 3);
      if (y < E.screenrows - 1) {
 
-~~~ step: welcome-center
+~~~ step: welcome-center c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -941,7 +941,7 @@ diff --git a/kilo.c b/kilo.c
      } else {
        abAppend(ab, "~", 1);
 
-~~~ step: cx-cy
+~~~ step: cx-cy c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -964,7 +964,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
 
-~~~ step: set-cursor-position
+~~~ step: set-cursor-position c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -981,7 +981,7 @@ diff --git a/kilo.c b/kilo.c
  
    write(STDOUT_FILENO, ab.b, ab.len);
 
-~~~ step: move-cursor
+~~~ step: move-cursor c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1024,7 +1024,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
 
-~~~ step: detect-arrow-keys
+~~~ step: detect-arrow-keys c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1057,7 +1057,7 @@ diff --git a/kilo.c b/kilo.c
  
  int getCursorPosition(int *rows, int *cols) {
 
-~~~ step: arrow-keys-enum
+~~~ step: arrow-keys-enum c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1127,7 +1127,7 @@ diff --git a/kilo.c b/kilo.c
        break;
    }
 
-~~~ step: arrow-keys-int
+~~~ step: arrow-keys-int c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1174,7 +1174,7 @@ diff --git a/kilo.c b/kilo.c
    switch (c) {
      case CTRL_KEY('q'):
 
-~~~ step: off-screen
+~~~ step: off-screen c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1208,7 +1208,7 @@ diff --git a/kilo.c b/kilo.c
    }
  }
 
-~~~ step: detect-page-up-down
+~~~ step: detect-page-up-down c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1251,7 +1251,7 @@ diff --git a/kilo.c b/kilo.c
      }
  
 
-~~~ step: page-up-down-simple
+~~~ step: page-up-down-simple c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1272,7 +1272,7 @@ diff --git a/kilo.c b/kilo.c
      case ARROW_DOWN:
      case ARROW_LEFT:
 
-~~~ step: detect-home-end-keys
+~~~ step: detect-home-end-keys c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1315,7 +1315,7 @@ diff --git a/kilo.c b/kilo.c
  
      return '\x1b';
 
-~~~ step: home-end-keys-simple
+~~~ step: home-end-keys-simple c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1335,7 +1335,7 @@ diff --git a/kilo.c b/kilo.c
      case PAGE_DOWN:
        {
 
-~~~ step: detect-delete-key
+~~~ step: detect-delete-key c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1356,7 +1356,7 @@ diff --git a/kilo.c b/kilo.c
              case '5': return PAGE_UP;
              case '6': return PAGE_DOWN;
 
-~~~ step: single-line-erow
+~~~ step: single-line-erow c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1387,7 +1387,7 @@ diff --git a/kilo.c b/kilo.c
    if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
  }
 
-~~~ step: single-line-hardcoded
+~~~ step: single-line-hardcoded c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1428,7 +1428,7 @@ diff --git a/kilo.c b/kilo.c
    while (1) {
      editorRefreshScreen();
 
-~~~ step: single-line-render
+~~~ step: single-line-render c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1471,7 +1471,7 @@ diff --git a/kilo.c b/kilo.c
  
      abAppend(ab, "\x1b[K", 3);
 
-~~~ step: single-line-file
+~~~ step: single-line-file c-unknown
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1525,7 +1525,7 @@ diff --git a/kilo.c b/kilo.c
    while (1) {
      editorRefreshScreen();
 
-~~~ step: getline-defines
+~~~ step: getline-defines c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1540,7 +1540,7 @@ diff --git a/kilo.c b/kilo.c
  #include <stdio.h>
  #include <stdlib.h>
 
-~~~ step: hide-welcome-message
+~~~ step: hide-welcome-message c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1554,7 +1554,7 @@ diff --git a/kilo.c b/kilo.c
          int welcomelen = snprintf(welcome, sizeof(welcome),
            "Kilo editor -- version %s", KILO_VERSION);
 
-~~~ step: multiple-lines-struct
+~~~ step: multiple-lines-struct c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1576,7 +1576,7 @@ diff --git a/kilo.c b/kilo.c
    if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
  }
 
-~~~ step: append-row
+~~~ step: append-row c0
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1611,7 +1611,7 @@ diff --git a/kilo.c b/kilo.c
    free(line);
    fclose(fp);
 
-~~~ step: fix-append-row
+~~~ step: fix-append-row c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1636,7 +1636,7 @@ diff --git a/kilo.c b/kilo.c
  
  /*** file i/o ***/
 
-~~~ step: render-multiple-lines
+~~~ step: render-multiple-lines c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1653,7 +1653,7 @@ diff --git a/kilo.c b/kilo.c
  
      abAppend(ab, "\x1b[K", 3);
 
-~~~ step: read-multiple-lines
+~~~ step: read-multiple-lines c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1668,7 +1668,7 @@ diff --git a/kilo.c b/kilo.c
        linelen--;
      editorAppendRow(line, linelen);
 
-~~~ step: rowoff
+~~~ step: rowoff c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1689,7 +1689,7 @@ diff --git a/kilo.c b/kilo.c
    E.row = NULL;
  
 
-~~~ step: filerow
+~~~ step: filerow c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1716,7 +1716,7 @@ diff --git a/kilo.c b/kilo.c
  
      abAppend(ab, "\x1b[K", 3);
 
-~~~ step: editor-scroll
+~~~ step: editor-scroll c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1746,7 +1746,7 @@ diff --git a/kilo.c b/kilo.c
  
    abAppend(&ab, "\x1b[?25l", 6);
 
-~~~ step: enable-vertical-scroll
+~~~ step: enable-vertical-scroll c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1760,7 +1760,7 @@ diff --git a/kilo.c b/kilo.c
        }
        break;
 
-~~~ step: fix-cursor-scrolling
+~~~ step: fix-cursor-scrolling c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1774,7 +1774,7 @@ diff --git a/kilo.c b/kilo.c
  
    abAppend(&ab, "\x1b[?25h", 6);
 
-~~~ step: coloff
+~~~ step: coloff c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1795,7 +1795,7 @@ diff --git a/kilo.c b/kilo.c
    E.row = NULL;
  
 
-~~~ step: render-coloff
+~~~ step: render-coloff c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1813,7 +1813,7 @@ diff --git a/kilo.c b/kilo.c
  
      abAppend(ab, "\x1b[K", 3);
 
-~~~ step: editor-scroll-horizontal
+~~~ step: editor-scroll-horizontal c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1831,7 +1831,7 @@ diff --git a/kilo.c b/kilo.c
  
  void editorDrawRows(struct abuf *ab) {
 
-~~~ step: enable-horizontal-scroll
+~~~ step: enable-horizontal-scroll c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1847,7 +1847,7 @@ diff --git a/kilo.c b/kilo.c
      case ARROW_UP:
        if (E.cy != 0) {
 
-~~~ step: fix-cursor-scrolling-horizontal
+~~~ step: fix-cursor-scrolling-horizontal c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1862,7 +1862,7 @@ diff --git a/kilo.c b/kilo.c
  
    abAppend(&ab, "\x1b[?25h", 6);
 
-~~~ step: scroll-limits
+~~~ step: scroll-limits c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1887,7 +1887,7 @@ diff --git a/kilo.c b/kilo.c
      case ARROW_UP:
        if (E.cy != 0) {
 
-~~~ step: snap-cursor
+~~~ step: snap-cursor c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1905,7 +1905,7 @@ diff --git a/kilo.c b/kilo.c
  
  void editorProcessKeypress() {
 
-~~~ step: moving-left
+~~~ step: moving-left c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1920,7 +1920,7 @@ diff --git a/kilo.c b/kilo.c
        break;
      case ARROW_RIGHT:
 
-~~~ step: moving-right
+~~~ step: moving-right c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1935,7 +1935,7 @@ diff --git a/kilo.c b/kilo.c
        break;
      case ARROW_UP:
 
-~~~ step: render-chars
+~~~ step: render-chars c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1961,7 +1961,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
 
-~~~ step: editor-update-row
+~~~ step: editor-update-row c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -1994,7 +1994,7 @@ diff --git a/kilo.c b/kilo.c
    E.numrows++;
  }
 
-~~~ step: render-render
+~~~ step: render-render c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2012,7 +2012,7 @@ diff --git a/kilo.c b/kilo.c
  
      abAppend(ab, "\x1b[K", 3);
 
-~~~ step: render-tabs
+~~~ step: render-tabs c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2044,7 +2044,7 @@ diff --git a/kilo.c b/kilo.c
    row->render[idx] = '\0';
    row->rsize = idx;
 
-~~~ step: rx
+~~~ step: rx c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2065,7 +2065,7 @@ diff --git a/kilo.c b/kilo.c
    E.coloff = 0;
    E.numrows = 0;
 
-~~~ step: cx-to-rx
+~~~ step: cx-to-rx c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2094,7 +2094,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
 
-~~~ step: render-rx
+~~~ step: render-rx c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2108,7 +2108,7 @@ diff --git a/kilo.c b/kilo.c
  
    abAppend(&ab, "\x1b[?25h", 6);
 
-~~~ step: editor-row-cx-to-rx
+~~~ step: editor-row-cx-to-rx c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2131,7 +2131,7 @@ diff --git a/kilo.c b/kilo.c
    int tabs = 0;
    int j;
 
-~~~ step: set-rx
+~~~ step: set-rx c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2148,7 +2148,7 @@ diff --git a/kilo.c b/kilo.c
    if (E.cy < E.rowoff) {
      E.rowoff = E.cy;
 
-~~~ step: page-up-down
+~~~ step: page-up-down c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2165,7 +2165,7 @@ diff --git a/kilo.c b/kilo.c
          while (times--)
            editorMoveCursor(c == PAGE_UP ? ARROW_UP : ARROW_DOWN);
 
-~~~ step: home-end-keys
+~~~ step: home-end-keys c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2180,7 +2180,7 @@ diff --git a/kilo.c b/kilo.c
  
      case PAGE_UP:
 
-~~~ step: status-bar-make-room
+~~~ step: status-bar-make-room c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2204,7 +2204,7 @@ diff --git a/kilo.c b/kilo.c
  
  int main(int argc, char *argv[]) {
 
-~~~ step: blank-status-bar
+~~~ step: blank-status-bar c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2234,7 +2234,7 @@ diff --git a/kilo.c b/kilo.c
    char buf[32];
    snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
 
-~~~ step: filename
+~~~ step: filename c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2265,7 +2265,7 @@ diff --git a/kilo.c b/kilo.c
    if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
    E.screenrows -= 1;
 
-~~~ step: status-bar-left
+~~~ step: status-bar-left c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2283,7 +2283,7 @@ diff --git a/kilo.c b/kilo.c
      abAppend(ab, " ", 1);
      len++;
 
-~~~ step: status-bar-right
+~~~ step: status-bar-right c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2313,7 +2313,7 @@ diff --git a/kilo.c b/kilo.c
    abAppend(ab, "\x1b[m", 3);
  }
 
-~~~ step: status-message-data
+~~~ step: status-message-data c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2344,7 +2344,7 @@ diff --git a/kilo.c b/kilo.c
    if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
    E.screenrows -= 1;
 
-~~~ step: set-status-message
+~~~ step: set-status-message c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2381,7 +2381,7 @@ diff --git a/kilo.c b/kilo.c
      editorRefreshScreen();
      editorProcessKeypress();
 
-~~~ step: message-bar-make-room
+~~~ step: message-bar-make-room c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2403,7 +2403,7 @@ diff --git a/kilo.c b/kilo.c
  
  int main(int argc, char *argv[]) {
 
-~~~ step: render-message-bar
+~~~ step: render-message-bar c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2431,7 +2431,7 @@ diff --git a/kilo.c b/kilo.c
    char buf[32];
    snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
 
-~~~ step: row-insert-char
+~~~ step: row-insert-char c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2452,7 +2452,7 @@ diff --git a/kilo.c b/kilo.c
  
  void editorOpen(char *filename) {
 
-~~~ step: editor-insert-char
+~~~ step: editor-insert-char c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2474,7 +2474,7 @@ diff --git a/kilo.c b/kilo.c
  
  void editorOpen(char *filename) {
 
-~~~ step: key-insert-char
+~~~ step: key-insert-char c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2490,7 +2490,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
 
-~~~ step: block-special-chars
+~~~ step: block-special-chars c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2538,7 +2538,7 @@ diff --git a/kilo.c b/kilo.c
        editorInsertChar(c);
        break;
 
-~~~ step: rows-to-string
+~~~ step: rows-to-string c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2569,7 +2569,7 @@ diff --git a/kilo.c b/kilo.c
    free(E.filename);
    E.filename = strdup(filename);
 
-~~~ step: editor-save
+~~~ step: editor-save c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2602,7 +2602,7 @@ diff --git a/kilo.c b/kilo.c
  
  struct abuf {
 
-~~~ step: ctrl-s-save
+~~~ step: ctrl-s-save c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2618,7 +2618,7 @@ diff --git a/kilo.c b/kilo.c
        E.cx = 0;
        break;
 
-~~~ step: editor-save-errors
+~~~ step: editor-save-errors c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2644,7 +2644,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
 
-~~~ step: save-status-message
+~~~ step: save-status-message c0
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2682,7 +2682,7 @@ diff --git a/kilo.c b/kilo.c
    while (1) {
      editorRefreshScreen();
 
-~~~ step: prototypes
+~~~ step: prototypes c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2698,7 +2698,7 @@ diff --git a/kilo.c b/kilo.c
  
  void die(const char *s) {
 
-~~~ step: dirty-variable
+~~~ step: dirty-variable c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2719,7 +2719,7 @@ diff --git a/kilo.c b/kilo.c
    E.statusmsg[0] = '\0';
    E.statusmsg_time = 0;
 
-~~~ step: show-dirty
+~~~ step: show-dirty c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2736,7 +2736,7 @@ diff --git a/kilo.c b/kilo.c
      E.cy + 1, E.numrows);
    if (len > E.screencols) len = E.screencols;
 
-~~~ step: increment-dirty
+~~~ step: increment-dirty c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2757,7 +2757,7 @@ diff --git a/kilo.c b/kilo.c
  
  /*** editor operations ***/
 
-~~~ step: reset-dirty
+~~~ step: reset-dirty c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2778,7 +2778,7 @@ diff --git a/kilo.c b/kilo.c
          return;
        }
 
-~~~ step: quit-confirmation
+~~~ step: quit-confirmation c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2822,7 +2822,7 @@ diff --git a/kilo.c b/kilo.c
  
  /*** init ***/
 
-~~~ step: row-del-char
+~~~ step: row-del-char c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2842,7 +2842,7 @@ diff --git a/kilo.c b/kilo.c
  
  void editorInsertChar(int c) {
 
-~~~ step: editor-del-char
+~~~ step: editor-del-char c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2864,7 +2864,7 @@ diff --git a/kilo.c b/kilo.c
  
  char *editorRowsToString(int *buflen) {
 
-~~~ step: key-del-char
+~~~ step: key-del-char c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2879,7 +2879,7 @@ diff --git a/kilo.c b/kilo.c
  
      case PAGE_UP:
 
-~~~ step: del-row
+~~~ step: del-row c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2904,7 +2904,7 @@ diff --git a/kilo.c b/kilo.c
    if (at < 0 || at > row->size) at = row->size;
    row->chars = realloc(row->chars, row->size + 2);
 
-~~~ step: row-append-string
+~~~ step: row-append-string c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2925,7 +2925,7 @@ diff --git a/kilo.c b/kilo.c
    if (at < 0 || at >= row->size) return;
    memmove(&row->chars[at], &row->chars[at + 1], row->size - at);
 
-~~~ step: del-char-row
+~~~ step: del-char-row c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2948,7 +2948,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
 
-~~~ step: append-row-to-insert
+~~~ step: append-row-to-insert c0
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2969,7 +2969,7 @@ diff --git a/kilo.c b/kilo.c
    E.row[at].chars = malloc(len + 1);
    memcpy(E.row[at].chars, s, len);
 
-~~~ step: use-insert-row
+~~~ step: use-insert-row c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2992,7 +2992,7 @@ diff --git a/kilo.c b/kilo.c
    free(line);
    fclose(fp);
 
-~~~ step: insert-newline
+~~~ step: insert-newline c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3019,7 +3019,7 @@ diff --git a/kilo.c b/kilo.c
    if (E.cy == E.numrows) return;
    if (E.cx == 0 && E.cy == 0) return;
 
-~~~ step: enter-key
+~~~ step: enter-key c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3033,7 +3033,7 @@ diff --git a/kilo.c b/kilo.c
  
      case CTRL_KEY('q'):
 
-~~~ step: editor-prompt
+~~~ step: editor-prompt c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3081,7 +3081,7 @@ diff --git a/kilo.c b/kilo.c
    erow *row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
  
 
-~~~ step: save-as
+~~~ step: save-as c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3105,7 +3105,7 @@ diff --git a/kilo.c b/kilo.c
    int len;
    char *buf = editorRowsToString(&len);
 
-~~~ step: editor-prompt-escape
+~~~ step: editor-prompt-escape c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3123,7 +3123,7 @@ diff --git a/kilo.c b/kilo.c
          editorSetStatusMessage("");
          return buf;
 
-~~~ step: abort-save
+~~~ step: abort-save c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3141,7 +3141,7 @@ diff --git a/kilo.c b/kilo.c
  
    int len;
 
-~~~ step: prompt-backspace
+~~~ step: prompt-backspace c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3157,7 +3157,7 @@ diff --git a/kilo.c b/kilo.c
        free(buf);
        return NULL;
 
-~~~ step: basic-search
+~~~ step: basic-search c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3190,7 +3190,7 @@ diff --git a/kilo.c b/kilo.c
  
  struct abuf {
 
-~~~ step: rx-to-cx
+~~~ step: rx-to-cx c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3215,7 +3215,7 @@ diff --git a/kilo.c b/kilo.c
    int tabs = 0;
    int j;
 
-~~~ step: call-rx-to-cx
+~~~ step: call-rx-to-cx c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3229,7 +3229,7 @@ diff --git a/kilo.c b/kilo.c
        break;
      }
 
-~~~ step: basic-search-key
+~~~ step: basic-search-key c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3255,7 +3255,7 @@ diff --git a/kilo.c b/kilo.c
    while (1) {
      editorRefreshScreen();
 
-~~~ step: editor-prompt-callback
+~~~ step: editor-prompt-callback c0
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3301,7 +3301,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
 
-~~~ step: null-callback
+~~~ step: null-callback c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3324,7 +3324,7 @@ diff --git a/kilo.c b/kilo.c
  
    int i;
 
-~~~ step: incremental-search
+~~~ step: incremental-search c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3359,7 +3359,7 @@ diff --git a/kilo.c b/kilo.c
  
  /*** append buffer ***/
 
-~~~ step: restore-cursor
+~~~ step: restore-cursor c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3385,7 +3385,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
 
-~~~ step: search-arrows-statics
+~~~ step: search-arrows-statics c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3411,7 +3411,7 @@ diff --git a/kilo.c b/kilo.c
  
    int i;
 
-~~~ step: search-arrows
+~~~ step: search-arrows c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3437,7 +3437,7 @@ diff --git a/kilo.c b/kilo.c
        E.rowoff = E.numrows;
        break;
 
-~~~ step: search-arrows-help
+~~~ step: search-arrows-help c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3452,7 +3452,7 @@ diff --git a/kilo.c b/kilo.c
    if (query) {
      free(query);
 
-~~~ step: syntax-digits
+~~~ step: syntax-digits c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3476,7 +3476,7 @@ diff --git a/kilo.c b/kilo.c
  
      abAppend(ab, "\x1b[K", 3);
 
-~~~ step: syntax-refactoring-hl
+~~~ step: syntax-refactoring-hl c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3505,7 +3505,7 @@ diff --git a/kilo.c b/kilo.c
  
  void editorDelRow(int at) {
 
-~~~ step: highlight-enum
+~~~ step: highlight-enum c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3522,7 +3522,7 @@ diff --git a/kilo.c b/kilo.c
  
  typedef struct erow {
 
-~~~ step: editor-update-syntax
+~~~ step: editor-update-syntax c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3548,7 +3548,7 @@ diff --git a/kilo.c b/kilo.c
  
  int editorRowCxToRx(erow *row, int cx) {
 
-~~~ step: call-update-syntax
+~~~ step: call-update-syntax c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3562,7 +3562,7 @@ diff --git a/kilo.c b/kilo.c
  
  void editorInsertRow(int at, char *s, size_t len) {
 
-~~~ step: editor-syntax-to-color
+~~~ step: editor-syntax-to-color c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3581,7 +3581,7 @@ diff --git a/kilo.c b/kilo.c
  
  int editorRowCxToRx(erow *row, int cx) {
 
-~~~ step: render-hl
+~~~ step: render-hl c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3611,7 +3611,7 @@ diff --git a/kilo.c b/kilo.c
  
      abAppend(ab, "\x1b[K", 3);
 
-~~~ step: current-color
+~~~ step: current-color c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3644,7 +3644,7 @@ diff --git a/kilo.c b/kilo.c
          }
        }
 
-~~~ step: hl-match
+~~~ step: hl-match c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3667,7 +3667,7 @@ diff --git a/kilo.c b/kilo.c
    }
  }
 
-~~~ step: search-highlighting
+~~~ step: search-highlighting c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3681,7 +3681,7 @@ diff --git a/kilo.c b/kilo.c
      }
    }
 
-~~~ step: restore-search-highlight
+~~~ step: restore-search-highlight c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3712,7 +3712,7 @@ diff --git a/kilo.c b/kilo.c
        break;
      }
 
-~~~ step: syntax-numbers-while
+~~~ step: syntax-numbers-while c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3736,7 +3736,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
 
-~~~ step: is-separator
+~~~ step: is-separator c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3752,7 +3752,7 @@ diff --git a/kilo.c b/kilo.c
    row->hl = realloc(row->hl, row->rsize);
    memset(row->hl, HL_NORMAL, row->rsize);
 
-~~~ step: prev-sep
+~~~ step: prev-sep c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3780,7 +3780,7 @@ diff --git a/kilo.c b/kilo.c
    }
  }
 
-~~~ step: syntax-numbers-decimal-point
+~~~ step: syntax-numbers-decimal-point c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3795,7 +3795,7 @@ diff --git a/kilo.c b/kilo.c
        i++;
        prev_sep = 0;
 
-~~~ step: editor-syntax
+~~~ step: editor-syntax c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3817,7 +3817,7 @@ diff --git a/kilo.c b/kilo.c
    int size;
    int rsize;
 
-~~~ step: hldb
+~~~ step: hldb c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3843,7 +3843,7 @@ diff --git a/kilo.c b/kilo.c
  
  void editorSetStatusMessage(const char *fmt, ...);
 
-~~~ step: e-syntax
+~~~ step: e-syntax c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3864,7 +3864,7 @@ diff --git a/kilo.c b/kilo.c
    if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
    E.screenrows -= 2;
 
-~~~ step: show-filetype
+~~~ step: show-filetype c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3880,7 +3880,7 @@ diff --git a/kilo.c b/kilo.c
    abAppend(ab, status, len);
    while (len < E.screencols) {
 
-~~~ step: update-syntax-filetype
+~~~ step: update-syntax-filetype c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3915,7 +3915,7 @@ diff --git a/kilo.c b/kilo.c
  
      prev_sep = is_separator(c);
 
-~~~ step: select-syntax-highlight
+~~~ step: select-syntax-highlight c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3948,7 +3948,7 @@ diff --git a/kilo.c b/kilo.c
  
  int editorRowCxToRx(erow *row, int cx) {
 
-~~~ step: call-select-syntax-highlight
+~~~ step: call-select-syntax-highlight c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3970,7 +3970,7 @@ diff --git a/kilo.c b/kilo.c
  
    int len;
 
-~~~ step: filetype-save-as
+~~~ step: filetype-save-as c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -3988,7 +3988,7 @@ diff --git a/kilo.c b/kilo.c
          }
        }
 
-~~~ step: hl-string
+~~~ step: hl-string c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4009,7 +4009,7 @@ diff --git a/kilo.c b/kilo.c
      case HL_MATCH: return 34;
      default: return 37;
 
-~~~ step: hl-string-flag
+~~~ step: hl-string-flag c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4031,7 +4031,7 @@ diff --git a/kilo.c b/kilo.c
  };
  
 
-~~~ step: syntax-strings
+~~~ step: syntax-strings c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4067,7 +4067,7 @@ diff --git a/kilo.c b/kilo.c
        if ((isdigit(c) && (prev_sep || prev_hl == HL_NUMBER)) ||
            (c == '.' && prev_hl == HL_NUMBER)) {
 
-~~~ step: syntax-string-escapes
+~~~ step: syntax-string-escapes c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4084,7 +4084,7 @@ diff --git a/kilo.c b/kilo.c
          i++;
          prev_sep = 1;
 
-~~~ step: hl-comment
+~~~ step: hl-comment c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4105,7 +4105,7 @@ diff --git a/kilo.c b/kilo.c
      case HL_NUMBER: return 31;
      case HL_MATCH: return 34;
 
-~~~ step: scs
+~~~ step: scs c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4126,7 +4126,7 @@ diff --git a/kilo.c b/kilo.c
    },
  };
 
-~~~ step: syntax-comments
+~~~ step: syntax-comments c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4155,7 +4155,7 @@ diff --git a/kilo.c b/kilo.c
        if (in_string) {
          row->hl[i] = HL_STRING;
 
-~~~ step: hl-keywords
+~~~ step: hl-keywords c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4178,7 +4178,7 @@ diff --git a/kilo.c b/kilo.c
      case HL_NUMBER: return 31;
      case HL_MATCH: return 34;
 
-~~~ step: c-keywords
+~~~ step: c-keywords c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4211,7 +4211,7 @@ diff --git a/kilo.c b/kilo.c
      HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS
    },
 
-~~~ step: syntax-keywords
+~~~ step: syntax-keywords c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4252,7 +4252,7 @@ diff --git a/kilo.c b/kilo.c
      i++;
    }
 
-~~~ step: nonprintables
+~~~ step: nonprintables c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4271,7 +4271,7 @@ diff --git a/kilo.c b/kilo.c
              abAppend(ab, "\x1b[39m", 5);
              current_color = -1;
 
-~~~ step: nonprintables-fix-color
+~~~ step: nonprintables-fix-color c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4288,7 +4288,7 @@ diff --git a/kilo.c b/kilo.c
            if (current_color != -1) {
              abAppend(ab, "\x1b[39m", 5);
 
-~~~ step: hl-multiline-comments
+~~~ step: hl-multiline-comments c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4311,7 +4311,7 @@ diff --git a/kilo.c b/kilo.c
      case HL_KEYWORD2: return 32;
      case HL_STRING: return 35;
 
-~~~ step: mcs-mce
+~~~ step: mcs-mce c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4334,7 +4334,7 @@ diff --git a/kilo.c b/kilo.c
    },
  };
 
-~~~ step: mcs-mce-len
+~~~ step: mcs-mce-len c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4352,7 +4352,7 @@ diff --git a/kilo.c b/kilo.c
    int prev_sep = 1;
    int in_string = 0;
 
-~~~ step: syntax-mlcomment
+~~~ step: syntax-mlcomment c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4393,7 +4393,7 @@ diff --git a/kilo.c b/kilo.c
        if (in_string) {
          row->hl[i] = HL_STRING;
 
-~~~ step: mlcomment-fix-slcomment-and-strings
+~~~ step: mlcomment-fix-slcomment-and-strings c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4407,7 +4407,7 @@ diff --git a/kilo.c b/kilo.c
          memset(&row->hl[i], HL_COMMENT, row->rsize - i);
          return;
 
-~~~ step: idx-and-hloc
+~~~ step: idx-and-hloc c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4443,7 +4443,7 @@ diff --git a/kilo.c b/kilo.c
  
    E.numrows++;
 
-~~~ step: update-idx
+~~~ step: update-idx c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4464,7 +4464,7 @@ diff --git a/kilo.c b/kilo.c
    E.dirty++;
  }
 
-~~~ step: propagate-comment
+~~~ step: propagate-comment c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c

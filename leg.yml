@@ -2,4 +2,9 @@
 :name: kilo
 :title: Build Your Own Text Editor
 :rouge_theme: github
+:tags:
+  :c0: doesn’t compile
+  :c1: compiles, but with no observable effects
+  :c2: compiles
+  :c-unknown: may or may not compile
 ...
