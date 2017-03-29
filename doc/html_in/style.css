@@ -99,19 +99,72 @@ code {
 }
 
 .diff {
-  border: 1px solid #afb4aa;
+  border: 1px solid #ede7e3;
   border-radius: 3px;
   margin-top: 18px;
 }
 
-.diff .filename {
-  display: none;
-  padding-left: 5px;
-  background-color: #666;
+.diff .diff-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 5px;
+  background-color: #ede7e3;
+  font-size: 16px;
+  color: #666;
 }
 
-.diff .filename a {
-  color: white;
+.diff .step-number {
+  font-weight: bold;
+}
+
+.diff .step-filename {
+  font-weight: bold;
+}
+
+.diff .step-name {
+  font-family: 'Fira Mono', monospace;
+  font-size: 12px;
+}
+
+.diff .diff-header a {
+  text-decoration: none;
+  color: #666;
+}
+
+.diff .diff-header a:hover {
+  text-decoration: underline;
+}
+
+.diff .step-filename a {
+  text-decoration: underline;
+}
+
+.diff .diff-footer {
+  background-color: #ede7e3;
+}
+
+.diff .diff-footer > div {
+  font-size: 12px;
+  line-height: 16px;
+  height: 16px;
+  padding-right: 5px;
+  text-align: right;
+}
+
+.diff .diff-tag-c0 {
+  color: #b33;
+}
+
+.diff .diff-tag-c1 {
+  color: #33b;
+}
+
+.diff .diff-tag-c2 {
+  color: #3b3;
+}
+
+.diff .diff-tag-c-unknown {
+  color: #999;
 }
 
 .highlight {
