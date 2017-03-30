@@ -2759,7 +2759,7 @@ diff --git a/kilo.c b/kilo.c
    E.statusmsg[0] = '\0';
    E.statusmsg_time = 0;
 
-~~~ step: show-dirty c2
+~~~ step: show-dirty c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -2776,7 +2776,7 @@ diff --git a/kilo.c b/kilo.c
      E.cy + 1, E.numrows);
    if (len > E.screencols) len = E.screencols;
 
-~~~ step: increment-dirty c1
+~~~ step: increment-dirty c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
