@@ -4185,7 +4185,7 @@ diff --git a/kilo.c b/kilo.c
      unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : HL_NORMAL;
  
 +    if (scs_len && !in_string) {
-+      if (prev_sep && !strncmp(&row->render[i], scs, scs_len)) {
++      if (!strncmp(&row->render[i], scs, scs_len)) {
 +        memset(&row->hl[i], HL_COMMENT, row->rsize - i);
 +        return;
 +      }
@@ -4305,7 +4305,7 @@ diff --git a/kilo.c b/kilo.c
 +          char sym = (c[j] >= 0 && c[j] <= 26) ? '@' + c[j] : '?';
 +          abAppend(ab, "\x1b[7m", 4);
 +          abAppend(ab, &sym, 1);
-+          abAppend(ab, "\x1b[m", 4);
++          abAppend(ab, "\x1b[m", 3);
 +        } else if (hl[j] == HL_NORMAL) {
            if (current_color != -1) {
              abAppend(ab, "\x1b[39m", 5);
@@ -4318,7 +4318,7 @@ diff --git a/kilo.c b/kilo.c
 @@ -731,6 +731,11 @@ void editorDrawRows(struct abuf *ab) {
            abAppend(ab, "\x1b[7m", 4);
            abAppend(ab, &sym, 1);
-           abAppend(ab, "\x1b[m", 4);
+           abAppend(ab, "\x1b[m", 3);
 +          if (current_color != -1) {
 +            char buf[16];
 +            int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", current_color);
@@ -4433,7 +4433,7 @@ diff --git a/kilo.c b/kilo.c
        if (in_string) {
          row->hl[i] = HL_STRING;
 
-~~~ step: slcomment-within-mlcomment c2
+~~~ step: slcomment-within-mlcomment c1
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
@@ -4443,7 +4443,7 @@ diff --git a/kilo.c b/kilo.c
  
 -    if (scs_len && !in_string) {
 +    if (scs_len && !in_string && !in_comment) {
-       if (prev_sep && !strncmp(&row->render[i], scs, scs_len)) {
+       if (!strncmp(&row->render[i], scs, scs_len)) {
          memset(&row->hl[i], HL_COMMENT, row->rsize - i);
          return;
 
