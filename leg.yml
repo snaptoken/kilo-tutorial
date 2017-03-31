@@ -2,6 +2,9 @@
 :name: kilo
 :title: Build Your Own Text Editor
 :rouge_theme: github
+:repo_author:
+  :name: snaptoken
+  :email: snaptoken@viewsourcecode.org
 :tags:
   :c0: "♏&#xFE0E; doesn’t compile"
   :c1: "♎&#xFE0E; compiles, but with no observable effects"
