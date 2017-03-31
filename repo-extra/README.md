@@ -7,8 +7,8 @@ a ref to that step's commit.
 If you want to compare your version of `kilo.c` with the version in this repo
 for a particular step, say `keypresses`, you could do it like this:
 
-    $ git clone https://github.com/snaptoken/kilo
-    $ cd kilo
+    $ git clone https://github.com/snaptoken/kilo-src
+    $ cd kilo-src
     $ git checkout keypresses
     $ git diff --no-index -b ../path/to/your/kilo.c kilo.c
 
