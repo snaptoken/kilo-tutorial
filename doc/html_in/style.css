@@ -44,8 +44,13 @@ footer.bar > nav {
 
 #version {
   text-align: right;
-  font-size: 14px;
+  font-size: 12px;
+  font-family: 'Fira Mono', monospace;
   padding-right: 5px;
+}
+
+#version a {
+  color: #333;
 }
 
 h1, h2, h3, h4, h5, h6 {
