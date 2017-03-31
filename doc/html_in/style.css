@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Fira+Mono');
+@import url('https://fonts.googleapis.com/css?family=PT+Serif:400,400i,700|Work+Sans:700|Fira+Mono|Fira+Mono:500');
 
 * {
   margin: 0;
@@ -7,7 +7,7 @@
 }
 
 body {
-  font-family: Utopia, Georgia, Times, serif;
+  font-family: 'PT Serif', Utopia, Georgia, Times, serif;
   line-height: 140%;
   color: #333;
   font-size: 18px;
@@ -43,7 +43,7 @@ footer.bar > nav {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: futura, helvetica, arial, sans-serif;
+  font-family: 'Work Sans', Futura, Helvetica, Arial, sans-serif;
   line-height: 100%;
   color: #222;
   margin-top: 32px;
@@ -81,8 +81,13 @@ a {
 code {
   font-family: 'Fira Mono', monospace;
   font-size: inherit;
+  white-space: nowrap;
   background-color: #eff4ea;
   padding: 1px 3px;
+}
+
+h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
+  font-weight: normal;
 }
 
 .diff code {
@@ -91,6 +96,7 @@ code {
   background-color: none;
   padding: 0;
   margin-bottom: 18px;
+  white-space: inherit;
 }
 
 .diff pre {

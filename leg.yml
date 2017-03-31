@@ -2,6 +2,7 @@
 :name: kilo
 :title: Build Your Own Text Editor
 :rouge_theme: github
+:bold_weight: 500
 :repo_author:
   :name: snaptoken
   :email: snaptoken@viewsourcecode.org
