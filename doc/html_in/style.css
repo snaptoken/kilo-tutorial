@@ -56,8 +56,27 @@ footer.bar > nav {
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Work Sans', Futura, Helvetica, Arial, sans-serif;
   line-height: 100%;
-  color: #222;
   margin-top: 32px;
+}
+
+h2 a, h3 a, h4 a {
+  color: #222;
+  text-decoration: none;
+}
+
+h2 a::before, h3 a::before, h4 a::before {
+  content: '#';
+  color: #fff;
+  font-weight: normal;
+  transition: color 0.15s ease;
+  display: block;
+  float: left;
+  width: 32px;
+  margin-left: -32px;
+}
+
+h2 a:hover::before, h3 a:hover::before, h4 a:hover::before {
+  color: #ccc;
 }
 
 h1 {
