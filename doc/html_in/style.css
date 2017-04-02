@@ -120,6 +120,23 @@ h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
   font-weight: normal;
 }
 
+kbd {
+  font-family: 'Fira Mono', monospace;
+  border-radius: 3px;
+  padding: 2px 3px;
+  box-shadow: 1px 1px 1px #777;
+  margin: 2px;
+  font-size: 14px;
+  background: #f7f7f7;
+  font-weight: 500;
+  color: #555;
+  white-space: nowrap;
+}
+
+h1 kbd, h2 kbd, h3 kbd, h4 kbd, h5 kbd, h6 kbd {
+  font-size: 80%;
+}
+
 .diff code {
   font-size: 14px;
   line-height: 20px;
