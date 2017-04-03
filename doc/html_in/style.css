@@ -55,12 +55,13 @@ footer.bar > nav {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Work Sans', Futura, Helvetica, Arial, sans-serif;
+  color: #222;
   line-height: 100%;
   margin-top: 32px;
 }
 
 h2 a, h3 a, h4 a {
-  color: #222;
+  color: inherit;
   text-decoration: none;
 }
 
