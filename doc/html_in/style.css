@@ -7,7 +7,7 @@
 }
 
 body {
-  font-family: 'PT Serif', Utopia, Georgia, Times, serif;
+  font-family: 'PT Serif', Utopia, Georgia, Times, 'Apple Symbols', serif;
   line-height: 140%;
   color: #333;
   font-size: 18px;
@@ -239,11 +239,15 @@ h1 kbd, h2 kbd, h3 kbd, h4 kbd, h5 kbd, h6 kbd {
 }
 
 .diff ins.line::after {
-  content: '\2190'; /* left arrow (&larr;) */
   display: block;
+  content: '';
+  width: 20px;
+  height: 20px;
+  background-image: url('i/arrow.png');
+  background-size: 20px 20px;
   position: absolute;
-  right: -18px;
-  top: -2px;
+  right: -24px;
+  top: 0;
 }
 
 .diff del.line {
@@ -252,11 +256,15 @@ h1 kbd, h2 kbd, h3 kbd, h4 kbd, h5 kbd, h6 kbd {
 }
 
 .diff del.line::after {
-  content: '\2715';
   display: block;
+  content: '';
+  width: 20px;
+  height: 20px;
+  background-image: url('i/x.png');
+  background-size: 20px 20px;
   position: absolute;
-  right: -18px;
-  top: -1px;
+  right: -24px;
+  top: 0;
 }
 
 @media screen and (max-width: 700px) {
