@@ -221,11 +221,6 @@ h1 kbd, h2 kbd, h3 kbd, h4 kbd, h5 kbd, h6 kbd {
   color: #a62;
 }
 
-.highlight {
-  margin: 0;
-  background-color: #f9f9f9;
-}
-
 .diff .line {
   display: block;
   height: 20px;
@@ -277,8 +272,16 @@ h1 kbd, h2 kbd, h3 kbd, h4 kbd, h5 kbd, h6 kbd {
     padding: 0 5px;
   }
 
-  .diff {
+  .highlight {
     overflow-x: scroll;
+  }
+
+  .diff .line {
+    width: 700px;
+  }
+
+  .diff ins.line::after, .diff del.line::after {
+    display: none;
   }
 }
 
