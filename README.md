@@ -1,6 +1,13 @@
 # Let’s Learn How To Build Yourself Your Own Text Editor The Hard Way By Following This Hands-On, Step-By-Step Tutorial That Walks You Through A Short Course On How To Roll Your Own Simple Text Editor From Scratch And Learn To Code Practical Modern Real-World Pro C By Example For Great Good: The Definitive Guide
 
-WIP.
+The tutorial is available here: http://viewsourcecode.org/snaptoken/kilo
+
+It is a static HTML site, and you can download your own local copy from here:
+https://github.com/snaptoken/kilo-tutorial/releases
+
+See the
+[appendices](http://viewsourcecode.org/snaptoken/kilo/08.appendices.html) for
+more information about the tutorial itself, including how to contribute.
 
 ## License
 
