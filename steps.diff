@@ -125,10 +125,10 @@ diff --git a/kilo.c b/kilo.c
    char c;
 -  while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q');
 +  while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q') {
-+    if (isprint(c)) {
-+      printf("%d ('%c')\n", c, c);
-+    } else {
++    if (iscntrl(c)) {
 +      printf("%d\n", c);
++    } else {
++      printf("%d ('%c')\n", c, c);
 +    }
 +  }
 +
@@ -210,12 +210,12 @@ diff --git a/kilo.c b/kilo.c
 @@ -28,9 +28,9 @@ int main() {
    char c;
    while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q') {
-     if (isprint(c)) {
--      printf("%d ('%c')\n", c, c);
-+      printf("%d ('%c')\r\n", c, c);
-     } else {
+     if (iscntrl(c)) {
 -      printf("%d\n", c);
 +      printf("%d\r\n", c);
+     } else {
+-      printf("%d ('%c')\n", c, c);
++      printf("%d ('%c')\r\n", c, c);
      }
    }
  
@@ -258,10 +258,10 @@ diff --git a/kilo.c b/kilo.c
 +  while (1) {
 +    char c = '\0';
 +    read(STDIN_FILENO, &c, 1);
-     if (isprint(c)) {
-       printf("%d ('%c')\r\n", c, c);
-     } else {
+     if (iscntrl(c)) {
        printf("%d\r\n", c);
+     } else {
+       printf("%d ('%c')\r\n", c, c);
      }
 +    if (c == 'q') break;
    }
@@ -325,8 +325,8 @@ diff --git a/kilo.c b/kilo.c
      char c = '\0';
 -    read(STDIN_FILENO, &c, 1);
 +    if (read(STDIN_FILENO, &c, 1) == -1 && errno != EAGAIN) die("read");
-     if (isprint(c)) {
-       printf("%d ('%c')\r\n", c, c);
+     if (iscntrl(c)) {
+       printf("%d\r\n", c);
      } else {
 
 ~~~ step: sections c1
@@ -381,10 +381,10 @@ diff --git a/kilo.c b/kilo.c
    while (1) {
      char c = '\0';
      if (read(STDIN_FILENO, &c, 1) == -1 && errno != EAGAIN) die("read");
--    if (isprint(c)) {
--      printf("%d ('%c')\r\n", c, c);
--    } else {
+-    if (iscntrl(c)) {
 -      printf("%d\r\n", c);
+-    } else {
+-      printf("%d ('%c')\r\n", c, c);
 -    }
 -    if (c == 'q') break;
 +    if (c == CTRL_KEY('q')) break;
@@ -665,10 +665,10 @@ diff --git a/kilo.c b/kilo.c
 +  printf("\r\n");
 +  char c;
 +  while (read(STDIN_FILENO, &c, 1) == 1) {
-+    if (isprint(c)) {
-+      printf("%d ('%c')\r\n", c, c);
-+    } else {
++    if (iscntrl(c)) {
 +      printf("%d\r\n", c);
++    } else {
++      printf("%d ('%c')\r\n", c, c);
 +    }
 +  }
 +
@@ -705,10 +705,10 @@ diff --git a/kilo.c b/kilo.c
 -  printf("\r\n");
 -  char c;
 -  while (read(STDIN_FILENO, &c, 1) == 1) {
--    if (isprint(c)) {
--      printf("%d ('%c')\r\n", c, c);
--    } else {
+-    if (iscntrl(c)) {
 -      printf("%d\r\n", c);
+-    } else {
+-      printf("%d ('%c')\r\n", c, c);
 -    }
 +  while (i < sizeof(buf) - 1) {
 +    if (read(STDIN_FILENO, &buf[i], 1) != 1) break;
@@ -3106,7 +3106,7 @@ diff --git a/kilo.c b/kilo.c
 +        editorSetStatusMessage("");
 +        return buf;
 +      }
-+    } else if (isprint(c)) {
++    } else if (!iscntrl(c)) {
 +      if (buflen == bufsize - 1) {
 +        bufsize *= 2;
 +        buf = realloc(buf, bufsize);
@@ -3330,7 +3330,7 @@ diff --git a/kilo.c b/kilo.c
 +        if (callback) callback(buf, c);
          return buf;
        }
-     } else if (isprint(c)) {
+     } else if (!iscntrl(c)) {
 @@ -594,6 +596,8 @@ char *editorPrompt(char *prompt) {
        buf[buflen++] = c;
        buf[buflen] = '\0';
@@ -4301,8 +4301,8 @@ diff --git a/kilo.c b/kilo.c
        int j;
        for (j = 0; j < len; j++) {
 -        if (hl[j] == HL_NORMAL) {
-+        if (!isprint(c[j])) {
-+          char sym = (c[j] >= 0 && c[j] <= 26) ? '@' + c[j] : '?';
++        if (iscntrl(c[j])) {
++          char sym = (c[j] <= 26) ? '@' + c[j] : '?';
 +          abAppend(ab, "\x1b[7m", 4);
 +          abAppend(ab, &sym, 1);
 +          abAppend(ab, "\x1b[m", 3);
