@@ -3106,7 +3106,7 @@ diff --git a/kilo.c b/kilo.c
 +        editorSetStatusMessage("");
 +        return buf;
 +      }
-+    } else if (!iscntrl(c)) {
++    } else if (!iscntrl(c) && c < 128) {
 +      if (buflen == bufsize - 1) {
 +        bufsize *= 2;
 +        buf = realloc(buf, bufsize);
@@ -3330,7 +3330,7 @@ diff --git a/kilo.c b/kilo.c
 +        if (callback) callback(buf, c);
          return buf;
        }
-     } else if (!iscntrl(c)) {
+     } else if (!iscntrl(c) && c < 128) {
 @@ -594,6 +596,8 @@ char *editorPrompt(char *prompt) {
        buf[buflen++] = c;
        buf[buflen] = '\0';
