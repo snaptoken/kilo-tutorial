@@ -1606,10 +1606,10 @@ diff --git a/kilo.c b/kilo.c
 +/*** row operations ***/
 +
 +void editorAppendRow(char *s, size_t len) {
-+  E.row.size = linelen;
-+  E.row.chars = malloc(linelen + 1);
-+  memcpy(E.row.chars, line, linelen);
-+  E.row.chars[linelen] = '\0';
++  E.row.size = len;
++  E.row.chars = malloc(len + 1);
++  memcpy(E.row.chars, s, len);
++  E.row.chars[len] = '\0';
 +  E.numrows = 1;
 +}
 +
@@ -1638,10 +1638,10 @@ diff --git a/kilo.c b/kilo.c
  /*** row operations ***/
  
  void editorAppendRow(char *s, size_t len) {
--  E.row.size = linelen;
--  E.row.chars = malloc(linelen + 1);
--  memcpy(E.row.chars, line, linelen);
--  E.row.chars[linelen] = '\0';
+-  E.row.size = len;
+-  E.row.chars = malloc(len + 1);
+-  memcpy(E.row.chars, s, len);
+-  E.row.chars[len] = '\0';
 -  E.numrows = 1;
 +  E.row = realloc(E.row, sizeof(erow) * (E.numrows + 1));
 +
