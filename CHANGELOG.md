@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0beta5 (April 9, 2017)
+
+* Remove *all* newlines and carriage returns from the end of each line read by
+  `editorOpen()`, by changing `if (linelen > 0 && ...` to
+  `while (linelen > 0 && ...`. This allows text files with DOS line endings
+  (`\r\n`) to be opened properly.
+
 ## 1.0.0beta4 (April 8, 2017)
 
 * In the [Multiple lines](http://viewsourcecode.org/snaptoken/kilo/04.aTextViewer.html#multiple-lines)
