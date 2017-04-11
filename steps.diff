@@ -377,26 +377,21 @@ diff --git a/kilo.c b/kilo.c
  /*** data ***/
  
  struct termios orig_termios;
-@@ -46,12 +50,7 @@ int main() {
-   while (1) {
-     char c = '\0';
-     if (read(STDIN_FILENO, &c, 1) == -1 && errno != EAGAIN) die("read");
--    if (iscntrl(c)) {
--      printf("%d\r\n", c);
--    } else {
--      printf("%d ('%c')\r\n", c, c);
--    }
+@@ -51,7 +55,7 @@ int main() {
+     } else {
+       printf("%d ('%c')\r\n", c, c);
+     }
 -    if (c == 'q') break;
 +    if (c == CTRL_KEY('q')) break;
    }
  
    return 0;
 
-~~~ step: refactor-input c1
+~~~ step: refactor-input c2
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -42,15 +42,34 @@ void enableRawMode() {
+@@ -42,20 +42,34 @@ void enableRawMode() {
    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
  }
  
@@ -429,6 +424,11 @@ diff --git a/kilo.c b/kilo.c
    while (1) {
 -    char c = '\0';
 -    if (read(STDIN_FILENO, &c, 1) == -1 && errno != EAGAIN) die("read");
+-    if (iscntrl(c)) {
+-      printf("%d\r\n", c);
+-    } else {
+-      printf("%d ('%c')\r\n", c, c);
+-    }
 -    if (c == CTRL_KEY('q')) break;
 +    editorProcessKeypress();
    }
