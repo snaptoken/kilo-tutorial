@@ -3456,10 +3456,11 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -422,12 +422,18 @@ void editorFindCallback(char *query, int key) {
+@@ -422,12 +422,19 @@ void editorFindCallback(char *query, int key) {
      direction = 1;
    }
  
++  if (last_match == -1) direction = 1;
 +  int current = last_match;
    int i;
    for (i = 0; i < E.numrows; i++) {
@@ -3482,7 +3483,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -447,7 +447,8 @@ void editorFind() {
+@@ -448,7 +448,8 @@ void editorFind() {
    int saved_coloff = E.coloff;
    int saved_rowoff = E.rowoff;
  
@@ -3497,7 +3498,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -528,7 +528,17 @@ void editorDrawRows(struct abuf *ab) {
+@@ -529,7 +529,17 @@ void editorDrawRows(struct abuf *ab) {
        int len = E.row[filerow].rsize - E.coloff;
        if (len < 0) len = 0;
        if (len > E.screencols) len = E.screencols;
@@ -3626,7 +3627,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -560,16 +560,21 @@ void editorDrawRows(struct abuf *ab) {
+@@ -561,16 +561,21 @@ void editorDrawRows(struct abuf *ab) {
        if (len < 0) len = 0;
        if (len > E.screencols) len = E.screencols;
        char *c = &E.row[filerow].render[E.coloff];
@@ -3656,7 +3657,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -561,16 +561,23 @@ void editorDrawRows(struct abuf *ab) {
+@@ -562,16 +562,23 @@ void editorDrawRows(struct abuf *ab) {
        if (len > E.screencols) len = E.screencols;
        char *c = &E.row[filerow].render[E.coloff];
        unsigned char *hl = &E.row[filerow].hl[E.coloff];
@@ -3712,7 +3713,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -469,6 +469,8 @@ void editorFindCallback(char *query, int key) {
+@@ -470,6 +470,8 @@ void editorFindCallback(char *query, int key) {
        E.cy = current;
        E.cx = editorRowRxToCx(row, match - row->render);
        E.rowoff = E.numrows;
@@ -3742,7 +3743,7 @@ diff --git a/kilo.c b/kilo.c
    if (key == '\r' || key == '\x1b') {
      last_match = -1;
      direction = 1;
-@@ -470,6 +479,9 @@ void editorFindCallback(char *query, int key) {
+@@ -471,6 +480,9 @@ void editorFindCallback(char *query, int key) {
        E.cx = editorRowRxToCx(row, match - row->render);
        E.rowoff = E.numrows;
  
@@ -3896,7 +3897,7 @@ diff --git a/kilo.c b/kilo.c
    struct termios orig_termios;
  };
  
-@@ -877,6 +878,7 @@ void initEditor() {
+@@ -878,6 +879,7 @@ void initEditor() {
    E.filename = NULL;
    E.statusmsg[0] = '\0';
    E.statusmsg_time = 0;
@@ -3909,7 +3910,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -650,8 +650,8 @@ void editorDrawStatusBar(struct abuf *ab) {
+@@ -651,8 +651,8 @@ void editorDrawStatusBar(struct abuf *ab) {
    int len = snprintf(status, sizeof(status), "%.20s - %d lines %s",
      E.filename ? E.filename : "[No Name]", E.numrows,
      E.dirty ? "(modified)" : "");
@@ -4297,7 +4298,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -728,7 +728,12 @@ void editorDrawRows(struct abuf *ab) {
+@@ -729,7 +729,12 @@ void editorDrawRows(struct abuf *ab) {
        int current_color = -1;
        int j;
        for (j = 0; j < len; j++) {
@@ -4316,7 +4317,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -733,6 +733,11 @@ void editorDrawRows(struct abuf *ab) {
+@@ -734,6 +734,11 @@ void editorDrawRows(struct abuf *ab) {
            abAppend(ab, "\x1b[7m", 4);
            abAppend(ab, &sym, 1);
            abAppend(ab, "\x1b[m", 3);
