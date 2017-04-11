@@ -2201,14 +2201,16 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -399,6 +399,11 @@ void editorProcessKeypress() {
+@@ -399,6 +399,13 @@ void editorProcessKeypress() {
      case PAGE_UP:
      case PAGE_DOWN:
        {
-+        if (c == PAGE_UP)
++        if (c == PAGE_UP) {
 +          E.cy = E.rowoff;
-+        else if (c == PAGE_DOWN)
++        } else if (c == PAGE_DOWN) {
 +          E.cy = E.rowoff + E.screenrows - 1;
++          if (E.cy > E.numrows) E.cy = E.numrows;
++        }
 +
          int times = E.screenrows;
          while (times--)
@@ -2244,7 +2246,7 @@ diff --git a/kilo.c b/kilo.c
    }
  }
  
-@@ -432,6 +430,7 @@ void initEditor() {
+@@ -434,6 +432,7 @@ void initEditor() {
    E.row = NULL;
  
    if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
@@ -2305,7 +2307,7 @@ diff --git a/kilo.c b/kilo.c
    FILE *fp = fopen(filename, "r");
    if (!fp) die("fopen");
  
-@@ -439,6 +443,7 @@ void initEditor() {
+@@ -441,6 +445,7 @@ void initEditor() {
    E.coloff = 0;
    E.numrows = 0;
    E.row = NULL;
@@ -2383,7 +2385,7 @@ diff --git a/kilo.c b/kilo.c
    struct termios orig_termios;
  };
  
-@@ -455,6 +458,8 @@ void initEditor() {
+@@ -457,6 +460,8 @@ void initEditor() {
    E.numrows = 0;
    E.row = NULL;
    E.filename = NULL;
@@ -2420,7 +2422,7 @@ diff --git a/kilo.c b/kilo.c
  /*** input ***/
  
  void editorMoveCursor(int key) {
-@@ -472,6 +481,8 @@ int main(int argc, char *argv[]) {
+@@ -474,6 +483,8 @@ int main(int argc, char *argv[]) {
      editorOpen(argv[1]);
    }
  
@@ -2442,7 +2444,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  void editorRefreshScreen() {
-@@ -471,7 +472,7 @@ void initEditor() {
+@@ -473,7 +474,7 @@ void initEditor() {
    E.statusmsg_time = 0;
  
    if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
@@ -2527,7 +2529,7 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -482,6 +482,10 @@ void editorProcessKeypress() {
+@@ -484,6 +484,10 @@ void editorProcessKeypress() {
      case ARROW_RIGHT:
        editorMoveCursor(c);
        break;
@@ -2575,7 +2577,7 @@ diff --git a/kilo.c b/kilo.c
      case PAGE_UP:
      case PAGE_DOWN:
        {
-@@ -483,6 +494,10 @@ void editorProcessKeypress() {
+@@ -485,6 +496,10 @@ void editorProcessKeypress() {
        editorMoveCursor(c);
        break;
  
@@ -2713,7 +2715,7 @@ diff --git a/kilo.c b/kilo.c
  }
  
  /*** append buffer ***/
-@@ -574,7 +576,7 @@ int main(int argc, char *argv[]) {
+@@ -576,7 +578,7 @@ int main(int argc, char *argv[]) {
      editorOpen(argv[1]);
    }
  
@@ -2751,7 +2753,7 @@ diff --git a/kilo.c b/kilo.c
    char *filename;
    char statusmsg[80];
    time_t statusmsg_time;
-@@ -565,6 +566,7 @@ void initEditor() {
+@@ -567,6 +568,7 @@ void initEditor() {
    E.coloff = 0;
    E.numrows = 0;
    E.row = NULL;
@@ -2853,7 +2855,7 @@ diff --git a/kilo.c b/kilo.c
        write(STDOUT_FILENO, "\x1b[2J", 4);
        write(STDOUT_FILENO, "\x1b[H", 3);
        exit(0);
-@@ -559,6 +568,8 @@ void editorProcessKeypress() {
+@@ -561,6 +570,8 @@ void editorProcessKeypress() {
        editorInsertChar(c);
        break;
    }
@@ -3285,7 +3287,7 @@ diff --git a/kilo.c b/kilo.c
      case BACKSPACE:
      case CTRL_KEY('h'):
      case DEL_KEY:
-@@ -738,7 +742,8 @@ int main(int argc, char *argv[]) {
+@@ -740,7 +744,8 @@ int main(int argc, char *argv[]) {
      editorOpen(argv[1]);
    }
  
@@ -3897,7 +3899,7 @@ diff --git a/kilo.c b/kilo.c
    struct termios orig_termios;
  };
  
-@@ -878,6 +879,7 @@ void initEditor() {
+@@ -880,6 +881,7 @@ void initEditor() {
    E.filename = NULL;
    E.statusmsg[0] = '\0';
    E.statusmsg_time = 0;
