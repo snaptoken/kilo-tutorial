@@ -3971,17 +3971,17 @@ diff --git a/kilo.c b/kilo.c
 +  E.syntax = NULL;
 +  if (E.filename == NULL) return;
 +
++  char *ext = strrchr(E.filename, '.');
++
 +  for (unsigned int j = 0; j < HLDB_ENTRIES; j++) {
 +    struct editorSyntax *s = &HLDB[j];
 +    unsigned int i = 0;
 +    while (s->filematch[i]) {
-+      char *p = strstr(E.filename, s->filematch[i]);
-+      if (p != NULL) {
-+        int patlen = strlen(s->filematch[i]);
-+        if (s->filematch[i][0] != '.' || p[patlen] == '\0') {
-+          E.syntax = s;
-+          return;
-+        }
++      int is_ext = (s->filematch[i][0] == '.');
++      if ((is_ext && ext && !strcmp(ext, s->filematch[i])) ||
++          (!is_ext && strstr(E.filename, s->filematch[i]))) {
++        E.syntax = s;
++        return;
 +      }
 +      i++;
 +    }
@@ -4018,19 +4018,19 @@ diff --git a/kilo.c b/kilo.c
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -268,6 +268,12 @@ void editorSelectSyntaxHighlight() {
-         int patlen = strlen(s->filematch[i]);
-         if (s->filematch[i][0] != '.' || p[patlen] == '\0') {
-           E.syntax = s;
+@@ -269,6 +269,12 @@ void editorSelectSyntaxHighlight() {
+       if ((is_ext && ext && !strcmp(ext, s->filematch[i])) ||
+           (!is_ext && strstr(E.filename, s->filematch[i]))) {
+         E.syntax = s;
 +
-+          int filerow;
-+          for (filerow = 0; filerow < E.numrows; filerow++) {
-+            editorUpdateSyntax(&E.row[filerow]);
-+          }
++        int filerow;
++        for (filerow = 0; filerow < E.numrows; filerow++) {
++          editorUpdateSyntax(&E.row[filerow]);
++        }
 +
-           return;
-         }
+         return;
        }
+       i++;
 
 ~~~ step: hl-string c1
 diff --git a/kilo.c b/kilo.c
