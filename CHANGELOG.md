@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.0beta7 (April 20, 2017)
+
+* In `editorSelectSyntaxHighlight()`, change the logic for filename pattern
+  matching, so that filenames like `kilo.c.c` will work. (Thanks Ivandro)
+
 ## 1.0.0beta6 (April 10, 2017)
 
 * Near the end of chapter 6, add `if (last_match == -1) direction = 1;` to
