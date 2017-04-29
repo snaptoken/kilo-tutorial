@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0beta8 (April 28, 2017)
+
+* `strchr()` was described incorrectly in
+  [chapter 7](http://viewsourcecode.org/snaptoken/kilo/07.syntaxHighlighting.html#colorful-numbers).
+  (Thanks Rudi)
+
 ## 1.0.0beta7 (April 20, 2017)
 
 * In `editorSelectSyntaxHighlight()`, change the logic for filename pattern
