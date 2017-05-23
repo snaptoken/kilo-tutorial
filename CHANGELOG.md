@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0beta9 (May 22, 2017)
+
+* Make explanation of step 30 clearer by reordering paragraphs. (Thanks @mtn)
+* Update [How to contribute](http://viewsourcecode.org/snaptoken/kilo/08.appendices.html#how-to-contribute)
+  section. (Thanks @mtn)
+
 ## 1.0.0beta8 (April 28, 2017)
 
 * `strchr()` was described incorrectly in
