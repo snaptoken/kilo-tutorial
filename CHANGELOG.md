@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0beta10 (July 12, 2017)
+
+* Make bit numbering clearer in the explanation of step 20. (Thanks @fyce)
+
 ## 1.0.0beta9 (May 22, 2017)
 
 * Make explanation of step 30 clearer by reordering paragraphs. (Thanks @mtn)
