@@ -1,6 +1,6 @@
 ---
 :name: kilo
-:version: "1.0.0beta10"
+:version: "1.0.0beta11"
 :title: Build Your Own Text Editor
 :sync: repo
 :rouge_theme: github

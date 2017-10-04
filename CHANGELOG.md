@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0beta11 (October 3, 2017)
+
+* Fix number of bits in binary example. (Thanks @osiyuk)
+
 ## 1.0.0beta10 (July 12, 2017)
 
 * Make bit numbering clearer in the explanation of step 20. (Thanks @fyce)
