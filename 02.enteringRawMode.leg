@@ -1,3 +1,5 @@
+~~~
+
 # Entering raw mode
 
 Let's try and read keypresses from the user. (The lines you need to add are
@@ -14,12 +16,12 @@ index 4cce7f6..f792e0c 100644
 @@ -1,3 +1,8 @@
 +#include <unistd.h>
 +
- int main() {
+|int main() {
 +  char c;
 +  while (read(STDIN_FILENO, &c, 1) == 1);
 +
-   return 0;
- }
+|  return 0;
+|}
 
 ~~~
 
@@ -64,13 +66,13 @@ index f792e0c..4a8dcf7 100644
 +++ b/kilo.c
 @@ -2,7 +2,7 @@
 |
- int main() {
-   char c;
+|int main() {
+|  char c;
 -  while (read(STDIN_FILENO, &c, 1) == 1);
 |
 +  while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q');
-   return 0;
- }
+|  return 0;
+|}
 
 ~~~
 
@@ -98,7 +100,7 @@ index 4a8dcf7..db89bad 100644
 +++ b/kilo.c
 @@ -1,8 +1,20 @@
 +#include <termios.h>
- #include <unistd.h>
+|#include <unistd.h>
 |
 +void enableRawMode() {
 +  struct termios raw;
@@ -110,14 +112,14 @@ index 4a8dcf7..db89bad 100644
 +  tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 +}
 +
- int main() {
+|int main() {
 -  char c;
 +  enableRawMode();
 |
 +  char c;
-   while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q');
-   return 0;
- }
+|  while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q');
+|  return 0;
+|}
 
 ~~~
 
@@ -175,8 +177,8 @@ index db89bad..67b9532 100644
 +++ b/kilo.c
 @@ -1,11 +1,18 @@
 +#include <stdlib.h>
- #include <termios.h>
- #include <unistd.h>
+|#include <termios.h>
+|#include <unistd.h>
 |
 -void enableRawMode() {
 -  struct termios raw;
@@ -192,9 +194,9 @@ index db89bad..67b9532 100644
 +  atexit(disableRawMode);
 |
 +  struct termios raw = orig_termios;
-   raw.c_lflag &= ~(ECHO);
+|  raw.c_lflag &= ~(ECHO);
 |
-   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+|  tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 
 ~~~
 
@@ -229,14 +231,14 @@ index 67b9532..669ba86 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -13,7 +13,7 @@ void enableRawMode() {
-   atexit(disableRawMode);
+|  atexit(disableRawMode);
 |
-   struct termios raw = orig_termios;
+|  struct termios raw = orig_termios;
 -  raw.c_lflag &= ~(ECHO);
 +  raw.c_lflag &= ~(ECHO | ICANON);
 |
-   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
- }
+|  tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+|}
 
 ~~~
 
@@ -263,13 +265,13 @@ index 669ba86..bae8a44 100644
 @@ -1,3 +1,5 @@
 +#include <ctype.h>
 +#include <stdio.h>
- #include <stdlib.h>
- #include <termios.h>
- #include <unistd.h>
+|#include <stdlib.h>
+|#include <termios.h>
+|#include <unistd.h>
 @@ -22,6 +24,13 @@ int main() {
-   enableRawMode();
+|  enableRawMode();
 |
-   char c;
+|  char c;
 -  while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q');
 +  while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q') {
 +    if (iscntrl(c)) {
@@ -279,8 +281,8 @@ index 669ba86..bae8a44 100644
 +    }
 +  }
 +
-   return 0;
- }
+|  return 0;
+|}
 
 ~~~
 
@@ -347,14 +349,14 @@ index bae8a44..e39adda 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -15,7 +15,7 @@ void enableRawMode() {
-   atexit(disableRawMode);
+|  atexit(disableRawMode);
 |
-   struct termios raw = orig_termios;
+|  struct termios raw = orig_termios;
 -  raw.c_lflag &= ~(ECHO | ICANON);
 +  raw.c_lflag &= ~(ECHO | ICANON | ISIG);
 |
-   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
- }
+|  tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+|}
 
 ~~~
 
@@ -385,13 +387,13 @@ index e39adda..5747973 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -15,6 +15,7 @@ void enableRawMode() {
-   atexit(disableRawMode);
+|  atexit(disableRawMode);
 |
-   struct termios raw = orig_termios;
+|  struct termios raw = orig_termios;
 +  raw.c_iflag &= ~(IXON);
-   raw.c_lflag &= ~(ECHO | ICANON | ISIG);
+|  raw.c_lflag &= ~(ECHO | ICANON | ISIG);
 |
-   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+|  tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 
 ~~~
 
@@ -424,13 +426,13 @@ index 5747973..df0d5d7 100644
 +++ b/kilo.c
 @@ -16,7 +16,7 @@ void enableRawMode() {
 |
-   struct termios raw = orig_termios;
-   raw.c_iflag &= ~(IXON);
+|  struct termios raw = orig_termios;
+|  raw.c_iflag &= ~(IXON);
 -  raw.c_lflag &= ~(ECHO | ICANON | ISIG);
 +  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 |
-   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
- }
+|  tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+|}
 
 ~~~
 
@@ -462,14 +464,14 @@ index df0d5d7..b943855 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -15,7 +15,7 @@ void enableRawMode() {
-   atexit(disableRawMode);
+|  atexit(disableRawMode);
 |
-   struct termios raw = orig_termios;
+|  struct termios raw = orig_termios;
 -  raw.c_iflag &= ~(IXON);
 +  raw.c_iflag &= ~(ICRNL | IXON);
-   raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+|  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 |
-   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+|  tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 
 ~~~
 
@@ -504,12 +506,12 @@ index b943855..ef16c65 100644
 +++ b/kilo.c
 @@ -16,6 +16,7 @@ void enableRawMode() {
 |
-   struct termios raw = orig_termios;
-   raw.c_iflag &= ~(ICRNL | IXON);
+|  struct termios raw = orig_termios;
+|  raw.c_iflag &= ~(ICRNL | IXON);
 +  raw.c_oflag &= ~(OPOST);
-   raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+|  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 |
-   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+|  tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 
 ~~~
 
@@ -529,16 +531,16 @@ index ef16c65..73bb8e7 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -28,9 +28,9 @@ int main() {
-   char c;
-   while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q') {
-     if (iscntrl(c)) {
+|  char c;
+|  while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q') {
+|    if (iscntrl(c)) {
 -      printf("%d\n", c);
 +      printf("%d\r\n", c);
-     } else {
+|    } else {
 -      printf("%d ('%c')\n", c, c);
 +      printf("%d ('%c')\r\n", c, c);
-     }
-   }
+|    }
+|  }
 |
 
 ~~~
@@ -559,16 +561,16 @@ index 73bb8e7..74945d8 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -15,8 +15,9 @@ void enableRawMode() {
-   atexit(disableRawMode);
+|  atexit(disableRawMode);
 |
-   struct termios raw = orig_termios;
+|  struct termios raw = orig_termios;
 -  raw.c_iflag &= ~(ICRNL | IXON);
 +  raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-   raw.c_oflag &= ~(OPOST);
+|  raw.c_oflag &= ~(OPOST);
 +  raw.c_cflag |= (CS8);
-   raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+|  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 |
-   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+|  tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 
 ~~~
 
@@ -610,32 +612,32 @@ index 74945d8..d9828bc 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -19,6 +19,8 @@ void enableRawMode() {
-   raw.c_oflag &= ~(OPOST);
-   raw.c_cflag |= (CS8);
-   raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+|  raw.c_oflag &= ~(OPOST);
+|  raw.c_cflag |= (CS8);
+|  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
 +  raw.c_cc[VMIN] = 0;
 +  raw.c_cc[VTIME] = 1;
 |
-   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
- }
+|  tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+|}
 @@ -26,13 +28,15 @@ void enableRawMode() {
- int main() {
-   enableRawMode();
+|int main() {
+|  enableRawMode();
 |
 -  char c;
 -  while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q') {
 +  while (1) {
 +    char c = '\0';
 +    read(STDIN_FILENO, &c, 1);
-     if (iscntrl(c)) {
-       printf("%d\r\n", c);
-     } else {
-       printf("%d ('%c')\r\n", c, c);
-     }
+|    if (iscntrl(c)) {
+|      printf("%d\r\n", c);
+|    } else {
+|      printf("%d ('%c')\r\n", c, c);
+|    }
 +    if (c == 'q') break;
-   }
+|  }
 |
-   return 0;
+|  return 0;
 
 ~~~
 
@@ -680,16 +682,16 @@ index d9828bc..9ce3bbf 100644
 +++ b/kilo.c
 @@ -6,6 +6,11 @@
 |
- struct termios orig_termios;
+|struct termios orig_termios;
 |
 +void die(const char *s) {
 +  perror(s);
 +  exit(1);
 +}
 +
- void disableRawMode() {
-   tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
- }
+|void disableRawMode() {
+|  tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
+|}
 
 ~~~
 
@@ -716,44 +718,44 @@ index 9ce3bbf..61d4a5e 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,5 @@
- #include <ctype.h>
+|#include <ctype.h>
 +#include <errno.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <termios.h>
+|#include <stdio.h>
+|#include <stdlib.h>
+|#include <termios.h>
 @@ -12,11 +13,12 @@ void die(const char *s) {
- }
+|}
 |
- void disableRawMode() {
+|void disableRawMode() {
 -  tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
 +  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1)
 +    die("tcsetattr");
- }
+|}
 |
- void enableRawMode() {
+|void enableRawMode() {
 -  tcgetattr(STDIN_FILENO, &orig_termios);
 +  if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) die("tcgetattr");
-   atexit(disableRawMode);
+|  atexit(disableRawMode);
 |
-   struct termios raw = orig_termios;
+|  struct termios raw = orig_termios;
 @@ -27,7 +29,7 @@ void enableRawMode() {
-   raw.c_cc[VMIN] = 0;
-   raw.c_cc[VTIME] = 1;
+|  raw.c_cc[VMIN] = 0;
+|  raw.c_cc[VTIME] = 1;
 |
 -  tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 +  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
- }
+|}
 |
- int main() {
+|int main() {
 @@ -35,7 +37,7 @@ int main() {
 |
-   while (1) {
-     char c = '\0';
+|  while (1) {
+|    char c = '\0';
 -    read(STDIN_FILENO, &c, 1);
 +    if (read(STDIN_FILENO, &c, 1) == -1 && errno != EAGAIN) die("read");
-     if (iscntrl(c)) {
-       printf("%d\r\n", c);
-     } else {
+|    if (iscntrl(c)) {
+|      printf("%d\r\n", c);
+|    } else {
 
 ~~~
 
@@ -790,30 +792,30 @@ index 61d4a5e..b0902cc 100644
 @@ -1,3 +1,5 @@
 +/*** includes ***/
 +
- #include <ctype.h>
- #include <errno.h>
- #include <stdio.h>
+|#include <ctype.h>
+|#include <errno.h>
+|#include <stdio.h>
 @@ -5,8 +7,12 @@
- #include <termios.h>
- #include <unistd.h>
+|#include <termios.h>
+|#include <unistd.h>
 |
 +/*** data ***/
 +
- struct termios orig_termios;
+|struct termios orig_termios;
 |
 +/*** terminal ***/
 +
- void die(const char *s) {
-   perror(s);
-   exit(1);
+|void die(const char *s) {
+|  perror(s);
+|  exit(1);
 @@ -32,6 +38,8 @@ void enableRawMode() {
-   if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
- }
+|  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
+|}
 |
 +/*** init ***/
 +
- int main() {
-   enableRawMode();
+|int main() {
+|  enableRawMode();
 |
 
 ~~~
@@ -821,3 +823,4 @@ index 61d4a5e..b0902cc 100644
 In the [next chapter](03.rawInputAndOutput.html), we'll do some more low-level
 terminal input/output handling, and use that to draw to the screen and allow
 the user to move the cursor around.
+

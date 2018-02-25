@@ -1,3 +1,5 @@
+~~~
+
 # Setup
 
 ![Step 1 of a Lego instruction booklet: a single Lego piece](i/lego-step-one.png)
@@ -169,3 +171,4 @@ don't seem to have any effect. You must recompile in order for changes in
 
 In the [next chapter](02.enteringRawMode.html), we'll work on getting the
 terminal into *raw mode*, and reading individual keypresses from the user.
+

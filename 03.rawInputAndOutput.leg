@@ -7,25 +7,25 @@ index b0902cc..1f2f3b2 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -7,6 +7,10 @@
- #include <termios.h>
- #include <unistd.h>
- 
+|#include <termios.h>
+|#include <unistd.h>
+|
 +/*** defines ***/
 +
 +#define CTRL_KEY(k) ((k) & 0x1f)
 +
- /*** data ***/
- 
- struct termios orig_termios;
+|/*** data ***/
+|
+|struct termios orig_termios;
 @@ -51,7 +55,7 @@ int main() {
-     } else {
-       printf("%d ('%c')\r\n", c, c);
-     }
+|    } else {
+|      printf("%d ('%c')\r\n", c, c);
+|    }
 -    if (c == 'q') break;
 +    if (c == CTRL_KEY('q')) break;
-   }
- 
-   return 0;
+|  }
+|
+|  return 0;
 
 ~~~
 
@@ -36,9 +36,9 @@ index 1f2f3b2..6ddded4 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -42,20 +42,34 @@ void enableRawMode() {
-   if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
- }
- 
+|  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
+|}
+|
 +char editorReadKey() {
 +  int nread;
 +  char c;
@@ -60,12 +60,12 @@ index 1f2f3b2..6ddded4 100644
 +  }
 +}
 +
- /*** init ***/
- 
- int main() {
-   enableRawMode();
- 
-   while (1) {
+|/*** init ***/
+|
+|int main() {
+|  enableRawMode();
+|
+|  while (1) {
 -    char c = '\0';
 -    if (read(STDIN_FILENO, &c, 1) == -1 && errno != EAGAIN) die("read");
 -    if (iscntrl(c)) {
@@ -75,9 +75,9 @@ index 1f2f3b2..6ddded4 100644
 -    }
 -    if (c == CTRL_KEY('q')) break;
 +    editorProcessKeypress();
-   }
- 
-   return 0;
+|  }
+|
+|  return 0;
 
 ~~~
 
@@ -88,26 +88,26 @@ index 6ddded4..0a75223 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -51,6 +51,12 @@ char editorReadKey() {
-   return c;
- }
- 
+|  return c;
+|}
+|
 +/*** output ***/
 +
 +void editorRefreshScreen() {
 +  write(STDOUT_FILENO, "\x1b[2J", 4);
 +}
 +
- /*** input ***/
- 
- void editorProcessKeypress() {
+|/*** input ***/
+|
+|void editorProcessKeypress() {
 @@ -69,6 +75,7 @@ int main() {
-   enableRawMode();
- 
-   while (1) {
+|  enableRawMode();
+|
+|  while (1) {
 +    editorRefreshScreen();
-     editorProcessKeypress();
-   }
- 
+|    editorProcessKeypress();
+|  }
+|
 
 ~~~
 
@@ -118,13 +118,13 @@ index 0a75223..e4487a2 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -55,6 +55,7 @@ char editorReadKey() {
- 
- void editorRefreshScreen() {
-   write(STDOUT_FILENO, "\x1b[2J", 4);
+|
+|void editorRefreshScreen() {
+|  write(STDOUT_FILENO, "\x1b[2J", 4);
 +  write(STDOUT_FILENO, "\x1b[H", 3);
- }
- 
- /*** input ***/
+|}
+|
+|/*** input ***/
 
 ~~~
 
@@ -135,24 +135,24 @@ index e4487a2..f29076a 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -18,6 +18,9 @@ struct termios orig_termios;
- /*** terminal ***/
- 
- void die(const char *s) {
+|/*** terminal ***/
+|
+|void die(const char *s) {
 +  write(STDOUT_FILENO, "\x1b[2J", 4);
 +  write(STDOUT_FILENO, "\x1b[H", 3);
 +
-   perror(s);
-   exit(1);
- }
+|  perror(s);
+|  exit(1);
+|}
 @@ -65,6 +68,8 @@ void editorProcessKeypress() {
- 
-   switch (c) {
-     case CTRL_KEY('q'):
+|
+|  switch (c) {
+|    case CTRL_KEY('q'):
 +      write(STDOUT_FILENO, "\x1b[2J", 4);
 +      write(STDOUT_FILENO, "\x1b[H", 3);
-       exit(0);
-       break;
-   }
+|      exit(0);
+|      break;
+|  }
 
 ~~~
 
@@ -163,9 +163,9 @@ index f29076a..d57b97e 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -56,9 +56,20 @@ char editorReadKey() {
- 
- /*** output ***/
- 
+|
+|/*** output ***/
+|
 +void editorDrawRows() {
 +  int y;
 +  for (y = 0; y < 24; y++) {
@@ -173,16 +173,16 @@ index f29076a..d57b97e 100644
 +  }
 +}
 +
- void editorRefreshScreen() {
-   write(STDOUT_FILENO, "\x1b[2J", 4);
-   write(STDOUT_FILENO, "\x1b[H", 3);
+|void editorRefreshScreen() {
+|  write(STDOUT_FILENO, "\x1b[2J", 4);
+|  write(STDOUT_FILENO, "\x1b[H", 3);
 +
 +  editorDrawRows();
 +
 +  write(STDOUT_FILENO, "\x1b[H", 3);
- }
- 
- /*** input ***/
+|}
+|
+|/*** input ***/
 
 ~~~
 
@@ -193,37 +193,37 @@ index d57b97e..9382004 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -13,7 +13,11 @@
- 
- /*** data ***/
- 
+|
+|/*** data ***/
+|
 -struct termios orig_termios;
 +struct editorConfig {
 +  struct termios orig_termios;
 +};
 +
 +struct editorConfig E;
- 
- /*** terminal ***/
- 
+|
+|/*** terminal ***/
+|
 @@ -26,15 +30,15 @@ void die(const char *s) {
- }
- 
- void disableRawMode() {
+|}
+|
+|void disableRawMode() {
 -  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1)
 +  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &E.orig_termios) == -1)
-     die("tcsetattr");
- }
- 
- void enableRawMode() {
+|    die("tcsetattr");
+|}
+|
+|void enableRawMode() {
 -  if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) die("tcgetattr");
 +  if (tcgetattr(STDIN_FILENO, &E.orig_termios) == -1) die("tcgetattr");
-   atexit(disableRawMode);
- 
+|  atexit(disableRawMode);
+|
 -  struct termios raw = orig_termios;
 +  struct termios raw = E.orig_termios;
-   raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-   raw.c_oflag &= ~(OPOST);
-   raw.c_cflag |= (CS8);
+|  raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+|  raw.c_oflag &= ~(OPOST);
+|  raw.c_cflag |= (CS8);
 
 ~~~
 
@@ -234,17 +234,17 @@ index 9382004..59ee080 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -4,6 +4,7 @@
- #include <errno.h>
- #include <stdio.h>
- #include <stdlib.h>
+|#include <errno.h>
+|#include <stdio.h>
+|#include <stdlib.h>
 +#include <sys/ioctl.h>
- #include <termios.h>
- #include <unistd.h>
- 
+|#include <termios.h>
+|#include <unistd.h>
+|
 @@ -58,6 +59,18 @@ char editorReadKey() {
-   return c;
- }
- 
+|  return c;
+|}
+|
 +int getWindowSize(int *rows, int *cols) {
 +  struct winsize ws;
 +
@@ -257,9 +257,9 @@ index 9382004..59ee080 100644
 +  }
 +}
 +
- /*** output ***/
- 
- void editorDrawRows() {
+|/*** output ***/
+|
+|void editorDrawRows() {
 
 ~~~
 
@@ -270,28 +270,28 @@ index 59ee080..b79e06a 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -15,6 +15,8 @@
- /*** data ***/
- 
- struct editorConfig {
+|/*** data ***/
+|
+|struct editorConfig {
 +  int screenrows;
 +  int screencols;
-   struct termios orig_termios;
- };
- 
+|  struct termios orig_termios;
+|};
+|
 @@ -105,8 +107,13 @@ void editorProcessKeypress() {
- 
- /*** init ***/
- 
+|
+|/*** init ***/
+|
 +void initEditor() {
 +  if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
 +}
 +
- int main() {
-   enableRawMode();
+|int main() {
+|  enableRawMode();
 +  initEditor();
- 
-   while (1) {
-     editorRefreshScreen();
+|
+|  while (1) {
+|    editorRefreshScreen();
 
 ~~~
 
@@ -302,14 +302,14 @@ index b79e06a..b5fcec4 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -77,7 +77,7 @@ int getWindowSize(int *rows, int *cols) {
- 
- void editorDrawRows() {
-   int y;
+|
+|void editorDrawRows() {
+|  int y;
 -  for (y = 0; y < 24; y++) {
 +  for (y = 0; y < E.screenrows; y++) {
-     write(STDOUT_FILENO, "~\r\n", 3);
-   }
- }
+|    write(STDOUT_FILENO, "~\r\n", 3);
+|  }
+|}
 
 ~~~
 
@@ -320,16 +320,16 @@ index b5fcec4..bac666f 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -64,7 +64,9 @@ char editorReadKey() {
- int getWindowSize(int *rows, int *cols) {
-   struct winsize ws;
- 
+|int getWindowSize(int *rows, int *cols) {
+|  struct winsize ws;
+|
 -  if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
 +  if (1 || ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
 +    if (write(STDOUT_FILENO, "\x1b[999C\x1b[999B", 12) != 12) return -1;
 +    editorReadKey();
-     return -1;
-   } else {
-     *cols = ws.ws_col;
+|    return -1;
+|  } else {
+|    *cols = ws.ws_col;
 
 ~~~
 
@@ -340,9 +340,9 @@ index bac666f..36c0569 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -61,13 +61,30 @@ char editorReadKey() {
-   return c;
- }
- 
+|  return c;
+|}
+|
 +int getCursorPosition(int *rows, int *cols) {
 +  if (write(STDOUT_FILENO, "\x1b[6n", 4) != 4) return -1;
 +
@@ -361,17 +361,17 @@ index bac666f..36c0569 100644
 +  return -1;
 +}
 +
- int getWindowSize(int *rows, int *cols) {
-   struct winsize ws;
- 
-   if (1 || ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
-     if (write(STDOUT_FILENO, "\x1b[999C\x1b[999B", 12) != 12) return -1;
+|int getWindowSize(int *rows, int *cols) {
+|  struct winsize ws;
+|
+|  if (1 || ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
+|    if (write(STDOUT_FILENO, "\x1b[999C\x1b[999B", 12) != 12) return -1;
 -    editorReadKey();
 -    return -1;
 +    return getCursorPosition(rows, cols);
-   } else {
-     *cols = ws.ws_col;
-     *rows = ws.ws_row;
+|  } else {
+|    *cols = ws.ws_col;
+|    *rows = ws.ws_row;
 
 ~~~
 
@@ -382,14 +382,14 @@ index 36c0569..f2e10a4 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -62,17 +62,19 @@ char editorReadKey() {
- }
- 
- int getCursorPosition(int *rows, int *cols) {
+|}
+|
+|int getCursorPosition(int *rows, int *cols) {
 +  char buf[32];
 +  unsigned int i = 0;
 +
-   if (write(STDOUT_FILENO, "\x1b[6n", 4) != 4) return -1;
- 
+|  if (write(STDOUT_FILENO, "\x1b[6n", 4) != 4) return -1;
+|
 -  printf("\r\n");
 -  char c;
 -  while (read(STDIN_FILENO, &c, 1) == 1) {
@@ -402,13 +402,13 @@ index 36c0569..f2e10a4 100644
 +    if (read(STDIN_FILENO, &buf[i], 1) != 1) break;
 +    if (buf[i] == 'R') break;
 +    i++;
-   }
+|  }
 +  buf[i] = '\0';
 +
 +  printf("\r\n&buf[1]: '%s'\r\n", &buf[1]);
- 
-   editorReadKey();
- 
+|
+|  editorReadKey();
+|
 
 ~~~
 
@@ -419,20 +419,20 @@ index f2e10a4..e2fb34c 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -74,11 +74,10 @@ int getCursorPosition(int *rows, int *cols) {
-   }
-   buf[i] = '\0';
- 
+|  }
+|  buf[i] = '\0';
+|
 -  printf("\r\n&buf[1]: '%s'\r\n", &buf[1]);
 +  if (buf[0] != '\x1b' || buf[1] != '[') return -1;
 +  if (sscanf(&buf[2], "%d;%d", rows, cols) != 2) return -1;
- 
+|
 -  editorReadKey();
 -
 -  return -1;
 +  return 0;
- }
- 
- int getWindowSize(int *rows, int *cols) {
+|}
+|
+|int getWindowSize(int *rows, int *cols) {
 
 ~~~
 
@@ -443,14 +443,14 @@ index e2fb34c..0d5948d 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -83,7 +83,7 @@ int getCursorPosition(int *rows, int *cols) {
- int getWindowSize(int *rows, int *cols) {
-   struct winsize ws;
- 
+|int getWindowSize(int *rows, int *cols) {
+|  struct winsize ws;
+|
 -  if (1 || ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
 +  if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
-     if (write(STDOUT_FILENO, "\x1b[999C\x1b[999B", 12) != 12) return -1;
-     return getCursorPosition(rows, cols);
-   } else {
+|    if (write(STDOUT_FILENO, "\x1b[999C\x1b[999B", 12) != 12) return -1;
+|    return getCursorPosition(rows, cols);
+|  } else {
 
 ~~~
 
@@ -461,18 +461,18 @@ index 0d5948d..467111f 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -98,7 +98,11 @@ int getWindowSize(int *rows, int *cols) {
- void editorDrawRows() {
-   int y;
-   for (y = 0; y < E.screenrows; y++) {
+|void editorDrawRows() {
+|  int y;
+|  for (y = 0; y < E.screenrows; y++) {
 -    write(STDOUT_FILENO, "~\r\n", 3);
 +    write(STDOUT_FILENO, "~", 1);
 +
 +    if (y < E.screenrows - 1) {
 +      write(STDOUT_FILENO, "\r\n", 2);
 +    }
-   }
- }
- 
+|  }
+|}
+|
 
 ~~~
 
@@ -483,9 +483,9 @@ index 467111f..070d268 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -93,6 +93,15 @@ int getWindowSize(int *rows, int *cols) {
-   }
- }
- 
+|  }
+|}
+|
 +/*** append buffer ***/
 +
 +struct abuf {
@@ -495,9 +495,9 @@ index 467111f..070d268 100644
 +
 +#define ABUF_INIT {NULL, 0}
 +
- /*** output ***/
- 
- void editorDrawRows() {
+|/*** output ***/
+|
+|void editorDrawRows() {
 
 ~~~
 
@@ -508,17 +508,17 @@ index 070d268..0d5329b 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -4,6 +4,7 @@
- #include <errno.h>
- #include <stdio.h>
- #include <stdlib.h>
+|#include <errno.h>
+|#include <stdio.h>
+|#include <stdlib.h>
 +#include <string.h>
- #include <sys/ioctl.h>
- #include <termios.h>
- #include <unistd.h>
+|#include <sys/ioctl.h>
+|#include <termios.h>
+|#include <unistd.h>
 @@ -102,6 +103,19 @@ struct abuf {
- 
- #define ABUF_INIT {NULL, 0}
- 
+|
+|#define ABUF_INIT {NULL, 0}
+|
 +void abAppend(struct abuf *ab, const char *s, int len) {
 +  char *new = realloc(ab->b, ab->len + len);
 +
@@ -532,9 +532,9 @@ index 070d268..0d5329b 100644
 +  free(ab->b);
 +}
 +
- /*** output ***/
- 
- void editorDrawRows() {
+|/*** output ***/
+|
+|void editorDrawRows() {
 
 ~~~
 
@@ -545,32 +545,32 @@ index 0d5329b..c54f85d 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -118,24 +118,29 @@ void abFree(struct abuf *ab) {
- 
- /*** output ***/
- 
+|
+|/*** output ***/
+|
 -void editorDrawRows() {
 +void editorDrawRows(struct abuf *ab) {
-   int y;
-   for (y = 0; y < E.screenrows; y++) {
+|  int y;
+|  for (y = 0; y < E.screenrows; y++) {
 -    write(STDOUT_FILENO, "~", 1);
 +    abAppend(ab, "~", 1);
- 
-     if (y < E.screenrows - 1) {
+|
+|    if (y < E.screenrows - 1) {
 -      write(STDOUT_FILENO, "\r\n", 2);
 +      abAppend(ab, "\r\n", 2);
-     }
-   }
- }
- 
- void editorRefreshScreen() {
+|    }
+|  }
+|}
+|
+|void editorRefreshScreen() {
 -  write(STDOUT_FILENO, "\x1b[2J", 4);
 -  write(STDOUT_FILENO, "\x1b[H", 3);
 +  struct abuf ab = ABUF_INIT;
- 
+|
 -  editorDrawRows();
 +  abAppend(&ab, "\x1b[2J", 4);
 +  abAppend(&ab, "\x1b[H", 3);
- 
+|
 -  write(STDOUT_FILENO, "\x1b[H", 3);
 +  editorDrawRows(&ab);
 +
@@ -578,9 +578,9 @@ index 0d5329b..c54f85d 100644
 +
 +  write(STDOUT_FILENO, ab.b, ab.len);
 +  abFree(&ab);
- }
- 
- /*** input ***/
+|}
+|
+|/*** input ***/
 
 ~~~
 
@@ -591,20 +591,20 @@ index c54f85d..5bbb69e 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -132,12 +132,14 @@ void editorDrawRows(struct abuf *ab) {
- void editorRefreshScreen() {
-   struct abuf ab = ABUF_INIT;
- 
+|void editorRefreshScreen() {
+|  struct abuf ab = ABUF_INIT;
+|
 +  abAppend(&ab, "\x1b[?25l", 6);
-   abAppend(&ab, "\x1b[2J", 4);
-   abAppend(&ab, "\x1b[H", 3);
- 
-   editorDrawRows(&ab);
- 
-   abAppend(&ab, "\x1b[H", 3);
+|  abAppend(&ab, "\x1b[2J", 4);
+|  abAppend(&ab, "\x1b[H", 3);
+|
+|  editorDrawRows(&ab);
+|
+|  abAppend(&ab, "\x1b[H", 3);
 +  abAppend(&ab, "\x1b[?25h", 6);
- 
-   write(STDOUT_FILENO, ab.b, ab.len);
-   abFree(&ab);
+|
+|  write(STDOUT_FILENO, ab.b, ab.len);
+|  abFree(&ab);
 
 ~~~
 
@@ -615,21 +615,21 @@ index 5bbb69e..0bd5038 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -123,6 +123,7 @@ void editorDrawRows(struct abuf *ab) {
-   for (y = 0; y < E.screenrows; y++) {
-     abAppend(ab, "~", 1);
- 
+|  for (y = 0; y < E.screenrows; y++) {
+|    abAppend(ab, "~", 1);
+|
 +    abAppend(ab, "\x1b[K", 3);
-     if (y < E.screenrows - 1) {
-       abAppend(ab, "\r\n", 2);
-     }
+|    if (y < E.screenrows - 1) {
+|      abAppend(ab, "\r\n", 2);
+|    }
 @@ -133,7 +134,6 @@ void editorRefreshScreen() {
-   struct abuf ab = ABUF_INIT;
- 
-   abAppend(&ab, "\x1b[?25l", 6);
+|  struct abuf ab = ABUF_INIT;
+|
+|  abAppend(&ab, "\x1b[?25l", 6);
 -  abAppend(&ab, "\x1b[2J", 4);
-   abAppend(&ab, "\x1b[H", 3);
- 
-   editorDrawRows(&ab);
+|  abAppend(&ab, "\x1b[H", 3);
+|
+|  editorDrawRows(&ab);
 
 ~~~
 
@@ -640,18 +640,18 @@ index 0bd5038..f4328ec 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -11,6 +11,8 @@
- 
- /*** defines ***/
- 
+|
+|/*** defines ***/
+|
 +#define KILO_VERSION "0.0.1"
 +
- #define CTRL_KEY(k) ((k) & 0x1f)
- 
- /*** data ***/
+|#define CTRL_KEY(k) ((k) & 0x1f)
+|
+|/*** data ***/
 @@ -121,7 +123,15 @@ void abFree(struct abuf *ab) {
- void editorDrawRows(struct abuf *ab) {
-   int y;
-   for (y = 0; y < E.screenrows; y++) {
+|void editorDrawRows(struct abuf *ab) {
+|  int y;
+|  for (y = 0; y < E.screenrows; y++) {
 -    abAppend(ab, "~", 1);
 +    if (y == E.screenrows / 3) {
 +      char welcome[80];
@@ -662,9 +662,9 @@ index 0bd5038..f4328ec 100644
 +    } else {
 +      abAppend(ab, "~", 1);
 +    }
- 
-     abAppend(ab, "\x1b[K", 3);
-     if (y < E.screenrows - 1) {
+|
+|    abAppend(ab, "\x1b[K", 3);
+|    if (y < E.screenrows - 1) {
 
 ~~~
 
@@ -675,18 +675,18 @@ index f4328ec..5890c43 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -128,6 +128,12 @@ void editorDrawRows(struct abuf *ab) {
-       int welcomelen = snprintf(welcome, sizeof(welcome),
-         "Kilo editor -- version %s", KILO_VERSION);
-       if (welcomelen > E.screencols) welcomelen = E.screencols;
+|      int welcomelen = snprintf(welcome, sizeof(welcome),
+|        "Kilo editor -- version %s", KILO_VERSION);
+|      if (welcomelen > E.screencols) welcomelen = E.screencols;
 +      int padding = (E.screencols - welcomelen) / 2;
 +      if (padding) {
 +        abAppend(ab, "~", 1);
 +        padding--;
 +      }
 +      while (padding--) abAppend(ab, " ", 1);
-       abAppend(ab, welcome, welcomelen);
-     } else {
-       abAppend(ab, "~", 1);
+|      abAppend(ab, welcome, welcomelen);
+|    } else {
+|      abAppend(ab, "~", 1);
 
 ~~~
 
@@ -697,23 +697,23 @@ index 5890c43..1e9b00c 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -18,6 +18,7 @@
- /*** data ***/
- 
- struct editorConfig {
+|/*** data ***/
+|
+|struct editorConfig {
 +  int cx, cy;
-   int screenrows;
-   int screencols;
-   struct termios orig_termios;
+|  int screenrows;
+|  int screencols;
+|  struct termios orig_termios;
 @@ -178,6 +179,9 @@ void editorProcessKeypress() {
- /*** init ***/
- 
- void initEditor() {
+|/*** init ***/
+|
+|void initEditor() {
 +  E.cx = 0;
 +  E.cy = 0;
 +
-   if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
- }
- 
+|  if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
+|}
+|
 
 ~~~
 
@@ -724,17 +724,17 @@ index 1e9b00c..5cf778c 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -155,7 +155,10 @@ void editorRefreshScreen() {
- 
-   editorDrawRows(&ab);
- 
+|
+|  editorDrawRows(&ab);
+|
 -  abAppend(&ab, "\x1b[H", 3);
 +  char buf[32];
 +  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", E.cy + 1, E.cx + 1);
 +  abAppend(&ab, buf, strlen(buf));
 +
-   abAppend(&ab, "\x1b[?25h", 6);
- 
-   write(STDOUT_FILENO, ab.b, ab.len);
+|  abAppend(&ab, "\x1b[?25h", 6);
+|
+|  write(STDOUT_FILENO, ab.b, ab.len);
 
 ~~~
 
@@ -745,9 +745,9 @@ index 5cf778c..29f9d53 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -167,6 +167,23 @@ void editorRefreshScreen() {
- 
- /*** input ***/
- 
+|
+|/*** input ***/
+|
 +void editorMoveCursor(char key) {
 +  switch (key) {
 +    case 'a':
@@ -765,13 +765,13 @@ index 5cf778c..29f9d53 100644
 +  }
 +}
 +
- void editorProcessKeypress() {
-   char c = editorReadKey();
- 
+|void editorProcessKeypress() {
+|  char c = editorReadKey();
+|
 @@ -176,6 +193,13 @@ void editorProcessKeypress() {
-       write(STDOUT_FILENO, "\x1b[H", 3);
-       exit(0);
-       break;
+|      write(STDOUT_FILENO, "\x1b[H", 3);
+|      exit(0);
+|      break;
 +
 +    case 'w':
 +    case 's':
@@ -779,9 +779,9 @@ index 5cf778c..29f9d53 100644
 +    case 'd':
 +      editorMoveCursor(c);
 +      break;
-   }
- }
- 
+|  }
+|}
+|
 
 ~~~
 
@@ -792,9 +792,9 @@ index 29f9d53..96de5b8 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -62,7 +62,26 @@ char editorReadKey() {
-   while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
-     if (nread == -1 && errno != EAGAIN) die("read");
-   }
+|  while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
+|    if (nread == -1 && errno != EAGAIN) die("read");
+|  }
 -  return c;
 +
 +  if (c == '\x1b') {
@@ -816,9 +816,9 @@ index 29f9d53..96de5b8 100644
 +  } else {
 +    return c;
 +  }
- }
- 
- int getCursorPosition(int *rows, int *cols) {
+|}
+|
+|int getCursorPosition(int *rows, int *cols) {
 
 ~~~
 
@@ -829,9 +829,9 @@ index 96de5b8..4d43d3c 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -15,6 +15,13 @@
- 
- #define CTRL_KEY(k) ((k) & 0x1f)
- 
+|
+|#define CTRL_KEY(k) ((k) & 0x1f)
+|
 +enum editorKey {
 +  ARROW_LEFT = 'a',
 +  ARROW_RIGHT = 'd',
@@ -839,13 +839,13 @@ index 96de5b8..4d43d3c 100644
 +  ARROW_DOWN = 's'
 +};
 +
- /*** data ***/
- 
- struct editorConfig {
+|/*** data ***/
+|
+|struct editorConfig {
 @@ -71,10 +78,10 @@ char editorReadKey() {
- 
-     if (seq[0] == '[') {
-       switch (seq[1]) {
+|
+|    if (seq[0] == '[') {
+|      switch (seq[1]) {
 -        case 'A': return 'w';
 -        case 'B': return 's';
 -        case 'C': return 'd';
@@ -854,34 +854,34 @@ index 96de5b8..4d43d3c 100644
 +        case 'B': return ARROW_DOWN;
 +        case 'C': return ARROW_RIGHT;
 +        case 'D': return ARROW_LEFT;
-       }
-     }
- 
+|      }
+|    }
+|
 @@ -188,16 +195,16 @@ void editorRefreshScreen() {
- 
- void editorMoveCursor(char key) {
-   switch (key) {
+|
+|void editorMoveCursor(char key) {
+|  switch (key) {
 -    case 'a':
 +    case ARROW_LEFT:
-       E.cx--;
-       break;
+|      E.cx--;
+|      break;
 -    case 'd':
 +    case ARROW_RIGHT:
-       E.cx++;
-       break;
+|      E.cx++;
+|      break;
 -    case 'w':
 +    case ARROW_UP:
-       E.cy--;
-       break;
+|      E.cy--;
+|      break;
 -    case 's':
 +    case ARROW_DOWN:
-       E.cy++;
-       break;
-   }
+|      E.cy++;
+|      break;
+|  }
 @@ -213,10 +220,10 @@ void editorProcessKeypress() {
-       exit(0);
-       break;
- 
+|      exit(0);
+|      break;
+|
 -    case 'w':
 -    case 's':
 -    case 'a':
@@ -890,9 +890,9 @@ index 96de5b8..4d43d3c 100644
 +    case ARROW_DOWN:
 +    case ARROW_LEFT:
 +    case ARROW_RIGHT:
-       editorMoveCursor(c);
-       break;
-   }
+|      editorMoveCursor(c);
+|      break;
+|  }
 
 ~~~
 
@@ -903,9 +903,9 @@ index 4d43d3c..ebbd400 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -16,10 +16,10 @@
- #define CTRL_KEY(k) ((k) & 0x1f)
- 
- enum editorKey {
+|#define CTRL_KEY(k) ((k) & 0x1f)
+|
+|enum editorKey {
 -  ARROW_LEFT = 'a',
 -  ARROW_RIGHT = 'd',
 -  ARROW_UP = 'w',
@@ -914,36 +914,36 @@ index 4d43d3c..ebbd400 100644
 +  ARROW_RIGHT,
 +  ARROW_UP,
 +  ARROW_DOWN
- };
- 
- /*** data ***/
+|};
+|
+|/*** data ***/
 @@ -63,7 +63,7 @@ void enableRawMode() {
-   if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
- }
- 
+|  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
+|}
+|
 -char editorReadKey() {
 +int editorReadKey() {
-   int nread;
-   char c;
-   while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
+|  int nread;
+|  char c;
+|  while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
 @@ -193,7 +193,7 @@ void editorRefreshScreen() {
- 
- /*** input ***/
- 
+|
+|/*** input ***/
+|
 -void editorMoveCursor(char key) {
 +void editorMoveCursor(int key) {
-   switch (key) {
-     case ARROW_LEFT:
-       E.cx--;
+|  switch (key) {
+|    case ARROW_LEFT:
+|      E.cx--;
 @@ -211,7 +211,7 @@ void editorMoveCursor(char key) {
- }
- 
- void editorProcessKeypress() {
+|}
+|
+|void editorProcessKeypress() {
 -  char c = editorReadKey();
 +  int c = editorReadKey();
- 
-   switch (c) {
-     case CTRL_KEY('q'):
+|
+|  switch (c) {
+|    case CTRL_KEY('q'):
 
 ~~~
 
@@ -954,34 +954,34 @@ index ebbd400..3a5ac0d 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -196,16 +196,24 @@ void editorRefreshScreen() {
- void editorMoveCursor(int key) {
-   switch (key) {
-     case ARROW_LEFT:
+|void editorMoveCursor(int key) {
+|  switch (key) {
+|    case ARROW_LEFT:
 -      E.cx--;
 +      if (E.cx != 0) {
 +        E.cx--;
 +      }
-       break;
-     case ARROW_RIGHT:
+|      break;
+|    case ARROW_RIGHT:
 -      E.cx++;
 +      if (E.cx != E.screencols - 1) {
 +        E.cx++;
 +      }
-       break;
-     case ARROW_UP:
+|      break;
+|    case ARROW_UP:
 -      E.cy--;
 +      if (E.cy != 0) {
 +        E.cy--;
 +      }
-       break;
-     case ARROW_DOWN:
+|      break;
+|    case ARROW_DOWN:
 -      E.cy++;
 +      if (E.cy != E.screenrows - 1) {
 +        E.cy++;
 +      }
-       break;
-   }
- }
+|      break;
+|  }
+|}
 
 ~~~
 
@@ -992,20 +992,20 @@ index 3a5ac0d..b976eeb 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -19,7 +19,9 @@ enum editorKey {
-   ARROW_LEFT = 1000,
-   ARROW_RIGHT,
-   ARROW_UP,
+|  ARROW_LEFT = 1000,
+|  ARROW_RIGHT,
+|  ARROW_UP,
 -  ARROW_DOWN
 +  ARROW_DOWN,
 +  PAGE_UP,
 +  PAGE_DOWN
- };
- 
- /*** data ***/
+|};
+|
+|/*** data ***/
 @@ -77,11 +79,21 @@ int editorReadKey() {
-     if (read(STDIN_FILENO, &seq[1], 1) != 1) return '\x1b';
- 
-     if (seq[0] == '[') {
+|    if (read(STDIN_FILENO, &seq[1], 1) != 1) return '\x1b';
+|
+|    if (seq[0] == '[') {
 -      switch (seq[1]) {
 -        case 'A': return ARROW_UP;
 -        case 'B': return ARROW_DOWN;
@@ -1026,9 +1026,9 @@ index 3a5ac0d..b976eeb 100644
 +          case 'C': return ARROW_RIGHT;
 +          case 'D': return ARROW_LEFT;
 +        }
-       }
-     }
- 
+|      }
+|    }
+|
 
 ~~~
 
@@ -1039,9 +1039,9 @@ index b976eeb..ba97769 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -240,6 +240,15 @@ void editorProcessKeypress() {
-       exit(0);
-       break;
- 
+|      exit(0);
+|      break;
+|
 +    case PAGE_UP:
 +    case PAGE_DOWN:
 +      {
@@ -1051,9 +1051,9 @@ index b976eeb..ba97769 100644
 +      }
 +      break;
 +
-     case ARROW_UP:
-     case ARROW_DOWN:
-     case ARROW_LEFT:
+|    case ARROW_UP:
+|    case ARROW_DOWN:
+|    case ARROW_LEFT:
 
 ~~~
 
@@ -1064,43 +1064,43 @@ index ba97769..b978216 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -20,6 +20,8 @@ enum editorKey {
-   ARROW_RIGHT,
-   ARROW_UP,
-   ARROW_DOWN,
+|  ARROW_RIGHT,
+|  ARROW_UP,
+|  ARROW_DOWN,
 +  HOME_KEY,
 +  END_KEY,
-   PAGE_UP,
-   PAGE_DOWN
- };
+|  PAGE_UP,
+|  PAGE_DOWN
+|};
 @@ -83,8 +85,12 @@ int editorReadKey() {
-         if (read(STDIN_FILENO, &seq[2], 1) != 1) return '\x1b';
-         if (seq[2] == '~') {
-           switch (seq[1]) {
+|        if (read(STDIN_FILENO, &seq[2], 1) != 1) return '\x1b';
+|        if (seq[2] == '~') {
+|          switch (seq[1]) {
 +            case '1': return HOME_KEY;
 +            case '4': return END_KEY;
-             case '5': return PAGE_UP;
-             case '6': return PAGE_DOWN;
+|            case '5': return PAGE_UP;
+|            case '6': return PAGE_DOWN;
 +            case '7': return HOME_KEY;
 +            case '8': return END_KEY;
-           }
-         }
-       } else {
+|          }
+|        }
+|      } else {
 @@ -93,8 +99,15 @@ int editorReadKey() {
-           case 'B': return ARROW_DOWN;
-           case 'C': return ARROW_RIGHT;
-           case 'D': return ARROW_LEFT;
+|          case 'B': return ARROW_DOWN;
+|          case 'C': return ARROW_RIGHT;
+|          case 'D': return ARROW_LEFT;
 +          case 'H': return HOME_KEY;
 +          case 'F': return END_KEY;
-         }
-       }
+|        }
+|      }
 +    } else if (seq[0] == 'O') {
 +      switch (seq[1]) {
 +        case 'H': return HOME_KEY;
 +        case 'F': return END_KEY;
 +      }
-     }
- 
-     return '\x1b';
+|    }
+|
+|    return '\x1b';
 
 ~~~
 
@@ -1111,9 +1111,9 @@ index b978216..0773b7a 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -253,6 +253,14 @@ void editorProcessKeypress() {
-       exit(0);
-       break;
- 
+|      exit(0);
+|      break;
+|
 +    case HOME_KEY:
 +      E.cx = 0;
 +      break;
@@ -1122,9 +1122,9 @@ index b978216..0773b7a 100644
 +      E.cx = E.screencols - 1;
 +      break;
 +
-     case PAGE_UP:
-     case PAGE_DOWN:
-       {
+|    case PAGE_UP:
+|    case PAGE_DOWN:
+|      {
 
 ~~~
 
@@ -1135,19 +1135,19 @@ index 0773b7a..4954c40 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -20,6 +20,7 @@ enum editorKey {
-   ARROW_RIGHT,
-   ARROW_UP,
-   ARROW_DOWN,
+|  ARROW_RIGHT,
+|  ARROW_UP,
+|  ARROW_DOWN,
 +  DEL_KEY,
-   HOME_KEY,
-   END_KEY,
-   PAGE_UP,
+|  HOME_KEY,
+|  END_KEY,
+|  PAGE_UP,
 @@ -86,6 +87,7 @@ int editorReadKey() {
-         if (seq[2] == '~') {
-           switch (seq[1]) {
-             case '1': return HOME_KEY;
+|        if (seq[2] == '~') {
+|          switch (seq[1]) {
+|            case '1': return HOME_KEY;
 +            case '3': return DEL_KEY;
-             case '4': return END_KEY;
-             case '5': return PAGE_UP;
-             case '6': return PAGE_DOWN;
+|            case '4': return END_KEY;
+|            case '5': return PAGE_UP;
+|            case '6': return PAGE_DOWN;
 

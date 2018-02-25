@@ -7,9 +7,9 @@ index cce71c2..c54a566 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -390,6 +390,27 @@ void editorSave() {
-   editorSetStatusMessage("Can't save! I/O error: %s", strerror(errno));
- }
- 
+|  editorSetStatusMessage("Can't save! I/O error: %s", strerror(errno));
+|}
+|
 +/*** find ***/
 +
 +void editorFind() {
@@ -31,9 +31,9 @@ index cce71c2..c54a566 100644
 +  free(query);
 +}
 +
- /*** append buffer ***/
- 
- struct abuf {
+|/*** append buffer ***/
+|
+|struct abuf {
 
 ~~~
 
@@ -44,9 +44,9 @@ index c54a566..187da83 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -196,6 +196,19 @@ int editorRowCxToRx(erow *row, int cx) {
-   return rx;
- }
- 
+|  return rx;
+|}
+|
 +int editorRowRxToCx(erow *row, int rx) {
 +  int cur_rx = 0;
 +  int cx;
@@ -60,9 +60,9 @@ index c54a566..187da83 100644
 +  return cx;
 +}
 +
- void editorUpdateRow(erow *row) {
-   int tabs = 0;
-   int j;
+|void editorUpdateRow(erow *row) {
+|  int tabs = 0;
+|  int j;
 
 ~~~
 
@@ -73,14 +73,14 @@ index 187da83..abff2b3 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -415,7 +415,7 @@ void editorFind() {
-     char *match = strstr(row->render, query);
-     if (match) {
-       E.cy = i;
+|    char *match = strstr(row->render, query);
+|    if (match) {
+|      E.cy = i;
 -      E.cx = match - row->render;
 +      E.cx = editorRowRxToCx(row, match - row->render);
-       E.rowoff = E.numrows;
-       break;
-     }
+|      E.rowoff = E.numrows;
+|      break;
+|    }
 
 ~~~
 
@@ -91,26 +91,26 @@ index abff2b3..164221f 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -672,6 +672,10 @@ void editorProcessKeypress() {
-         E.cx = E.row[E.cy].size;
-       break;
- 
+|        E.cx = E.row[E.cy].size;
+|      break;
+|
 +    case CTRL_KEY('f'):
 +      editorFind();
 +      break;
 +
-     case BACKSPACE:
-     case CTRL_KEY('h'):
-     case DEL_KEY:
+|    case BACKSPACE:
+|    case CTRL_KEY('h'):
+|    case DEL_KEY:
 @@ -740,7 +744,8 @@ int main(int argc, char *argv[]) {
-     editorOpen(argv[1]);
-   }
- 
+|    editorOpen(argv[1]);
+|  }
+|
 -  editorSetStatusMessage("HELP: Ctrl-S = save | Ctrl-Q = quit");
 +  editorSetStatusMessage(
 +    "HELP: Ctrl-S = save | Ctrl-Q = quit | Ctrl-F = find");
- 
-   while (1) {
-     editorRefreshScreen();
+|
+|  while (1) {
+|    editorRefreshScreen();
 
 ~~~
 
@@ -121,46 +121,46 @@ index 164221f..1b19c30 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -69,7 +69,7 @@ struct editorConfig E;
- 
- void editorSetStatusMessage(const char *fmt, ...);
- void editorRefreshScreen();
+|
+|void editorSetStatusMessage(const char *fmt, ...);
+|void editorRefreshScreen();
 -char *editorPrompt(char *prompt);
 +char *editorPrompt(char *prompt, void (*callback)(char *, int));
- 
- /*** terminal ***/
- 
+|
+|/*** terminal ***/
+|
 @@ -564,7 +564,7 @@ void editorSetStatusMessage(const char *fmt, ...) {
- 
- /*** input ***/
- 
+|
+|/*** input ***/
+|
 -char *editorPrompt(char *prompt) {
 +char *editorPrompt(char *prompt, void (*callback)(char *, int)) {
-   size_t bufsize = 128;
-   char *buf = malloc(bufsize);
- 
+|  size_t bufsize = 128;
+|  char *buf = malloc(bufsize);
+|
 @@ -580,11 +580,13 @@ char *editorPrompt(char *prompt) {
-       if (buflen != 0) buf[--buflen] = '\0';
-     } else if (c == '\x1b') {
-       editorSetStatusMessage("");
+|      if (buflen != 0) buf[--buflen] = '\0';
+|    } else if (c == '\x1b') {
+|      editorSetStatusMessage("");
 +      if (callback) callback(buf, c);
-       free(buf);
-       return NULL;
-     } else if (c == '\r') {
-       if (buflen != 0) {
-         editorSetStatusMessage("");
+|      free(buf);
+|      return NULL;
+|    } else if (c == '\r') {
+|      if (buflen != 0) {
+|        editorSetStatusMessage("");
 +        if (callback) callback(buf, c);
-         return buf;
-       }
-     } else if (!iscntrl(c) && c < 128) {
+|        return buf;
+|      }
+|    } else if (!iscntrl(c) && c < 128) {
 @@ -595,6 +597,8 @@ char *editorPrompt(char *prompt) {
-       buf[buflen++] = c;
-       buf[buflen] = '\0';
-     }
+|      buf[buflen++] = c;
+|      buf[buflen] = '\0';
+|    }
 +
 +    if (callback) callback(buf, c);
-   }
- }
- 
+|  }
+|}
+|
 
 ~~~
 
@@ -171,23 +171,23 @@ index 1b19c30..1ff7b39 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -375,7 +375,7 @@ void editorOpen(char *filename) {
- 
- void editorSave() {
-   if (E.filename == NULL) {
+|
+|void editorSave() {
+|  if (E.filename == NULL) {
 -    E.filename = editorPrompt("Save as: %s (ESC to cancel)");
 +    E.filename = editorPrompt("Save as: %s (ESC to cancel)", NULL);
-     if (E.filename == NULL) {
-       editorSetStatusMessage("Save aborted");
-       return;
+|    if (E.filename == NULL) {
+|      editorSetStatusMessage("Save aborted");
+|      return;
 @@ -406,7 +406,7 @@ void editorSave() {
- /*** find ***/
- 
- void editorFind() {
+|/*** find ***/
+|
+|void editorFind() {
 -  char *query = editorPrompt("Search: %s (ESC to cancel)");
 +  char *query = editorPrompt("Search: %s (ESC to cancel)", NULL);
-   if (query == NULL) return;
- 
-   int i;
+|  if (query == NULL) return;
+|
+|  int i;
 
 ~~~
 
@@ -198,9 +198,9 @@ index 1ff7b39..f92dd8d 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -405,9 +405,10 @@ void editorSave() {
- 
- /*** find ***/
- 
+|
+|/*** find ***/
+|
 -void editorFind() {
 -  char *query = editorPrompt("Search: %s (ESC to cancel)", NULL);
 -  if (query == NULL) return;
@@ -208,15 +208,15 @@ index 1ff7b39..f92dd8d 100644
 +  if (key == '\r' || key == '\x1b') {
 +    return;
 +  }
- 
-   int i;
-   for (i = 0; i < E.numrows; i++) {
+|
+|  int i;
+|  for (i = 0; i < E.numrows; i++) {
 @@ -420,8 +421,14 @@ void editorFind() {
-       break;
-     }
-   }
+|      break;
+|    }
+|  }
 +}
- 
+|
 -  free(query);
 +void editorFind() {
 +  char *query = editorPrompt("Search: %s (ESC to cancel)", editorFindCallback);
@@ -224,9 +224,9 @@ index 1ff7b39..f92dd8d 100644
 +  if (query) {
 +    free(query);
 +  }
- }
- 
- /*** append buffer ***/
+|}
+|
+|/*** append buffer ***/
 
 ~~~
 
@@ -237,26 +237,26 @@ index f92dd8d..3114148 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -424,10 +424,20 @@ void editorFindCallback(char *query, int key) {
- }
- 
- void editorFind() {
+|}
+|
+|void editorFind() {
 +  int saved_cx = E.cx;
 +  int saved_cy = E.cy;
 +  int saved_coloff = E.coloff;
 +  int saved_rowoff = E.rowoff;
 +
-   char *query = editorPrompt("Search: %s (ESC to cancel)", editorFindCallback);
- 
-   if (query) {
-     free(query);
+|  char *query = editorPrompt("Search: %s (ESC to cancel)", editorFindCallback);
+|
+|  if (query) {
+|    free(query);
 +  } else {
 +    E.cx = saved_cx;
 +    E.cy = saved_cy;
 +    E.coloff = saved_coloff;
 +    E.rowoff = saved_rowoff;
-   }
- }
- 
+|  }
+|}
+|
 
 ~~~
 
@@ -267,16 +267,16 @@ index 3114148..c0668e0 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -406,8 +406,20 @@ void editorSave() {
- /*** find ***/
- 
- void editorFindCallback(char *query, int key) {
+|/*** find ***/
+|
+|void editorFindCallback(char *query, int key) {
 +  static int last_match = -1;
 +  static int direction = 1;
 +
-   if (key == '\r' || key == '\x1b') {
+|  if (key == '\r' || key == '\x1b') {
 +    last_match = -1;
 +    direction = 1;
-     return;
+|    return;
 +  } else if (key == ARROW_RIGHT || key == ARROW_DOWN) {
 +    direction = 1;
 +  } else if (key == ARROW_LEFT || key == ARROW_UP) {
@@ -284,9 +284,9 @@ index 3114148..c0668e0 100644
 +  } else {
 +    last_match = -1;
 +    direction = 1;
-   }
- 
-   int i;
+|  }
+|
+|  int i;
 
 ~~~
 
@@ -297,27 +297,27 @@ index c0668e0..c054dfa 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -422,12 +422,19 @@ void editorFindCallback(char *query, int key) {
-     direction = 1;
-   }
- 
+|    direction = 1;
+|  }
+|
 +  if (last_match == -1) direction = 1;
 +  int current = last_match;
-   int i;
-   for (i = 0; i < E.numrows; i++) {
+|  int i;
+|  for (i = 0; i < E.numrows; i++) {
 -    erow *row = &E.row[i];
 +    current += direction;
 +    if (current == -1) current = E.numrows - 1;
 +    else if (current == E.numrows) current = 0;
 +
 +    erow *row = &E.row[current];
-     char *match = strstr(row->render, query);
-     if (match) {
+|    char *match = strstr(row->render, query);
+|    if (match) {
 -      E.cy = i;
 +      last_match = current;
 +      E.cy = current;
-       E.cx = editorRowRxToCx(row, match - row->render);
-       E.rowoff = E.numrows;
-       break;
+|      E.cx = editorRowRxToCx(row, match - row->render);
+|      E.rowoff = E.numrows;
+|      break;
 
 ~~~
 
@@ -328,13 +328,13 @@ index c054dfa..5f10de4 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -448,7 +448,8 @@ void editorFind() {
-   int saved_coloff = E.coloff;
-   int saved_rowoff = E.rowoff;
- 
+|  int saved_coloff = E.coloff;
+|  int saved_rowoff = E.rowoff;
+|
 -  char *query = editorPrompt("Search: %s (ESC to cancel)", editorFindCallback);
 +  char *query = editorPrompt("Search: %s (Use ESC/Arrows/Enter)",
 +                             editorFindCallback);
- 
-   if (query) {
-     free(query);
+|
+|  if (query) {
+|    free(query);
 
