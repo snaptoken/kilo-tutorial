@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title><%= config[:title] %></title>
+    <link href="style.css" rel="stylesheet">
+  </head>
+  <body>
+    <header class="bar">
+      <nav>
+        <a href="#"></a>
+        <a href="<%= pages.first.filename %>">open the booklet</a>
+        <a href="#"></a>
+      </nav>
+    </header>
+    <div id="container">
+      <h1><%= config[:title] %></h1>
+      <h2>Table of Contents</h2>
+      <ol>
+        <% for page in pages %>
+          <li><a href="<%= page.filename %>"><%= page.title %></a></li>
+        <% end %>
+      </ol>
+    </div>
+    <div id="version">
+      <a href="https://github.com/snaptoken/<%= config[:name] %>-tutorial/tree/v<%= config[:version] %>"><%= config[:version] %></a>
+      (<a href="https://github.com/snaptoken/<%= config[:name] %>-tutorial/blob/master/CHANGELOG.md">changelog</a>)
+    </div>
+  </body>
+</html>

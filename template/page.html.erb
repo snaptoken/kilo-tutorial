@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title><%= title %></title>
+    <link href="style.css" rel="stylesheet">
+  </head>
+  <body>
+    <header class="bar">
+      <nav>
+        <% if prev_page %>
+          <a href="<%= prev_page.filename %>">&larr; prev</a>
+        <% else %>
+          <a href="#"></a>
+        <% end %>
+
+        <a href="index.html">contents</a>
+
+        <% if next_page %>
+          <a href="<%= next_page.filename %>">&rarr; next</a>
+        <% else %>
+          <a href="#"></a>
+        <% end %>
+      </nav>
+    </header>
+    <div id="container">
+      <%= content %>
+    </div>
+    <div id="version">
+      <a href="https://github.com/snaptoken/<%= config[:name] %>-tutorial/tree/v<%= config[:version] %>"><%= config[:version] %></a>
+      (<a href="https://github.com/snaptoken/<%= config[:name] %>-tutorial/blob/master/CHANGELOG.md">changelog</a>)
+    </div>
+    <footer class="bar">
+      <nav>
+        <a href="#">top of page</a>
+      </nav>
+    </footer>
+  </body>
+</html>

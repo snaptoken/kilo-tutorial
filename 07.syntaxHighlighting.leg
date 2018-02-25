@@ -1,0 +1,1210 @@
+~~~
+
+syntax-digits c2
+
+diff --git a/kilo.c b/kilo.c
+index 5f10de4..6b38a63 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -529,7 +529,17 @@ void editorDrawRows(struct abuf *ab) {
+       int len = E.row[filerow].rsize - E.coloff;
+       if (len < 0) len = 0;
+       if (len > E.screencols) len = E.screencols;
+-      abAppend(ab, &E.row[filerow].render[E.coloff], len);
++      char *c = &E.row[filerow].render[E.coloff];
++      int j;
++      for (j = 0; j < len; j++) {
++        if (isdigit(c[j])) {
++          abAppend(ab, "\x1b[31m", 5);
++          abAppend(ab, &c[j], 1);
++          abAppend(ab, "\x1b[39m", 5);
++        } else {
++          abAppend(ab, &c[j], 1);
++        }
++      }
+     }
+ 
+     abAppend(ab, "\x1b[K", 3);
+
+~~~
+
+syntax-refactoring c1
+
+diff --git a/kilo.c b/kilo.c
+index 6b38a63..ac34194 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -45,6 +45,7 @@ typedef struct erow {
+   int rsize;
+   char *chars;
+   char *render;
++  unsigned char *hl;
+ } erow;
+ 
+ struct editorConfig {
+@@ -244,6 +245,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+ 
+   E.row[at].rsize = 0;
+   E.row[at].render = NULL;
++  E.row[at].hl = NULL;
+   editorUpdateRow(&E.row[at]);
+ 
+   E.numrows++;
+@@ -253,6 +255,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+ void editorFreeRow(erow *row) {
+   free(row->render);
+   free(row->chars);
++  free(row->hl);
+ }
+ 
+ void editorDelRow(int at) {
+
+~~~
+
+highlight-enum c1
+
+diff --git a/kilo.c b/kilo.c
+index ac34194..073e36f 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -38,6 +38,11 @@ enum editorKey {
+   PAGE_DOWN
+ };
+ 
++enum editorHighlight {
++  HL_NORMAL = 0,
++  HL_NUMBER
++};
++
+ /*** data ***/
+ 
+ typedef struct erow {
+
+~~~
+
+editor-update-syntax c1
+
+diff --git a/kilo.c b/kilo.c
+index 073e36f..7a4f786 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -189,6 +189,20 @@ int getWindowSize(int *rows, int *cols) {
+   }
+ }
+ 
++/*** syntax highlighting ***/
++
++void editorUpdateSyntax(erow *row) {
++  row->hl = realloc(row->hl, row->rsize);
++  memset(row->hl, HL_NORMAL, row->rsize);
++
++  int i;
++  for (i = 0; i < row->rsize; i++) {
++    if (isdigit(row->render[i])) {
++      row->hl[i] = HL_NUMBER;
++    }
++  }
++}
++
+ /*** row operations ***/
+ 
+ int editorRowCxToRx(erow *row, int cx) {
+
+~~~
+
+call-update-syntax c1
+
+diff --git a/kilo.c b/kilo.c
+index 7a4f786..ea35ace 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -249,6 +249,8 @@ void editorUpdateRow(erow *row) {
+   }
+   row->render[idx] = '\0';
+   row->rsize = idx;
++
++  editorUpdateSyntax(row);
+ }
+ 
+ void editorInsertRow(int at, char *s, size_t len) {
+
+~~~
+
+map-colors c1
+
+diff --git a/kilo.c b/kilo.c
+index ea35ace..7031e33 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -203,6 +203,13 @@ void editorUpdateSyntax(erow *row) {
+   }
+ }
+ 
++int editorSyntaxToColor(int hl) {
++  switch (hl) {
++    case HL_NUMBER: return 31;
++    default: return 37;
++  }
++}
++
+ /*** row operations ***/
+ 
+ int editorRowCxToRx(erow *row, int cx) {
+
+~~~
+
+use-hl c1
+
+diff --git a/kilo.c b/kilo.c
+index 7031e33..b46fe1c 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -561,16 +561,21 @@ void editorDrawRows(struct abuf *ab) {
+       if (len < 0) len = 0;
+       if (len > E.screencols) len = E.screencols;
+       char *c = &E.row[filerow].render[E.coloff];
++      unsigned char *hl = &E.row[filerow].hl[E.coloff];
+       int j;
+       for (j = 0; j < len; j++) {
+-        if (isdigit(c[j])) {
+-          abAppend(ab, "\x1b[31m", 5);
+-          abAppend(ab, &c[j], 1);
++        if (hl[j] == HL_NORMAL) {
+           abAppend(ab, "\x1b[39m", 5);
++          abAppend(ab, &c[j], 1);
+         } else {
++          int color = editorSyntaxToColor(hl[j]);
++          char buf[16];
++          int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", color);
++          abAppend(ab, buf, clen);
+           abAppend(ab, &c[j], 1);
+         }
+       }
++      abAppend(ab, "\x1b[39m", 5);
+     }
+ 
+     abAppend(ab, "\x1b[K", 3);
+
+~~~
+
+current-color c1
+
+diff --git a/kilo.c b/kilo.c
+index b46fe1c..c127b15 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -562,16 +562,23 @@ void editorDrawRows(struct abuf *ab) {
+       if (len > E.screencols) len = E.screencols;
+       char *c = &E.row[filerow].render[E.coloff];
+       unsigned char *hl = &E.row[filerow].hl[E.coloff];
++      int current_color = -1;
+       int j;
+       for (j = 0; j < len; j++) {
+         if (hl[j] == HL_NORMAL) {
+-          abAppend(ab, "\x1b[39m", 5);
++          if (current_color != -1) {
++            abAppend(ab, "\x1b[39m", 5);
++            current_color = -1;
++          }
+           abAppend(ab, &c[j], 1);
+         } else {
+           int color = editorSyntaxToColor(hl[j]);
+-          char buf[16];
+-          int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", color);
+-          abAppend(ab, buf, clen);
++          if (color != current_color) {
++            current_color = color;
++            char buf[16];
++            int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", color);
++            abAppend(ab, buf, clen);
++          }
+           abAppend(ab, &c[j], 1);
+         }
+       }
+
+~~~
+
+hl-match c1
+
+diff --git a/kilo.c b/kilo.c
+index c127b15..549b191 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -40,7 +40,8 @@ enum editorKey {
+ 
+ enum editorHighlight {
+   HL_NORMAL = 0,
+-  HL_NUMBER
++  HL_NUMBER,
++  HL_MATCH
+ };
+ 
+ /*** data ***/
+@@ -206,6 +207,7 @@ void editorUpdateSyntax(erow *row) {
+ int editorSyntaxToColor(int hl) {
+   switch (hl) {
+     case HL_NUMBER: return 31;
++    case HL_MATCH: return 34;
+     default: return 37;
+   }
+ }
+
+~~~
+
+search-highlighting c2
+
+diff --git a/kilo.c b/kilo.c
+index 549b191..d443246 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -470,6 +470,8 @@ void editorFindCallback(char *query, int key) {
+       E.cy = current;
+       E.cx = editorRowRxToCx(row, match - row->render);
+       E.rowoff = E.numrows;
++
++      memset(&row->hl[match - row->render], HL_MATCH, strlen(query));
+       break;
+     }
+   }
+
+~~~
+
+restore-hl c2
+
+diff --git a/kilo.c b/kilo.c
+index d443246..b21b62a 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -442,6 +442,15 @@ void editorFindCallback(char *query, int key) {
+   static int last_match = -1;
+   static int direction = 1;
+ 
++  static int saved_hl_line;
++  static char *saved_hl = NULL;
++
++  if (saved_hl) {
++    memcpy(E.row[saved_hl_line].hl, saved_hl, E.row[saved_hl_line].rsize);
++    free(saved_hl);
++    saved_hl = NULL;
++  }
++
+   if (key == '\r' || key == '\x1b') {
+     last_match = -1;
+     direction = 1;
+@@ -471,6 +480,9 @@ void editorFindCallback(char *query, int key) {
+       E.cx = editorRowRxToCx(row, match - row->render);
+       E.rowoff = E.numrows;
+ 
++      saved_hl_line = current;
++      saved_hl = malloc(row->rsize);
++      memcpy(saved_hl, row->hl, row->rsize);
+       memset(&row->hl[match - row->render], HL_MATCH, strlen(query));
+       break;
+     }
+
+~~~
+
+syntax-while c1
+
+diff --git a/kilo.c b/kilo.c
+index b21b62a..1ddafff 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -196,11 +196,15 @@ void editorUpdateSyntax(erow *row) {
+   row->hl = realloc(row->hl, row->rsize);
+   memset(row->hl, HL_NORMAL, row->rsize);
+ 
+-  int i;
+-  for (i = 0; i < row->rsize; i++) {
+-    if (isdigit(row->render[i])) {
++  int i = 0;
++  while (i < row->rsize) {
++    char c = row->render[i];
++
++    if (isdigit(c)) {
+       row->hl[i] = HL_NUMBER;
+     }
++
++    i++;
+   }
+ }
+ 
+
+~~~
+
+is-separator c1
+
+diff --git a/kilo.c b/kilo.c
+index 1ddafff..0f53190 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -192,6 +192,10 @@ int getWindowSize(int *rows, int *cols) {
+ 
+ /*** syntax highlighting ***/
+ 
++int is_separator(int c) {
++  return isspace(c) || c == '\0' || strchr(",.()+-/*=~%<>[];", c) != NULL;
++}
++
+ void editorUpdateSyntax(erow *row) {
+   row->hl = realloc(row->hl, row->rsize);
+   memset(row->hl, HL_NORMAL, row->rsize);
+
+~~~
+
+prev-sep c2
+
+diff --git a/kilo.c b/kilo.c
+index 0f53190..ee4291a 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -200,14 +200,21 @@ void editorUpdateSyntax(erow *row) {
+   row->hl = realloc(row->hl, row->rsize);
+   memset(row->hl, HL_NORMAL, row->rsize);
+ 
++  int prev_sep = 1;
++
+   int i = 0;
+   while (i < row->rsize) {
+     char c = row->render[i];
++    unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : HL_NORMAL;
+ 
+-    if (isdigit(c)) {
++    if (isdigit(c) && (prev_sep || prev_hl == HL_NUMBER)) {
+       row->hl[i] = HL_NUMBER;
++      i++;
++      prev_sep = 0;
++      continue;
+     }
+ 
++    prev_sep = is_separator(c);
+     i++;
+   }
+ }
+
+~~~
+
+decimal-point c2
+
+diff --git a/kilo.c b/kilo.c
+index ee4291a..7d07a0c 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -207,7 +207,8 @@ void editorUpdateSyntax(erow *row) {
+     char c = row->render[i];
+     unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : HL_NORMAL;
+ 
+-    if (isdigit(c) && (prev_sep || prev_hl == HL_NUMBER)) {
++    if ((isdigit(c) && (prev_sep || prev_hl == HL_NUMBER)) ||
++        (c == '.' && prev_hl == HL_NUMBER)) {
+       row->hl[i] = HL_NUMBER;
+       i++;
+       prev_sep = 0;
+
+~~~
+
+editor-syntax c1
+
+diff --git a/kilo.c b/kilo.c
+index 7d07a0c..8aadce5 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -44,8 +44,16 @@ enum editorHighlight {
+   HL_MATCH
+ };
+ 
++#define HL_HIGHLIGHT_NUMBERS (1<<0)
++
+ /*** data ***/
+ 
++struct editorSyntax {
++  char *filetype;
++  char **filematch;
++  int flags;
++};
++
+ typedef struct erow {
+   int size;
+   int rsize;
+
+~~~
+
+hldb c1
+
+diff --git a/kilo.c b/kilo.c
+index 8aadce5..0ed7af0 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -80,6 +80,20 @@ struct editorConfig {
+ 
+ struct editorConfig E;
+ 
++/*** filetypes ***/
++
++char *C_HL_extensions[] = { ".c", ".h", ".cpp", NULL };
++
++struct editorSyntax HLDB[] = {
++  {
++    "c",
++    C_HL_extensions,
++    HL_HIGHLIGHT_NUMBERS
++  },
++};
++
++#define HLDB_ENTRIES (sizeof(HLDB) / sizeof(HLDB[0]))
++
+ /*** prototypes ***/
+ 
+ void editorSetStatusMessage(const char *fmt, ...);
+
+~~~
+
+e-syntax c1
+
+diff --git a/kilo.c b/kilo.c
+index 0ed7af0..9eba68d 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -75,6 +75,7 @@ struct editorConfig {
+   char *filename;
+   char statusmsg[80];
+   time_t statusmsg_time;
++  struct editorSyntax *syntax;
+   struct termios orig_termios;
+ };
+ 
+@@ -880,6 +881,7 @@ void initEditor() {
+   E.filename = NULL;
+   E.statusmsg[0] = '\0';
+   E.statusmsg_time = 0;
++  E.syntax = NULL;
+ 
+   if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
+   E.screenrows -= 2;
+
+~~~
+
+show-filetype c2
+
+diff --git a/kilo.c b/kilo.c
+index 9eba68d..53aa237 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -651,8 +651,8 @@ void editorDrawStatusBar(struct abuf *ab) {
+   int len = snprintf(status, sizeof(status), "%.20s - %d lines %s",
+     E.filename ? E.filename : "[No Name]", E.numrows,
+     E.dirty ? "(modified)" : "");
+-  int rlen = snprintf(rstatus, sizeof(rstatus), "%d/%d",
+-    E.cy + 1, E.numrows);
++  int rlen = snprintf(rstatus, sizeof(rstatus), "%s | %d/%d",
++    E.syntax ? E.syntax->filetype : "no ft", E.cy + 1, E.numrows);
+   if (len > E.screencols) len = E.screencols;
+   abAppend(ab, status, len);
+   while (len < E.screencols) {
+
+~~~
+
+use-filetype c2
+
+diff --git a/kilo.c b/kilo.c
+index 53aa237..da1bc0c 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -223,6 +223,8 @@ void editorUpdateSyntax(erow *row) {
+   row->hl = realloc(row->hl, row->rsize);
+   memset(row->hl, HL_NORMAL, row->rsize);
+ 
++  if (E.syntax == NULL) return;
++
+   int prev_sep = 1;
+ 
+   int i = 0;
+@@ -230,12 +232,14 @@ void editorUpdateSyntax(erow *row) {
+     char c = row->render[i];
+     unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : HL_NORMAL;
+ 
+-    if ((isdigit(c) && (prev_sep || prev_hl == HL_NUMBER)) ||
+-        (c == '.' && prev_hl == HL_NUMBER)) {
+-      row->hl[i] = HL_NUMBER;
+-      i++;
+-      prev_sep = 0;
+-      continue;
++    if (E.syntax->flags & HL_HIGHLIGHT_NUMBERS) {
++      if ((isdigit(c) && (prev_sep || prev_hl == HL_NUMBER)) ||
++          (c == '.' && prev_hl == HL_NUMBER)) {
++        row->hl[i] = HL_NUMBER;
++        i++;
++        prev_sep = 0;
++        continue;
++      }
+     }
+ 
+     prev_sep = is_separator(c);
+
+~~~
+
+select-syntax c1
+
+diff --git a/kilo.c b/kilo.c
+index da1bc0c..2e78267 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -255,6 +255,27 @@ int editorSyntaxToColor(int hl) {
+   }
+ }
+ 
++void editorSelectSyntaxHighlight() {
++  E.syntax = NULL;
++  if (E.filename == NULL) return;
++
++  char *ext = strrchr(E.filename, '.');
++
++  for (unsigned int j = 0; j < HLDB_ENTRIES; j++) {
++    struct editorSyntax *s = &HLDB[j];
++    unsigned int i = 0;
++    while (s->filematch[i]) {
++      int is_ext = (s->filematch[i][0] == '.');
++      if ((is_ext && ext && !strcmp(ext, s->filematch[i])) ||
++          (!is_ext && strstr(E.filename, s->filematch[i]))) {
++        E.syntax = s;
++        return;
++      }
++      i++;
++    }
++  }
++}
++
+ /*** row operations ***/
+ 
+ int editorRowCxToRx(erow *row, int cx) {
+
+~~~
+
+detect-filetype c2
+
+diff --git a/kilo.c b/kilo.c
+index 2e78267..64b7457 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -453,6 +453,8 @@ void editorOpen(char *filename) {
+   free(E.filename);
+   E.filename = strdup(filename);
+ 
++  editorSelectSyntaxHighlight();
++
+   FILE *fp = fopen(filename, "r");
+   if (!fp) die("fopen");
+ 
+@@ -477,6 +479,7 @@ void editorSave() {
+       editorSetStatusMessage("Save aborted");
+       return;
+     }
++    editorSelectSyntaxHighlight();
+   }
+ 
+   int len;
+
+~~~
+
+rehighlight c2
+
+diff --git a/kilo.c b/kilo.c
+index 64b7457..22adfe6 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -269,6 +269,12 @@ void editorSelectSyntaxHighlight() {
+       if ((is_ext && ext && !strcmp(ext, s->filematch[i])) ||
+           (!is_ext && strstr(E.filename, s->filematch[i]))) {
+         E.syntax = s;
++
++        int filerow;
++        for (filerow = 0; filerow < E.numrows; filerow++) {
++          editorUpdateSyntax(&E.row[filerow]);
++        }
++
+         return;
+       }
+       i++;
+
+~~~
+
+hl-string c1
+
+diff --git a/kilo.c b/kilo.c
+index 22adfe6..14b7547 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -40,6 +40,7 @@ enum editorKey {
+ 
+ enum editorHighlight {
+   HL_NORMAL = 0,
++  HL_STRING,
+   HL_NUMBER,
+   HL_MATCH
+ };
+@@ -249,6 +250,7 @@ void editorUpdateSyntax(erow *row) {
+ 
+ int editorSyntaxToColor(int hl) {
+   switch (hl) {
++    case HL_STRING: return 35;
+     case HL_NUMBER: return 31;
+     case HL_MATCH: return 34;
+     default: return 37;
+
+~~~
+
+string-flag c1
+
+diff --git a/kilo.c b/kilo.c
+index 14b7547..c508751 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -46,6 +46,7 @@ enum editorHighlight {
+ };
+ 
+ #define HL_HIGHLIGHT_NUMBERS (1<<0)
++#define HL_HIGHLIGHT_STRINGS (1<<1)
+ 
+ /*** data ***/
+ 
+@@ -90,7 +91,7 @@ struct editorSyntax HLDB[] = {
+   {
+     "c",
+     C_HL_extensions,
+-    HL_HIGHLIGHT_NUMBERS
++    HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS
+   },
+ };
+ 
+
+~~~
+
+syntax-strings c2
+
+diff --git a/kilo.c b/kilo.c
+index c508751..9ce1ebb 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -228,12 +228,30 @@ void editorUpdateSyntax(erow *row) {
+   if (E.syntax == NULL) return;
+ 
+   int prev_sep = 1;
++  int in_string = 0;
+ 
+   int i = 0;
+   while (i < row->rsize) {
+     char c = row->render[i];
+     unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : HL_NORMAL;
+ 
++    if (E.syntax->flags & HL_HIGHLIGHT_STRINGS) {
++      if (in_string) {
++        row->hl[i] = HL_STRING;
++        if (c == in_string) in_string = 0;
++        i++;
++        prev_sep = 1;
++        continue;
++      } else {
++        if (c == '"' || c == '\'') {
++          in_string = c;
++          row->hl[i] = HL_STRING;
++          i++;
++          continue;
++        }
++      }
++    }
++
+     if (E.syntax->flags & HL_HIGHLIGHT_NUMBERS) {
+       if ((isdigit(c) && (prev_sep || prev_hl == HL_NUMBER)) ||
+           (c == '.' && prev_hl == HL_NUMBER)) {
+
+~~~
+
+string-escapes c2
+
+diff --git a/kilo.c b/kilo.c
+index 9ce1ebb..705468d 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -238,6 +238,11 @@ void editorUpdateSyntax(erow *row) {
+     if (E.syntax->flags & HL_HIGHLIGHT_STRINGS) {
+       if (in_string) {
+         row->hl[i] = HL_STRING;
++        if (c == '\\' && i + 1 < row->rsize) {
++          row->hl[i + 1] = HL_STRING;
++          i += 2;
++          continue;
++        }
+         if (c == in_string) in_string = 0;
+         i++;
+         prev_sep = 1;
+
+~~~
+
+hl-comment c1
+
+diff --git a/kilo.c b/kilo.c
+index 705468d..9d12177 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -40,6 +40,7 @@ enum editorKey {
+ 
+ enum editorHighlight {
+   HL_NORMAL = 0,
++  HL_COMMENT,
+   HL_STRING,
+   HL_NUMBER,
+   HL_MATCH
+@@ -274,6 +275,7 @@ void editorUpdateSyntax(erow *row) {
+ 
+ int editorSyntaxToColor(int hl) {
+   switch (hl) {
++    case HL_COMMENT: return 36;
+     case HL_STRING: return 35;
+     case HL_NUMBER: return 31;
+     case HL_MATCH: return 34;
+
+~~~
+
+scs c1
+
+diff --git a/kilo.c b/kilo.c
+index 9d12177..90d4ad5 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -54,6 +54,7 @@ enum editorHighlight {
+ struct editorSyntax {
+   char *filetype;
+   char **filematch;
++  char *singleline_comment_start;
+   int flags;
+ };
+ 
+@@ -92,6 +93,7 @@ struct editorSyntax HLDB[] = {
+   {
+     "c",
+     C_HL_extensions,
++    "//",
+     HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS
+   },
+ };
+
+~~~
+
+syntax-comments c2
+
+diff --git a/kilo.c b/kilo.c
+index 90d4ad5..97362ca 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -230,6 +230,9 @@ void editorUpdateSyntax(erow *row) {
+ 
+   if (E.syntax == NULL) return;
+ 
++  char *scs = E.syntax->singleline_comment_start;
++  int scs_len = scs ? strlen(scs) : 0;
++
+   int prev_sep = 1;
+   int in_string = 0;
+ 
+@@ -238,6 +241,13 @@ void editorUpdateSyntax(erow *row) {
+     char c = row->render[i];
+     unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : HL_NORMAL;
+ 
++    if (scs_len && !in_string) {
++      if (!strncmp(&row->render[i], scs, scs_len)) {
++        memset(&row->hl[i], HL_COMMENT, row->rsize - i);
++        break;
++      }
++    }
++
+     if (E.syntax->flags & HL_HIGHLIGHT_STRINGS) {
+       if (in_string) {
+         row->hl[i] = HL_STRING;
+
+~~~
+
+hl-keywords c1
+
+diff --git a/kilo.c b/kilo.c
+index 97362ca..e71d659 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -41,6 +41,8 @@ enum editorKey {
+ enum editorHighlight {
+   HL_NORMAL = 0,
+   HL_COMMENT,
++  HL_KEYWORD1,
++  HL_KEYWORD2,
+   HL_STRING,
+   HL_NUMBER,
+   HL_MATCH
+@@ -288,6 +290,8 @@ void editorUpdateSyntax(erow *row) {
+ int editorSyntaxToColor(int hl) {
+   switch (hl) {
+     case HL_COMMENT: return 36;
++    case HL_KEYWORD1: return 33;
++    case HL_KEYWORD2: return 32;
+     case HL_STRING: return 35;
+     case HL_NUMBER: return 31;
+     case HL_MATCH: return 34;
+
+~~~
+
+c-keywords c1
+
+diff --git a/kilo.c b/kilo.c
+index e71d659..1563283 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -56,6 +56,7 @@ enum editorHighlight {
+ struct editorSyntax {
+   char *filetype;
+   char **filematch;
++  char **keywords;
+   char *singleline_comment_start;
+   int flags;
+ };
+@@ -90,11 +91,19 @@ struct editorConfig E;
+ /*** filetypes ***/
+ 
+ char *C_HL_extensions[] = { ".c", ".h", ".cpp", NULL };
++char *C_HL_keywords[] = {
++  "switch", "if", "while", "for", "break", "continue", "return", "else",
++  "struct", "union", "typedef", "static", "enum", "class", "case",
++
++  "int|", "long|", "double|", "float|", "char|", "unsigned|", "signed|",
++  "void|", NULL
++};
+ 
+ struct editorSyntax HLDB[] = {
+   {
+     "c",
+     C_HL_extensions,
++    C_HL_keywords,
+     "//",
+     HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS
+   },
+
+~~~
+
+syntax-keywords c2
+
+diff --git a/kilo.c b/kilo.c
+index 1563283..698ac01 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -241,6 +241,8 @@ void editorUpdateSyntax(erow *row) {
+ 
+   if (E.syntax == NULL) return;
+ 
++  char **keywords = E.syntax->keywords;
++
+   char *scs = E.syntax->singleline_comment_start;
+   int scs_len = scs ? strlen(scs) : 0;
+ 
+@@ -291,6 +293,26 @@ void editorUpdateSyntax(erow *row) {
+       }
+     }
+ 
++    if (prev_sep) {
++      int j;
++      for (j = 0; keywords[j]; j++) {
++        int klen = strlen(keywords[j]);
++        int kw2 = keywords[j][klen - 1] == '|';
++        if (kw2) klen--;
++
++        if (!strncmp(&row->render[i], keywords[j], klen) &&
++            is_separator(row->render[i + klen])) {
++          memset(&row->hl[i], kw2 ? HL_KEYWORD2 : HL_KEYWORD1, klen);
++          i += klen;
++          break;
++        }
++      }
++      if (keywords[j] != NULL) {
++        prev_sep = 0;
++        continue;
++      }
++    }
++
+     prev_sep = is_separator(c);
+     i++;
+   }
+
+~~~
+
+nonprintables c2
+
+diff --git a/kilo.c b/kilo.c
+index 698ac01..cc81aec 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -729,7 +729,12 @@ void editorDrawRows(struct abuf *ab) {
+       int current_color = -1;
+       int j;
+       for (j = 0; j < len; j++) {
+-        if (hl[j] == HL_NORMAL) {
++        if (iscntrl(c[j])) {
++          char sym = (c[j] <= 26) ? '@' + c[j] : '?';
++          abAppend(ab, "\x1b[7m", 4);
++          abAppend(ab, &sym, 1);
++          abAppend(ab, "\x1b[m", 3);
++        } else if (hl[j] == HL_NORMAL) {
+           if (current_color != -1) {
+             abAppend(ab, "\x1b[39m", 5);
+             current_color = -1;
+
+~~~
+
+nonprintables-fix-color c2
+
+diff --git a/kilo.c b/kilo.c
+index cc81aec..c96b2e9 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -734,6 +734,11 @@ void editorDrawRows(struct abuf *ab) {
+           abAppend(ab, "\x1b[7m", 4);
+           abAppend(ab, &sym, 1);
+           abAppend(ab, "\x1b[m", 3);
++          if (current_color != -1) {
++            char buf[16];
++            int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", current_color);
++            abAppend(ab, buf, clen);
++          }
+         } else if (hl[j] == HL_NORMAL) {
+           if (current_color != -1) {
+             abAppend(ab, "\x1b[39m", 5);
+
+~~~
+
+hl-multiline-comments c1
+
+diff --git a/kilo.c b/kilo.c
+index c96b2e9..9c8755d 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -41,6 +41,7 @@ enum editorKey {
+ enum editorHighlight {
+   HL_NORMAL = 0,
+   HL_COMMENT,
++  HL_MLCOMMENT,
+   HL_KEYWORD1,
+   HL_KEYWORD2,
+   HL_STRING,
+@@ -320,7 +321,8 @@ void editorUpdateSyntax(erow *row) {
+ 
+ int editorSyntaxToColor(int hl) {
+   switch (hl) {
+-    case HL_COMMENT: return 36;
++    case HL_COMMENT:
++    case HL_MLCOMMENT: return 36;
+     case HL_KEYWORD1: return 33;
+     case HL_KEYWORD2: return 32;
+     case HL_STRING: return 35;
+
+~~~
+
+mcs-mce c1
+
+diff --git a/kilo.c b/kilo.c
+index 9c8755d..a9aa511 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -59,6 +59,8 @@ struct editorSyntax {
+   char **filematch;
+   char **keywords;
+   char *singleline_comment_start;
++  char *multiline_comment_start;
++  char *multiline_comment_end;
+   int flags;
+ };
+ 
+@@ -105,7 +107,7 @@ struct editorSyntax HLDB[] = {
+     "c",
+     C_HL_extensions,
+     C_HL_keywords,
+-    "//",
++    "//", "/*", "*/",
+     HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS
+   },
+ };
+
+~~~
+
+mcs-mce-len c1
+
+diff --git a/kilo.c b/kilo.c
+index a9aa511..3c7c5a9 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -247,7 +247,12 @@ void editorUpdateSyntax(erow *row) {
+   char **keywords = E.syntax->keywords;
+ 
+   char *scs = E.syntax->singleline_comment_start;
++  char *mcs = E.syntax->multiline_comment_start;
++  char *mce = E.syntax->multiline_comment_end;
++
+   int scs_len = scs ? strlen(scs) : 0;
++  int mcs_len = mcs ? strlen(mcs) : 0;
++  int mce_len = mce ? strlen(mce) : 0;
+ 
+   int prev_sep = 1;
+   int in_string = 0;
+
+~~~
+
+syntax-mlcomment c2
+
+diff --git a/kilo.c b/kilo.c
+index 3c7c5a9..f35450e 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -256,6 +256,7 @@ void editorUpdateSyntax(erow *row) {
+ 
+   int prev_sep = 1;
+   int in_string = 0;
++  int in_comment = 0;
+ 
+   int i = 0;
+   while (i < row->rsize) {
+@@ -269,6 +270,27 @@ void editorUpdateSyntax(erow *row) {
+       }
+     }
+ 
++    if (mcs_len && mce_len && !in_string) {
++      if (in_comment) {
++        row->hl[i] = HL_MLCOMMENT;
++        if (!strncmp(&row->render[i], mce, mce_len)) {
++          memset(&row->hl[i], HL_MLCOMMENT, mce_len);
++          i += mce_len;
++          in_comment = 0;
++          prev_sep = 1;
++          continue;
++        } else {
++          i++;
++          continue;
++        }
++      } else if (!strncmp(&row->render[i], mcs, mcs_len)) {
++        memset(&row->hl[i], HL_MLCOMMENT, mcs_len);
++        i += mcs_len;
++        in_comment = 1;
++        continue;
++      }
++    }
++
+     if (E.syntax->flags & HL_HIGHLIGHT_STRINGS) {
+       if (in_string) {
+         row->hl[i] = HL_STRING;
+
+~~~
+
+slcomment-within-mlcomment c1
+
+diff --git a/kilo.c b/kilo.c
+index f35450e..a1ae610 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -263,7 +263,7 @@ void editorUpdateSyntax(erow *row) {
+     char c = row->render[i];
+     unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : HL_NORMAL;
+ 
+-    if (scs_len && !in_string) {
++    if (scs_len && !in_string && !in_comment) {
+       if (!strncmp(&row->render[i], scs, scs_len)) {
+         memset(&row->hl[i], HL_COMMENT, row->rsize - i);
+         break;
+
+~~~
+
+idx-and-hloc c1
+
+diff --git a/kilo.c b/kilo.c
+index a1ae610..baed21f 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -65,11 +65,13 @@ struct editorSyntax {
+ };
+ 
+ typedef struct erow {
++  int idx;
+   int size;
+   int rsize;
+   char *chars;
+   char *render;
+   unsigned char *hl;
++  int hl_open_comment;
+ } erow;
+ 
+ struct editorConfig {
+@@ -444,6 +446,8 @@ void editorInsertRow(int at, char *s, size_t len) {
+   E.row = realloc(E.row, sizeof(erow) * (E.numrows + 1));
+   memmove(&E.row[at + 1], &E.row[at], sizeof(erow) * (E.numrows - at));
+ 
++  E.row[at].idx = at;
++
+   E.row[at].size = len;
+   E.row[at].chars = malloc(len + 1);
+   memcpy(E.row[at].chars, s, len);
+@@ -452,6 +456,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+   E.row[at].rsize = 0;
+   E.row[at].render = NULL;
+   E.row[at].hl = NULL;
++  E.row[at].hl_open_comment = 0;
+   editorUpdateRow(&E.row[at]);
+ 
+   E.numrows++;
+
+~~~
+
+update-idx c1
+
+diff --git a/kilo.c b/kilo.c
+index baed21f..803d38e 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -445,6 +445,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+ 
+   E.row = realloc(E.row, sizeof(erow) * (E.numrows + 1));
+   memmove(&E.row[at + 1], &E.row[at], sizeof(erow) * (E.numrows - at));
++  for (int j = at + 1; j <= E.numrows; j++) E.row[j].idx++;
+ 
+   E.row[at].idx = at;
+ 
+@@ -473,6 +474,7 @@ void editorDelRow(int at) {
+   if (at < 0 || at >= E.numrows) return;
+   editorFreeRow(&E.row[at]);
+   memmove(&E.row[at], &E.row[at + 1], sizeof(erow) * (E.numrows - at - 1));
++  for (int j = at; j < E.numrows - 1; j++) E.row[j].idx--;
+   E.numrows--;
+   E.dirty++;
+ }
+
+~~~
+
+propagate-highlight c2
+
+diff --git a/kilo.c b/kilo.c
+index 803d38e..ba88a97 100644
+--- a/kilo.c
++++ b/kilo.c
+@@ -258,7 +258,7 @@ void editorUpdateSyntax(erow *row) {
+ 
+   int prev_sep = 1;
+   int in_string = 0;
+-  int in_comment = 0;
++  int in_comment = (row->idx > 0 && E.row[row->idx - 1].hl_open_comment);
+ 
+   int i = 0;
+   while (i < row->rsize) {
+@@ -348,6 +348,11 @@ void editorUpdateSyntax(erow *row) {
+     prev_sep = is_separator(c);
+     i++;
+   }
++
++  int changed = (row->hl_open_comment != in_comment);
++  row->hl_open_comment = in_comment;
++  if (changed && row->idx + 1 < E.numrows)
++    editorUpdateSyntax(&E.row[row->idx + 1]);
+ }
+ 
+ int editorSyntaxToColor(int hl) {
+

@@ -5,3 +5,4 @@ repo/
 doc/html_out/
 doc/html_offline/
 *.zip
+build/

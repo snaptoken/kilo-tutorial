@@ -1,0 +1,34 @@
+<% for diff in diffs %>
+  <div class="diff">
+    <div class="diff-header">
+      <div class="step-filename">
+        <a href="https://github.com/snaptoken/<%= config[:name] %>-src/blob/<%= step_name %>/<%= diff.filename %>">
+          <%= diff.filename %>
+        </a>
+      </div>
+      <div class="step-number">
+        Step <%= step_number %>
+      </div>
+      <div class="step-name">
+        <a href="https://github.com/snaptoken/<%= config[:name] %>-src/tree/<%= step_name %>">
+          <%= step_name %>
+        </a>
+      </div>
+    </div>
+    <pre class="highlight"><code>\\
+      <% for line in diff.lines %>\\
+        <% if line.type == :folded %>\\
+          <div class="line folded">\\
+            <% line.line_numbers.map { |n| diff.lines[n].source }.join(" &hellip; ").gsub("\n", "") %>\\
+          </div>\\
+        <% else %>\\
+          <% tag = {unchanged: :div, added: :ins, removed: :del}[line.type] %>\\
+          <% tag = :div if diff.is_new_file %>\\
+          <<%= tag %> class="line">\\
+            <%= line.source %>\\
+          </<%= tag %>>\\
+        <% end %>\\
+      <% end %>\\
+    </code></pre>
+  </div>
+<% end %>
