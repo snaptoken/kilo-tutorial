@@ -1,5 +1,3 @@
-~~~
-
 # Entering raw mode
 
 Let's try and read keypresses from the user. (The lines you need to add are
