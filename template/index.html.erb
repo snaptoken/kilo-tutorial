@@ -16,6 +16,7 @@
     </header>
     <div id="container">
       <h1><%= config[:title] %></h1>
+      <%= render "_welcome.md" %>
       <h2>Table of Contents</h2>
       <ol>
         <% for page in pages %>
