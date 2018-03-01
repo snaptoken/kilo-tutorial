@@ -10,7 +10,7 @@
     <header class="bar">
       <nav>
         <% if prev_page %>
-          <a href="<%= prev_page.filename %>">&larr; prev</a>
+          <a href="<%= prev_page.filename %>.html">&larr; prev</a>
         <% else %>
           <a href="#"></a>
         <% end %>
@@ -18,7 +18,7 @@
         <a href="index.html">contents</a>
 
         <% if next_page %>
-          <a href="<%= next_page.filename %>">next &rarr;</a>
+          <a href="<%= next_page.filename %>.html">next &rarr;</a>
         <% else %>
           <a href="#"></a>
         <% end %>
