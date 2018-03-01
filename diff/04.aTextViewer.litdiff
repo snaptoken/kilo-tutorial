@@ -9,10 +9,9 @@ Let's create a data type for storing a row of text in our editor.
 erow c1
 
 diff --git a/kilo.c b/kilo.c
-index 4954c40..e940887 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -29,10 +29,17 @@ enum editorKey {
+@@ -29,10 +29,17 @@
 |
 |/*** data ***/
 |
@@ -30,7 +29,7 @@ index 4954c40..e940887 100644
 |  struct termios orig_termios;
 |};
 |
-@@ -286,6 +293,7 @@ void editorProcessKeypress() {
+@@ -286,6 +293,7 @@
 |void initEditor() {
 |  E.cx = 0;
 |  E.cy = 0;
@@ -57,7 +56,6 @@ file just yet. Instead, we'll hardcode a "Hello, world" string into it.
 hello-world c1
 
 diff --git a/kilo.c b/kilo.c
-index e940887..a4a99ca 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -6,6 +6,7 @@
@@ -68,7 +66,7 @@ index e940887..a4a99ca 100644
 |#include <termios.h>
 |#include <unistd.h>
 |
-@@ -157,6 +158,19 @@ int getWindowSize(int *rows, int *cols) {
+@@ -157,6 +158,19 @@
 |  }
 |}
 |
@@ -88,7 +86,7 @@ index e940887..a4a99ca 100644
 |/*** append buffer ***/
 |
 |struct abuf {
-@@ -301,6 +315,7 @@ void initEditor() {
+@@ -301,6 +315,7 @@
 |int main() {
 |  enableRawMode();
 |  initEditor();
@@ -116,10 +114,9 @@ Let's display it then.
 draw-erow c2
 
 diff --git a/kilo.c b/kilo.c
-index a4a99ca..ccc20f9 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -198,20 +198,26 @@ void abFree(struct abuf *ab) {
+@@ -198,20 +198,26 @@
 |void editorDrawRows(struct abuf *ab) {
 |  int y;
 |  for (y = 0; y < E.screenrows; y++) {
@@ -176,10 +173,9 @@ first line of the file.
 open-file c-unknown
 
 diff --git a/kilo.c b/kilo.c
-index ccc20f9..895dc8a 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -160,15 +160,26 @@ int getWindowSize(int *rows, int *cols) {
+@@ -160,15 +160,26 @@
 |
 |/*** file i/o ***/
 |
@@ -215,7 +211,7 @@ index ccc20f9..895dc8a 100644
 |}
 |
 |/*** append buffer ***/
-@@ -318,10 +329,12 @@ void initEditor() {
+@@ -318,10 +329,12 @@
 |  if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
 |}
 |
@@ -273,7 +269,6 @@ our code more portable.
 feature-test-macros c2
 
 diff --git a/kilo.c b/kilo.c
-index 895dc8a..435254b 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,5 +1,9 @@
@@ -301,10 +296,9 @@ the welcome message could get in the way of displaying the file.
 hide-welcome c2
 
 diff --git a/kilo.c b/kilo.c
-index 435254b..275e926 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -214,7 +214,7 @@ void editorDrawRows(struct abuf *ab) {
+@@ -214,7 +214,7 @@
 |  int y;
 |  for (y = 0; y < E.screenrows; y++) {
 |    if (y >= E.numrows) {
@@ -332,10 +326,9 @@ the next few steps.)
 erow-array c0
 
 diff --git a/kilo.c b/kilo.c
-index 275e926..288f4d1 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -44,7 +44,7 @@ struct editorConfig {
+@@ -44,7 +44,7 @@
 |  int screenrows;
 |  int screencols;
 |  int numrows;
@@ -344,7 +337,7 @@ index 275e926..288f4d1 100644
 |  struct termios orig_termios;
 |};
 |
-@@ -329,6 +329,7 @@ void initEditor() {
+@@ -329,6 +329,7 @@
 |  E.cx = 0;
 |  E.cy = 0;
 |  E.numrows = 0;
@@ -364,10 +357,9 @@ function called `editorAppendRow()`. We'll also put it under a new section,
 append-row c0
 
 diff --git a/kilo.c b/kilo.c
-index 288f4d1..b0a2855 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -162,6 +162,16 @@ int getWindowSize(int *rows, int *cols) {
+@@ -162,6 +162,16 @@
 |  }
 |}
 |
@@ -384,7 +376,7 @@ index 288f4d1..b0a2855 100644
 |/*** file i/o ***/
 |
 |void editorOpen(char *filename) {
-@@ -176,11 +186,7 @@ void editorOpen(char *filename) {
+@@ -176,11 +186,7 @@
 |    while (linelen > 0 && (line[linelen - 1] == '\n' ||
 |                           line[linelen - 1] == '\r'))
 |      linelen--;
@@ -412,10 +404,9 @@ now.
 fix-append-row c0
 
 diff --git a/kilo.c b/kilo.c
-index b0a2855..c08b036 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -165,11 +165,14 @@ int getWindowSize(int *rows, int *cols) {
+@@ -165,11 +165,14 @@
 |/*** row operations ***/
 |
 |void editorAppendRow(char *s, size_t len) {
@@ -452,10 +443,9 @@ when printing out the current line.
 draw-multiple-erows c1
 
 diff --git a/kilo.c b/kilo.c
-index c08b036..38aaa69 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -239,9 +239,9 @@ void editorDrawRows(struct abuf *ab) {
+@@ -239,9 +239,9 @@
 |        abAppend(ab, "~", 1);
 |      }
 |    } else {
@@ -479,10 +469,9 @@ file into `E.row`.
 read-multiple-lines c2
 
 diff --git a/kilo.c b/kilo.c
-index 38aaa69..e715bd0 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -184,8 +184,7 @@ void editorOpen(char *filename) {
+@@ -184,8 +184,7 @@
 |  char *line = NULL;
 |  size_t linecap = 0;
 |  ssize_t linelen;
@@ -513,10 +502,9 @@ of the file the user is currently scrolled to.
 rowoff c1
 
 diff --git a/kilo.c b/kilo.c
-index e715bd0..25ca0de 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -41,6 +41,7 @@ typedef struct erow {
+@@ -41,6 +41,7 @@
 |
 |struct editorConfig {
 |  int cx, cy;
@@ -524,7 +512,7 @@ index e715bd0..25ca0de 100644
 |  int screenrows;
 |  int screencols;
 |  int numrows;
-@@ -336,6 +337,7 @@ void editorProcessKeypress() {
+@@ -336,6 +337,7 @@
 |void initEditor() {
 |  E.cx = 0;
 |  E.cy = 0;
@@ -546,10 +534,9 @@ file according to the value of `rowoff`.
 filerow c1
 
 diff --git a/kilo.c b/kilo.c
-index 25ca0de..1fbd62e 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -222,7 +222,8 @@ void abFree(struct abuf *ab) {
+@@ -222,7 +222,8 @@
 |void editorDrawRows(struct abuf *ab) {
 |  int y;
 |  for (y = 0; y < E.screenrows; y++) {
@@ -559,7 +546,7 @@ index 25ca0de..1fbd62e 100644
 |      if (E.numrows == 0 && y == E.screenrows / 3) {
 |        char welcome[80];
 |        int welcomelen = snprintf(welcome, sizeof(welcome),
-@@ -239,9 +240,9 @@ void editorDrawRows(struct abuf *ab) {
+@@ -239,9 +240,9 @@
 |        abAppend(ab, "~", 1);
 |      }
 |    } else {
@@ -589,10 +576,9 @@ refresh the screen.
 editor-scroll c1
 
 diff --git a/kilo.c b/kilo.c
-index 1fbd62e..f59a7a6 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -219,6 +219,15 @@ void abFree(struct abuf *ab) {
+@@ -219,6 +219,15 @@
 |
 |/*** output ***/
 |
@@ -608,7 +594,7 @@ index 1fbd62e..f59a7a6 100644
 |void editorDrawRows(struct abuf *ab) {
 |  int y;
 |  for (y = 0; y < E.screenrows; y++) {
-@@ -253,6 +262,8 @@ void editorDrawRows(struct abuf *ab) {
+@@ -253,6 +262,8 @@
 |}
 |
 |void editorRefreshScreen() {
@@ -635,10 +621,9 @@ past the bottom of the file).
 enable-vertical-scroll c2
 
 diff --git a/kilo.c b/kilo.c
-index f59a7a6..6fe503e 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -301,7 +301,7 @@ void editorMoveCursor(int key) {
+@@ -301,7 +301,7 @@
 |      }
 |      break;
 |    case ARROW_DOWN:
@@ -667,10 +652,9 @@ text file. To position the cursor on the screen, we now have to subtract
 fix-cursor-scrolling c2
 
 diff --git a/kilo.c b/kilo.c
-index 6fe503e..a4e8a97 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -272,7 +272,7 @@ void editorRefreshScreen() {
+@@ -272,7 +272,7 @@
 |  editorDrawRows(&ab);
 |
 |  char buf[32];
@@ -693,10 +677,9 @@ offset) variable to the global editor state.
 coloff c1
 
 diff --git a/kilo.c b/kilo.c
-index a4e8a97..2271415 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -42,6 +42,7 @@ typedef struct erow {
+@@ -42,6 +42,7 @@
 |struct editorConfig {
 |  int cx, cy;
 |  int rowoff;
@@ -704,7 +687,7 @@ index a4e8a97..2271415 100644
 |  int screenrows;
 |  int screencols;
 |  int numrows;
-@@ -350,6 +351,7 @@ void initEditor() {
+@@ -350,6 +351,7 @@
 |  E.cx = 0;
 |  E.cy = 0;
 |  E.rowoff = 0;
@@ -724,10 +707,9 @@ that are to the left of the offset from the length of the row.
 use-coloff c1
 
 diff --git a/kilo.c b/kilo.c
-index 2271415..5328f79 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -250,9 +250,10 @@ void editorDrawRows(struct abuf *ab) {
+@@ -250,9 +250,10 @@
 |        abAppend(ab, "~", 1);
 |      }
 |    } else {
@@ -755,10 +737,9 @@ Now let's update `editorScroll()` to handle horizontal scrolling.
 editor-scroll-horizontal c1
 
 diff --git a/kilo.c b/kilo.c
-index 5328f79..d04e71c 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -227,6 +227,12 @@ void editorScroll() {
+@@ -227,6 +227,12 @@
 |  if (E.cy >= E.rowoff + E.screenrows) {
 |    E.rowoff = E.cy - E.screenrows + 1;
 |  }
@@ -785,10 +766,9 @@ Now let's allow the user to scroll past the right edge of the screen.
 enable-horizontal-scroll c2
 
 diff --git a/kilo.c b/kilo.c
-index d04e71c..529a588 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -299,9 +299,7 @@ void editorMoveCursor(int key) {
+@@ -299,9 +299,7 @@
 |      }
 |      break;
 |    case ARROW_RIGHT:
@@ -812,10 +792,9 @@ scrolling.
 fix-cursor-scrolling-horizontal c2
 
 diff --git a/kilo.c b/kilo.c
-index 529a588..ffbe58b 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -280,7 +280,8 @@ void editorRefreshScreen() {
+@@ -280,7 +280,8 @@
 |  editorDrawRows(&ab);
 |
 |  char buf[32];
@@ -848,10 +827,9 @@ line.
 scroll-limits c2
 
 diff --git a/kilo.c b/kilo.c
-index ffbe58b..5c609aa 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -293,6 +293,8 @@ void editorRefreshScreen() {
+@@ -293,6 +293,8 @@
 |/*** input ***/
 |
 |void editorMoveCursor(int key) {
@@ -860,7 +838,7 @@ index ffbe58b..5c609aa 100644
 |  switch (key) {
 |    case ARROW_LEFT:
 |      if (E.cx != 0) {
-@@ -300,7 +302,9 @@ void editorMoveCursor(int key) {
+@@ -300,7 +302,9 @@
 |      }
 |      break;
 |    case ARROW_RIGHT:
@@ -895,10 +873,9 @@ past the end of the line it's on.
 snap-cursor c2
 
 diff --git a/kilo.c b/kilo.c
-index 5c609aa..d77a063 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -317,6 +317,12 @@ void editorMoveCursor(int key) {
+@@ -317,6 +317,12 @@
 |      }
 |      break;
 |  }
@@ -929,10 +906,9 @@ move to the end of the previous line.
 moving-left c2
 
 diff --git a/kilo.c b/kilo.c
-index d77a063..c57395b 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -299,6 +299,9 @@ void editorMoveCursor(int key) {
+@@ -299,6 +299,9 @@
 |    case ARROW_LEFT:
 |      if (E.cx != 0) {
 |        E.cx--;
@@ -957,10 +933,9 @@ to go to the beginning of the next line.
 moving-right c2
 
 diff --git a/kilo.c b/kilo.c
-index c57395b..f084742 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -307,6 +307,9 @@ void editorMoveCursor(int key) {
+@@ -307,6 +307,9 @@
 |    case ARROW_RIGHT:
 |      if (row && E.cx < row->size) {
 |        E.cx++;
@@ -1005,10 +980,9 @@ initialized.
 render c1
 
 diff --git a/kilo.c b/kilo.c
-index f084742..540c45a 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -36,7 +36,9 @@ enum editorKey {
+@@ -36,7 +36,9 @@
 |
 |typedef struct erow {
 |  int size;
@@ -1018,7 +992,7 @@ index f084742..540c45a 100644
 |} erow;
 |
 |struct editorConfig {
-@@ -174,6 +176,10 @@ void editorAppendRow(char *s, size_t len) {
+@@ -174,6 +176,10 @@
 |  E.row[at].chars = malloc(len + 1);
 |  memcpy(E.row[at].chars, s, len);
 |  E.row[at].chars[len] = '\0';
@@ -1042,10 +1016,9 @@ just yet.
 editor-update-row c1
 
 diff --git a/kilo.c b/kilo.c
-index 540c45a..ec85940 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -168,6 +168,19 @@ int getWindowSize(int *rows, int *cols) {
+@@ -168,6 +168,19 @@
 |
 |/*** row operations ***/
 |
@@ -1065,7 +1038,7 @@ index 540c45a..ec85940 100644
 |void editorAppendRow(char *s, size_t len) {
 |  E.row = realloc(E.row, sizeof(erow) * (E.numrows + 1));
 |
-@@ -179,6 +192,7 @@ void editorAppendRow(char *s, size_t len) {
+@@ -179,6 +192,7 @@
 |
 |  E.row[at].rsize = 0;
 |  E.row[at].render = NULL;
@@ -1087,10 +1060,9 @@ Now let's replace `chars` and `size` with `render` and `rsize` in
 use-render c1
 
 diff --git a/kilo.c b/kilo.c
-index ec85940..055b8b0 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -276,10 +276,10 @@ void editorDrawRows(struct abuf *ab) {
+@@ -276,10 +276,10 @@
 |        abAppend(ab, "~", 1);
 |      }
 |    } else {
@@ -1114,10 +1086,9 @@ Now the text viewer is displaying the characters in `render`. Let's add code to
 tabs c2
 
 diff --git a/kilo.c b/kilo.c
-index 055b8b0..32ac598 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -169,13 +169,22 @@ int getWindowSize(int *rows, int *cols) {
+@@ -169,13 +169,22 @@
 |/*** row operations ***/
 |
 |void editorUpdateRow(erow *row) {
@@ -1164,7 +1135,6 @@ At this point, we should probably make the length of a tab stop a constant.
 tab-stop c1
 
 diff --git a/kilo.c b/kilo.c
-index 32ac598..c6bab97 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -17,6 +17,7 @@
@@ -1175,7 +1145,7 @@ index 32ac598..c6bab97 100644
 |
 |#define CTRL_KEY(k) ((k) & 0x1f)
 |
-@@ -175,13 +176,13 @@ void editorUpdateRow(erow *row) {
+@@ -175,13 +176,13 @@
 |    if (row->chars[j] == '\t') tabs++;
 |
 |  free(row->render);
@@ -1214,10 +1184,9 @@ Start by adding `rx` to the global state struct, and initializing it to `0`.
 rx c1
 
 diff --git a/kilo.c b/kilo.c
-index c6bab97..a4ee74d 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -44,6 +44,7 @@ typedef struct erow {
+@@ -44,6 +44,7 @@
 |
 |struct editorConfig {
 |  int cx, cy;
@@ -1225,7 +1194,7 @@ index c6bab97..a4ee74d 100644
 |  int rowoff;
 |  int coloff;
 |  int screenrows;
-@@ -402,6 +403,7 @@ void editorProcessKeypress() {
+@@ -402,6 +403,7 @@
 |void initEditor() {
 |  E.cx = 0;
 |  E.cy = 0;
@@ -1247,10 +1216,9 @@ rendered position of the cursor.
 rx-scroll c1
 
 diff --git a/kilo.c b/kilo.c
-index a4ee74d..2c0623b 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -252,17 +252,19 @@ void abFree(struct abuf *ab) {
+@@ -252,17 +252,19 @@
 |/*** output ***/
 |
 |void editorScroll() {
@@ -1285,10 +1253,9 @@ position.
 use-rx c1
 
 diff --git a/kilo.c b/kilo.c
-index 2c0623b..6f8702e 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -314,7 +314,7 @@ void editorRefreshScreen() {
+@@ -314,7 +314,7 @@
 |
 |  char buf[32];
 |  snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
@@ -1311,10 +1278,9 @@ up.
 cx-to-rx c1
 
 diff --git a/kilo.c b/kilo.c
-index 6f8702e..cda0420 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -170,6 +170,17 @@ int getWindowSize(int *rows, int *cols) {
+@@ -170,6 +170,17 @@
 |
 |/*** row operations ***/
 |
@@ -1350,10 +1316,9 @@ Let's call `editorRowCxToRx()` at the top of `editorScroll()` to finally set
 set-rx c2
 
 diff --git a/kilo.c b/kilo.c
-index cda0420..315c014 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -263,7 +263,10 @@ void abFree(struct abuf *ab) {
+@@ -263,7 +263,10 @@
 |/*** output ***/
 |
 |void editorScroll() {
@@ -1381,10 +1346,9 @@ Now that we have scrolling, let's make the <kbd>Page Up</kbd> and
 page-up-down c2
 
 diff --git a/kilo.c b/kilo.c
-index 315c014..7145b5a 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -399,6 +399,13 @@ void editorProcessKeypress() {
+@@ -399,6 +399,13 @@
 |    case PAGE_UP:
 |    case PAGE_DOWN:
 |      {
@@ -1419,10 +1383,9 @@ screen.)
 end-key c2
 
 diff --git a/kilo.c b/kilo.c
-index 7145b5a..53e3c39 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -393,7 +393,8 @@ void editorProcessKeypress() {
+@@ -393,7 +393,8 @@
 |      break;
 |
 |    case END_KEY:
@@ -1455,10 +1418,9 @@ screen.
 status-bar-make-room c2
 
 diff --git a/kilo.c b/kilo.c
-index 53e3c39..821c1b3 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -310,9 +310,7 @@ void editorDrawRows(struct abuf *ab) {
+@@ -310,9 +310,7 @@
 |    }
 |
 |    abAppend(ab, "\x1b[K", 3);
@@ -1469,7 +1431,7 @@ index 53e3c39..821c1b3 100644
 |  }
 |}
 |
-@@ -434,6 +432,7 @@ void initEditor() {
+@@ -434,6 +432,7 @@
 |  E.row = NULL;
 |
 |  if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
@@ -1499,10 +1461,9 @@ Let's draw a blank white status bar of inverted space characters.
 blank-status-bar c2
 
 diff --git a/kilo.c b/kilo.c
-index 821c1b3..efa995f 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -314,6 +314,16 @@ void editorDrawRows(struct abuf *ab) {
+@@ -314,6 +314,16 @@
 |  }
 |}
 |
@@ -1519,7 +1480,7 @@ index 821c1b3..efa995f 100644
 |void editorRefreshScreen() {
 |  editorScroll();
 |
-@@ -323,6 +333,7 @@ void editorRefreshScreen() {
+@@ -323,6 +333,7 @@
 |  abAppend(&ab, "\x1b[H", 3);
 |
 |  editorDrawRows(&ab);
@@ -1547,10 +1508,9 @@ file is opened.
 filename c1
 
 diff --git a/kilo.c b/kilo.c
-index efa995f..061544d 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -51,6 +51,7 @@ struct editorConfig {
+@@ -51,6 +51,7 @@
 |  int screencols;
 |  int numrows;
 |  erow *row;
@@ -1558,7 +1518,7 @@ index efa995f..061544d 100644
 |  struct termios orig_termios;
 |};
 |
-@@ -222,6 +223,9 @@ void editorAppendRow(char *s, size_t len) {
+@@ -222,6 +223,9 @@
 |/*** file i/o ***/
 |
 |void editorOpen(char *filename) {
@@ -1568,7 +1528,7 @@ index efa995f..061544d 100644
 |  FILE *fp = fopen(filename, "r");
 |  if (!fp) die("fopen");
 |
-@@ -441,6 +445,7 @@ void initEditor() {
+@@ -441,6 +445,7 @@
 |  E.coloff = 0;
 |  E.numrows = 0;
 |  E.row = NULL;
@@ -1595,10 +1555,9 @@ If there is no filename, we'll display `[No Name]` instead.
 status-bar-left c2
 
 diff --git a/kilo.c b/kilo.c
-index 061544d..afe8b31 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -320,7 +320,11 @@ void editorDrawRows(struct abuf *ab) {
+@@ -320,7 +320,11 @@
 |
 |void editorDrawStatusBar(struct abuf *ab) {
 |  abAppend(ab, "\x1b[7m", 4);
@@ -1626,10 +1585,9 @@ screen.
 status-bar-right c2
 
 diff --git a/kilo.c b/kilo.c
-index afe8b31..b40b574 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -320,14 +320,21 @@ void editorDrawRows(struct abuf *ab) {
+@@ -320,14 +320,21 @@
 |
 |void editorDrawStatusBar(struct abuf *ab) {
 |  abAppend(ab, "\x1b[7m", 4);
@@ -1679,7 +1637,6 @@ been displayed.
 status-message c1
 
 diff --git a/kilo.c b/kilo.c
-index b40b574..aa6de08 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -12,6 +12,7 @@
@@ -1690,7 +1647,7 @@ index b40b574..aa6de08 100644
 |#include <unistd.h>
 |
 |/*** defines ***/
-@@ -52,6 +53,8 @@ struct editorConfig {
+@@ -52,6 +53,8 @@
 |  int numrows;
 |  erow *row;
 |  char *filename;
@@ -1699,7 +1656,7 @@ index b40b574..aa6de08 100644
 |  struct termios orig_termios;
 |};
 |
-@@ -457,6 +460,8 @@ void initEditor() {
+@@ -457,6 +460,8 @@
 |  E.numrows = 0;
 |  E.row = NULL;
 |  E.filename = NULL;
@@ -1726,7 +1683,6 @@ functions.
 set-status-message c1
 
 diff --git a/kilo.c b/kilo.c
-index aa6de08..c5499dc 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -7,6 +7,7 @@
@@ -1737,7 +1693,7 @@ index aa6de08..c5499dc 100644
 |#include <stdlib.h>
 |#include <string.h>
 |#include <sys/ioctl.h>
-@@ -364,6 +365,14 @@ void editorRefreshScreen() {
+@@ -364,6 +365,14 @@
 |  abFree(&ab);
 |}
 |
@@ -1752,7 +1708,7 @@ index aa6de08..c5499dc 100644
 |/*** input ***/
 |
 |void editorMoveCursor(int key) {
-@@ -474,6 +483,8 @@ int main(int argc, char *argv[]) {
+@@ -474,6 +483,8 @@
 |    editorOpen(argv[1]);
 |  }
 |
@@ -1797,10 +1753,9 @@ beneath our status bar where we'll display the message.
 message-bar-make-room c2
 
 diff --git a/kilo.c b/kilo.c
-index c5499dc..3d30206 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -341,6 +341,7 @@ void editorDrawStatusBar(struct abuf *ab) {
+@@ -341,6 +341,7 @@
 |    }
 |  }
 |  abAppend(ab, "\x1b[m", 3);
@@ -1808,7 +1763,7 @@ index c5499dc..3d30206 100644
 |}
 |
 |void editorRefreshScreen() {
-@@ -473,7 +474,7 @@ void initEditor() {
+@@ -473,7 +474,7 @@
 |  E.statusmsg_time = 0;
 |
 |  if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowSize");
@@ -1830,10 +1785,9 @@ Let's draw the message bar in a new `editorDrawMessageBar()` function.
 draw-message-bar c2
 
 diff --git a/kilo.c b/kilo.c
-index 3d30206..21209c2 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -344,6 +344,14 @@ void editorDrawStatusBar(struct abuf *ab) {
+@@ -344,6 +344,14 @@
 |  abAppend(ab, "\r\n", 2);
 |}
 |
@@ -1848,7 +1802,7 @@ index 3d30206..21209c2 100644
 |void editorRefreshScreen() {
 |  editorScroll();
 |
-@@ -354,6 +362,7 @@ void editorRefreshScreen() {
+@@ -354,6 +362,7 @@
 |
 |  editorDrawRows(&ab);
 |  editorDrawStatusBar(&ab);

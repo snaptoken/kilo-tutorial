@@ -10,10 +10,9 @@ cursor to the match.
 basic-search c1
 
 diff --git a/kilo.c b/kilo.c
-index cce71c2..c54a566 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -390,6 +390,27 @@ void editorSave() {
+@@ -390,6 +390,27 @@
 |  editorSetStatusMessage("Can't save! I/O error: %s", strerror(errno));
 |}
 |
@@ -74,10 +73,9 @@ same code.
 rx-to-cx c1
 
 diff --git a/kilo.c b/kilo.c
-index c54a566..187da83 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -196,6 +196,19 @@ int editorRowCxToRx(erow *row, int cx) {
+@@ -196,6 +196,19 @@
 |  return rx;
 |}
 |
@@ -119,10 +117,9 @@ index and assign that to `E.cx`.
 use-rx-to-cx c1
 
 diff --git a/kilo.c b/kilo.c
-index 187da83..abff2b3 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -415,7 +415,7 @@ void editorFind() {
+@@ -415,7 +415,7 @@
 |    char *match = strstr(row->render, query);
 |    if (match) {
 |      E.cy = i;
@@ -142,10 +139,9 @@ to the help message we set in `main()`.
 ctrl-f c2
 
 diff --git a/kilo.c b/kilo.c
-index abff2b3..164221f 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -672,6 +672,10 @@ void editorProcessKeypress() {
+@@ -672,6 +672,10 @@
 |        E.cx = E.row[E.cy].size;
 |      break;
 |
@@ -156,7 +152,7 @@ index abff2b3..164221f 100644
 |    case BACKSPACE:
 |    case CTRL_KEY('h'):
 |    case DEL_KEY:
-@@ -740,7 +744,8 @@ int main(int argc, char *argv[]) {
+@@ -740,7 +744,8 @@
 |    editorOpen(argv[1]);
 |  }
 |
@@ -185,10 +181,9 @@ pressed.
 prompt-callback c0
 
 diff --git a/kilo.c b/kilo.c
-index 164221f..1b19c30 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -69,7 +69,7 @@ struct editorConfig E;
+@@ -69,7 +69,7 @@
 |
 |void editorSetStatusMessage(const char *fmt, ...);
 |void editorRefreshScreen();
@@ -197,7 +192,7 @@ index 164221f..1b19c30 100644
 |
 |/*** terminal ***/
 |
-@@ -564,7 +564,7 @@ void editorSetStatusMessage(const char *fmt, ...) {
+@@ -564,7 +564,7 @@
 |
 |/*** input ***/
 |
@@ -206,7 +201,7 @@ index 164221f..1b19c30 100644
 |  size_t bufsize = 128;
 |  char *buf = malloc(bufsize);
 |
-@@ -580,11 +580,13 @@ char *editorPrompt(char *prompt) {
+@@ -580,11 +580,13 @@
 |      if (buflen != 0) buf[--buflen] = '\0';
 |    } else if (c == '\x1b') {
 |      editorSetStatusMessage("");
@@ -220,7 +215,7 @@ index 164221f..1b19c30 100644
 |        return buf;
 |      }
 |    } else if (!iscntrl(c) && c < 128) {
-@@ -595,6 +597,8 @@ char *editorPrompt(char *prompt) {
+@@ -595,6 +597,8 @@
 |      buf[buflen++] = c;
 |      buf[buflen] = '\0';
 |    }
@@ -243,10 +238,9 @@ to compile.
 null-callback c1
 
 diff --git a/kilo.c b/kilo.c
-index 1b19c30..1ff7b39 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -375,7 +375,7 @@ void editorOpen(char *filename) {
+@@ -375,7 +375,7 @@
 |
 |void editorSave() {
 |  if (E.filename == NULL) {
@@ -255,7 +249,7 @@ index 1b19c30..1ff7b39 100644
 |    if (E.filename == NULL) {
 |      editorSetStatusMessage("Save aborted");
 |      return;
-@@ -406,7 +406,7 @@ void editorSave() {
+@@ -406,7 +406,7 @@
 |/*** find ***/
 |
 |void editorFind() {
@@ -276,10 +270,9 @@ called `editorFindCallback()`. Obviously this will be our callback function for
 incremental-search c2
 
 diff --git a/kilo.c b/kilo.c
-index 1ff7b39..f92dd8d 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -405,9 +405,10 @@ void editorSave() {
+@@ -405,9 +405,10 @@
 |
 |/*** find ***/
 |
@@ -293,7 +286,7 @@ index 1ff7b39..f92dd8d 100644
 |
 |  int i;
 |  for (i = 0; i < E.numrows; i++) {
-@@ -420,8 +421,14 @@ void editorFind() {
+@@ -420,8 +421,14 @@
 |      break;
 |    }
 |  }
@@ -331,10 +324,9 @@ after the search is cancelled.
 restore-cursor c2
 
 diff --git a/kilo.c b/kilo.c
-index f92dd8d..3114148 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -424,10 +424,20 @@ void editorFindCallback(char *query, int key) {
+@@ -424,10 +424,20 @@
 |}
 |
 |void editorFind() {
@@ -378,10 +370,9 @@ the search: `1` for searching forward, and `-1` for searching backward.
 callback-statics c1
 
 diff --git a/kilo.c b/kilo.c
-index 3114148..c0668e0 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -406,8 +406,20 @@ void editorSave() {
+@@ -406,8 +406,20 @@
 |/*** find ***/
 |
 |void editorFindCallback(char *query, int key) {
@@ -423,10 +414,9 @@ Now that we have those variables all set up, let's put them to use.
 search-arrows c2
 
 diff --git a/kilo.c b/kilo.c
-index c0668e0..c054dfa 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -422,12 +422,19 @@ void editorFindCallback(char *query, int key) {
+@@ -422,12 +422,19 @@
 |    direction = 1;
 |  }
 |
@@ -471,10 +461,9 @@ can use the arrow keys.
 search-arrows-help c2
 
 diff --git a/kilo.c b/kilo.c
-index c054dfa..5f10de4 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -448,7 +448,8 @@ void editorFind() {
+@@ -448,7 +448,8 @@
 |  int saved_coloff = E.coloff;
 |  int saved_rowoff = E.rowoff;
 |

@@ -8,7 +8,6 @@ highlighted and marked with arrows.)
 read c2
 
 diff --git a/kilo.c b/kilo.c
-index 4cce7f6..f792e0c 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,3 +1,8 @@
@@ -59,7 +58,6 @@ highlighted and marked the same way as lines you need to add.)
 press-q c2
 
 diff --git a/kilo.c b/kilo.c
-index f792e0c..4a8dcf7 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -2,7 +2,7 @@
@@ -93,7 +91,6 @@ attributes back out. Let's try turning off the `ECHO` feature this way.
 echo c2
 
 diff --git a/kilo.c b/kilo.c
-index 4a8dcf7..db89bad 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,8 +1,20 @@
@@ -170,7 +167,6 @@ exits.
 atexit c2
 
 diff --git a/kilo.c b/kilo.c
-index db89bad..67b9532 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,11 +1,18 @@
@@ -225,10 +221,9 @@ we will finally be reading input byte-by-byte, instead of line-by-line.
 icanon c2
 
 diff --git a/kilo.c b/kilo.c
-index 67b9532..669ba86 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -13,7 +13,7 @@ void enableRawMode() {
+@@ -13,7 +13,7 @@
 |  atexit(disableRawMode);
 |
 |  struct termios raw = orig_termios;
@@ -257,7 +252,6 @@ the character it represents if it is a printable character.
 keypresses c2
 
 diff --git a/kilo.c b/kilo.c
-index 669ba86..bae8a44 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,3 +1,5 @@
@@ -266,7 +260,7 @@ index 669ba86..bae8a44 100644
 |#include <stdlib.h>
 |#include <termios.h>
 |#include <unistd.h>
-@@ -22,6 +24,13 @@ int main() {
+@@ -22,6 +24,13 @@
 |  enableRawMode();
 |
 |  char c;
@@ -343,10 +337,9 @@ both of these signals.
 isig c2
 
 diff --git a/kilo.c b/kilo.c
-index bae8a44..e39adda 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -15,7 +15,7 @@ void enableRawMode() {
+@@ -15,7 +15,7 @@
 |  atexit(disableRawMode);
 |
 |  struct termios raw = orig_termios;
@@ -381,10 +374,9 @@ just turn off that feature.
 ixon c2
 
 diff --git a/kilo.c b/kilo.c
-index e39adda..5747973 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -15,6 +15,7 @@ void enableRawMode() {
+@@ -15,6 +15,7 @@
 |  atexit(disableRawMode);
 |
 |  struct termios raw = orig_termios;
@@ -419,10 +411,9 @@ driver is otherwise set to discard that control character.
 iexten c2
 
 diff --git a/kilo.c b/kilo.c
-index 5747973..df0d5d7 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -16,7 +16,7 @@ void enableRawMode() {
+@@ -16,7 +16,7 @@
 |
 |  struct termios raw = orig_termios;
 |  raw.c_iflag &= ~(IXON);
@@ -458,10 +449,9 @@ off this feature.
 icrnl c2
 
 diff --git a/kilo.c b/kilo.c
-index df0d5d7..b943855 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -15,7 +15,7 @@ void enableRawMode() {
+@@ -15,7 +15,7 @@
 |  atexit(disableRawMode);
 |
 |  struct termios raw = orig_termios;
@@ -499,10 +489,9 @@ processing feature turned on by default.
 opost c2
 
 diff --git a/kilo.c b/kilo.c
-index b943855..ef16c65 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -16,6 +16,7 @@ void enableRawMode() {
+@@ -16,6 +16,7 @@
 |
 |  struct termios raw = orig_termios;
 |  raw.c_iflag &= ~(ICRNL | IXON);
@@ -525,10 +514,9 @@ screen. To fix that, let's add carriage returns to our `printf()` statements.
 carriage-returns c2
 
 diff --git a/kilo.c b/kilo.c
-index ef16c65..73bb8e7 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -28,9 +28,9 @@ int main() {
+@@ -28,9 +28,9 @@
 |  char c;
 |  while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q') {
 |    if (iscntrl(c)) {
@@ -555,10 +543,9 @@ Let's turn off a few more flags.
 misc-flags c1
 
 diff --git a/kilo.c b/kilo.c
-index 73bb8e7..74945d8 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -15,8 +15,9 @@ void enableRawMode() {
+@@ -15,8 +15,9 @@
 |  atexit(disableRawMode);
 |
 |  struct termios raw = orig_termios;
@@ -606,10 +593,9 @@ returns if it doesn't get any input for a certain amount of time.
 vmin-vtime c2
 
 diff --git a/kilo.c b/kilo.c
-index 74945d8..d9828bc 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -19,6 +19,8 @@ void enableRawMode() {
+@@ -19,6 +19,8 @@
 |  raw.c_oflag &= ~(OPOST);
 |  raw.c_cflag |= (CS8);
 |  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
@@ -618,7 +604,7 @@ index 74945d8..d9828bc 100644
 |
 |  tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 |}
-@@ -26,13 +28,15 @@ void enableRawMode() {
+@@ -26,13 +28,15 @@
 |int main() {
 |  enableRawMode();
 |
@@ -675,7 +661,6 @@ program.
 die c1
 
 diff --git a/kilo.c b/kilo.c
-index d9828bc..9ce3bbf 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -6,6 +6,11 @@
@@ -712,7 +697,6 @@ fail.
 error-handling c2
 
 diff --git a/kilo.c b/kilo.c
-index 9ce3bbf..61d4a5e 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,4 +1,5 @@
@@ -721,7 +705,7 @@ index 9ce3bbf..61d4a5e 100644
 |#include <stdio.h>
 |#include <stdlib.h>
 |#include <termios.h>
-@@ -12,11 +13,12 @@ void die(const char *s) {
+@@ -12,11 +13,12 @@
 |}
 |
 |void disableRawMode() {
@@ -736,7 +720,7 @@ index 9ce3bbf..61d4a5e 100644
 |  atexit(disableRawMode);
 |
 |  struct termios raw = orig_termios;
-@@ -27,7 +29,7 @@ void enableRawMode() {
+@@ -27,7 +29,7 @@
 |  raw.c_cc[VMIN] = 0;
 |  raw.c_cc[VTIME] = 1;
 |
@@ -745,7 +729,7 @@ index 9ce3bbf..61d4a5e 100644
 |}
 |
 |int main() {
-@@ -35,7 +37,7 @@ int main() {
+@@ -35,7 +37,7 @@
 |
 |  while (1) {
 |    char c = '\0';
@@ -784,7 +768,6 @@ single line.
 sections c1
 
 diff --git a/kilo.c b/kilo.c
-index 61d4a5e..b0902cc 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -1,3 +1,5 @@
@@ -806,7 +789,7 @@ index 61d4a5e..b0902cc 100644
 |void die(const char *s) {
 |  perror(s);
 |  exit(1);
-@@ -32,6 +38,8 @@ void enableRawMode() {
+@@ -32,6 +38,8 @@
 |  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
 |}
 |

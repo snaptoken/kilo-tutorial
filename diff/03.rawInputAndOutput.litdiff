@@ -12,7 +12,6 @@ editor. We'll start by mapping <kbd>Ctrl-Q</kbd> to the quit operation.
 ctrl-q c2
 
 diff --git a/kilo.c b/kilo.c
-index b0902cc..1f2f3b2 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -7,6 +7,10 @@
@@ -26,7 +25,7 @@ index b0902cc..1f2f3b2 100644
 |/*** data ***/
 |
 |struct termios orig_termios;
-@@ -51,7 +55,7 @@ int main() {
+@@ -51,7 +55,7 @@
 |    } else {
 |      printf("%d ('%c')\r\n", c, c);
 |    }
@@ -60,10 +59,9 @@ keypresses at this point.
 refactor-input c2
 
 diff --git a/kilo.c b/kilo.c
-index 1f2f3b2..6ddded4 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -42,20 +42,34 @@ void enableRawMode() {
+@@ -42,20 +42,34 @@
 |  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
 |}
 |
@@ -136,10 +134,9 @@ keypress. Let's start by just clearing the screen.
 clear-screen c2
 
 diff --git a/kilo.c b/kilo.c
-index 6ddded4..0a75223 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -51,6 +51,12 @@ char editorReadKey() {
+@@ -51,6 +51,12 @@
 |  return c;
 |}
 |
@@ -152,7 +149,7 @@ index 6ddded4..0a75223 100644
 |/*** input ***/
 |
 |void editorProcessKeypress() {
-@@ -69,6 +75,7 @@ int main() {
+@@ -69,6 +75,7 @@
 |  enableRawMode();
 |
 |  while (1) {
@@ -207,10 +204,9 @@ the editor interface from top to bottom.
 cursor-home c2
 
 diff --git a/kilo.c b/kilo.c
-index 0a75223..e4487a2 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -55,6 +55,7 @@ char editorReadKey() {
+@@ -55,6 +55,7 @@
 |
 |void editorRefreshScreen() {
 |  write(STDOUT_FILENO, "\x1b[2J", 4);
@@ -244,10 +240,9 @@ wherever the cursor happens to be at that point.
 clean-exit c2
 
 diff --git a/kilo.c b/kilo.c
-index e4487a2..f29076a 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -18,6 +18,9 @@ struct termios orig_termios;
+@@ -18,6 +18,9 @@
 |/*** terminal ***/
 |
 |void die(const char *s) {
@@ -257,7 +252,7 @@ index e4487a2..f29076a 100644
 |  perror(s);
 |  exit(1);
 |}
-@@ -65,6 +68,8 @@ void editorProcessKeypress() {
+@@ -65,6 +68,8 @@
 |
 |  switch (c) {
 |    case CTRL_KEY('q'):
@@ -287,10 +282,9 @@ end of the file being edited.
 tildes c2
 
 diff --git a/kilo.c b/kilo.c
-index f29076a..d57b97e 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -56,9 +56,20 @@ char editorReadKey() {
+@@ -56,9 +56,20 @@
 |
 |/*** output ***/
 |
@@ -336,7 +330,6 @@ terminal. For now, let's just put our `orig_termios` global into the struct.
 global-state c1
 
 diff --git a/kilo.c b/kilo.c
-index d57b97e..9382004 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -13,7 +13,11 @@
@@ -352,7 +345,7 @@ index d57b97e..9382004 100644
 |
 |/*** terminal ***/
 |
-@@ -26,15 +30,15 @@ void die(const char *s) {
+@@ -26,15 +30,15 @@
 |}
 |
 |void disableRawMode() {
@@ -389,7 +382,6 @@ stands for **T**erminal **IOC**tl (which itself stands for **I**nput/**O**utput
 ioctl c1
 
 diff --git a/kilo.c b/kilo.c
-index 9382004..59ee080 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -4,6 +4,7 @@
@@ -400,7 +392,7 @@ index 9382004..59ee080 100644
 |#include <termios.h>
 |#include <unistd.h>
 |
-@@ -58,6 +59,18 @@ char editorReadKey() {
+@@ -58,6 +59,18 @@
 |  return c;
 |}
 |
@@ -442,7 +434,6 @@ call `getWindowSize()` to fill in those values.
 init-editor c1
 
 diff --git a/kilo.c b/kilo.c
-index 59ee080..b79e06a 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -15,6 +15,8 @@
@@ -454,7 +445,7 @@ index 59ee080..b79e06a 100644
 |  struct termios orig_termios;
 |};
 |
-@@ -105,8 +107,13 @@ void editorProcessKeypress() {
+@@ -105,8 +107,13 @@
 |
 |/*** init ***/
 |
@@ -480,10 +471,9 @@ Now we're ready to display the proper number of tildes on the screen:
 screenrows c2
 
 diff --git a/kilo.c b/kilo.c
-index b79e06a..b5fcec4 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -77,7 +77,7 @@ int getWindowSize(int *rows, int *cols) {
+@@ -77,7 +77,7 @@
 |
 |void editorDrawRows() {
 |  int y;
@@ -512,10 +502,9 @@ Let's start by moving the cursor to the bottom-right.
 bottom-right c2
 
 diff --git a/kilo.c b/kilo.c
-index b5fcec4..bac666f 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -64,7 +64,9 @@ char editorReadKey() {
+@@ -64,7 +64,9 @@
 |int getWindowSize(int *rows, int *cols) {
 |  struct winsize ws;
 |
@@ -569,10 +558,9 @@ see what the reply looks like.
 cursor-query c2
 
 diff --git a/kilo.c b/kilo.c
-index bac666f..36c0569 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -61,13 +61,30 @@ char editorReadKey() {
+@@ -61,13 +61,30 @@
 |  return c;
 |}
 |
@@ -628,10 +616,9 @@ buffer. We'll keep reading characters until we get to the `R` character.
 response-buffer c2
 
 diff --git a/kilo.c b/kilo.c
-index 36c0569..f2e10a4 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -62,17 +62,19 @@ char editorReadKey() {
+@@ -62,17 +62,19 @@
 |}
 |
 |int getCursorPosition(int *rows, int *cols) {
@@ -676,10 +663,9 @@ If you run the program, you'll see we have the response in `buf` in the form of
 parse-response c2
 
 diff --git a/kilo.c b/kilo.c
-index f2e10a4..e2fb34c 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -74,11 +74,10 @@ int getCursorPosition(int *rows, int *cols) {
+@@ -74,11 +74,10 @@
 |  }
 |  buf[i] = '\0';
 |
@@ -717,10 +703,9 @@ condition temporarily.
 back-to-ioctl c1
 
 diff --git a/kilo.c b/kilo.c
-index e2fb34c..0d5948d 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -83,7 +83,7 @@ int getCursorPosition(int *rows, int *cols) {
+@@ -83,7 +83,7 @@
 |int getWindowSize(int *rows, int *cols) {
 |  struct winsize ws;
 |
@@ -745,10 +730,9 @@ exception when we print our `"\r\n"`'s.
 last-line c2
 
 diff --git a/kilo.c b/kilo.c
-index 0d5948d..467111f 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -98,7 +98,11 @@ int getWindowSize(int *rows, int *cols) {
+@@ -98,7 +98,11 @@
 |void editorDrawRows() {
 |  int y;
 |  for (y = 0; y < E.screenrows; y++) {
@@ -785,10 +769,9 @@ Let's start by making a new `/*** append buffer ***/` section, and defining the
 abuf-struct c1
 
 diff --git a/kilo.c b/kilo.c
-index 467111f..070d268 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -93,6 +93,15 @@ int getWindowSize(int *rows, int *cols) {
+@@ -93,6 +93,15 @@
 |  }
 |}
 |
@@ -819,7 +802,6 @@ destructor.
 abuf-append c1
 
 diff --git a/kilo.c b/kilo.c
-index 070d268..0d5329b 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -4,6 +4,7 @@
@@ -830,7 +812,7 @@ index 070d268..0d5329b 100644
 |#include <sys/ioctl.h>
 |#include <termios.h>
 |#include <unistd.h>
-@@ -102,6 +103,19 @@ struct abuf {
+@@ -102,6 +103,19 @@
 |
 |#define ABUF_INIT {NULL, 0}
 |
@@ -878,10 +860,9 @@ Okay, our `abuf` type is ready to be put to use.
 use-abuf c1
 
 diff --git a/kilo.c b/kilo.c
-index 0d5329b..c54f85d 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -118,24 +118,29 @@ void abFree(struct abuf *ab) {
+@@ -118,24 +118,29 @@
 |
 |/*** output ***/
 |
@@ -942,10 +923,9 @@ finishes.
 hide-cursor c1
 
 diff --git a/kilo.c b/kilo.c
-index c54f85d..5bbb69e 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -132,12 +132,14 @@ void editorDrawRows(struct abuf *ab) {
+@@ -132,12 +132,14 @@
 |void editorRefreshScreen() {
 |  struct abuf ab = ABUF_INIT;
 |
@@ -988,10 +968,9 @@ the end of each line we draw.
 clear-line c1
 
 diff --git a/kilo.c b/kilo.c
-index 5bbb69e..0bd5038 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -123,6 +123,7 @@ void editorDrawRows(struct abuf *ab) {
+@@ -123,6 +123,7 @@
 |  for (y = 0; y < E.screenrows; y++) {
 |    abAppend(ab, "~", 1);
 |
@@ -999,7 +978,7 @@ index 5bbb69e..0bd5038 100644
 |    if (y < E.screenrows - 1) {
 |      abAppend(ab, "\r\n", 2);
 |    }
-@@ -133,7 +134,6 @@ void editorRefreshScreen() {
+@@ -133,7 +134,6 @@
 |  struct abuf ab = ABUF_INIT;
 |
 |  abAppend(&ab, "\x1b[?25l", 6);
@@ -1028,7 +1007,6 @@ editor and a version number a third of the way down the screen.
 welcome c2
 
 diff --git a/kilo.c b/kilo.c
-index 0bd5038..f4328ec 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -11,6 +11,8 @@
@@ -1040,7 +1018,7 @@ index 0bd5038..f4328ec 100644
 |#define CTRL_KEY(k) ((k) & 0x1f)
 |
 |/*** data ***/
-@@ -121,7 +123,15 @@ void abFree(struct abuf *ab) {
+@@ -121,7 +123,15 @@
 |void editorDrawRows(struct abuf *ab) {
 |  int y;
 |  for (y = 0; y < E.screenrows; y++) {
@@ -1073,10 +1051,9 @@ Now let's center it.
 center c2
 
 diff --git a/kilo.c b/kilo.c
-index f4328ec..5890c43 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -128,6 +128,12 @@ void editorDrawRows(struct abuf *ab) {
+@@ -128,6 +128,12 @@
 |      int welcomelen = snprintf(welcome, sizeof(welcome),
 |        "Kilo editor -- version %s", KILO_VERSION);
 |      if (welcomelen > E.screencols) welcomelen = E.screencols;
@@ -1110,7 +1087,6 @@ the global editor state.
 cx-cy c1
 
 diff --git a/kilo.c b/kilo.c
-index 5890c43..1e9b00c 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -18,6 +18,7 @@
@@ -1121,7 +1097,7 @@ index 5890c43..1e9b00c 100644
 |  int screenrows;
 |  int screencols;
 |  struct termios orig_termios;
-@@ -178,6 +179,9 @@ void editorProcessKeypress() {
+@@ -178,6 +179,9 @@
 |/*** init ***/
 |
 |void initEditor() {
@@ -1148,10 +1124,9 @@ position stored in `E.cx` and `E.cy`.
 set-cursor-position c1
 
 diff --git a/kilo.c b/kilo.c
-index 1e9b00c..5cf778c 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -155,7 +155,10 @@ void editorRefreshScreen() {
+@@ -155,7 +155,10 @@
 |
 |  editorDrawRows(&ab);
 |
@@ -1189,10 +1164,9 @@ with using these keys as arrow keys: <kbd>w</kbd> is your up arrow,
 move-cursor c2
 
 diff --git a/kilo.c b/kilo.c
-index 5cf778c..29f9d53 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -167,6 +167,23 @@ void editorRefreshScreen() {
+@@ -167,6 +167,23 @@
 |
 |/*** input ***/
 |
@@ -1216,7 +1190,7 @@ index 5cf778c..29f9d53 100644
 |void editorProcessKeypress() {
 |  char c = editorReadKey();
 |
-@@ -176,6 +193,13 @@ void editorProcessKeypress() {
+@@ -176,6 +193,13 @@
 |      write(STDOUT_FILENO, "\x1b[H", 3);
 |      exit(0);
 |      break;
@@ -1251,10 +1225,9 @@ as a single keypress.
 detect-arrow-keys c2
 
 diff --git a/kilo.c b/kilo.c
-index 29f9d53..96de5b8 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -62,7 +62,26 @@ char editorReadKey() {
+@@ -62,7 +62,26 @@
 |  while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
 |    if (nread == -1 && errno != EAGAIN) die("read");
 |  }
@@ -1313,7 +1286,6 @@ Let's start by replacing each instance of the
 arrow-keys-enum c1
 
 diff --git a/kilo.c b/kilo.c
-index 96de5b8..4d43d3c 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -15,6 +15,13 @@
@@ -1330,7 +1302,7 @@ index 96de5b8..4d43d3c 100644
 |/*** data ***/
 |
 |struct editorConfig {
-@@ -71,10 +78,10 @@ char editorReadKey() {
+@@ -71,10 +78,10 @@
 |
 |    if (seq[0] == '[') {
 |      switch (seq[1]) {
@@ -1345,7 +1317,7 @@ index 96de5b8..4d43d3c 100644
 |      }
 |    }
 |
-@@ -188,16 +195,16 @@ void editorRefreshScreen() {
+@@ -188,16 +195,16 @@
 |
 |void editorMoveCursor(char key) {
 |  switch (key) {
@@ -1366,7 +1338,7 @@ index 96de5b8..4d43d3c 100644
 |      E.cy++;
 |      break;
 |  }
-@@ -213,10 +220,10 @@ void editorProcessKeypress() {
+@@ -213,10 +220,10 @@
 |      exit(0);
 |      break;
 |
@@ -1396,7 +1368,6 @@ will also have to change all variables that store keypresses to be of type
 arrow-keys-int c2
 
 diff --git a/kilo.c b/kilo.c
-index 4d43d3c..ebbd400 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -16,10 +16,10 @@
@@ -1414,7 +1385,7 @@ index 4d43d3c..ebbd400 100644
 |};
 |
 |/*** data ***/
-@@ -63,7 +63,7 @@ void enableRawMode() {
+@@ -63,7 +63,7 @@
 |  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
 |}
 |
@@ -1423,7 +1394,7 @@ index 4d43d3c..ebbd400 100644
 |  int nread;
 |  char c;
 |  while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
-@@ -193,7 +193,7 @@ void editorRefreshScreen() {
+@@ -193,7 +193,7 @@
 |
 |/*** input ***/
 |
@@ -1432,7 +1403,7 @@ index 4d43d3c..ebbd400 100644
 |  switch (key) {
 |    case ARROW_LEFT:
 |      E.cx--;
-@@ -211,7 +211,7 @@ void editorMoveCursor(char key) {
+@@ -211,7 +211,7 @@
 |}
 |
 |void editorProcessKeypress() {
@@ -1470,10 +1441,9 @@ doing some bounds checking in `editorMoveCursor()`.
 off-screen c2
 
 diff --git a/kilo.c b/kilo.c
-index ebbd400..3a5ac0d 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -196,16 +196,24 @@ void editorRefreshScreen() {
+@@ -196,16 +196,24 @@
 |void editorMoveCursor(int key) {
 |  switch (key) {
 |    case ARROW_LEFT:
@@ -1517,10 +1487,9 @@ sent as `<esc>[5~` and <kbd>Page Down</kbd> is sent as `<esc>[6~`.
 detect-page-up-down c1
 
 diff --git a/kilo.c b/kilo.c
-index 3a5ac0d..b976eeb 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -19,7 +19,9 @@ enum editorKey {
+@@ -19,7 +19,9 @@
 |  ARROW_LEFT = 1000,
 |  ARROW_RIGHT,
 |  ARROW_UP,
@@ -1531,7 +1500,7 @@ index 3a5ac0d..b976eeb 100644
 |};
 |
 |/*** data ***/
-@@ -77,11 +79,21 @@ int editorReadKey() {
+@@ -77,11 +79,21 @@
 |    if (read(STDIN_FILENO, &seq[1], 1) != 1) return '\x1b';
 |
 |    if (seq[0] == '[') {
@@ -1574,10 +1543,9 @@ screen.
 page-up-down-simple c2
 
 diff --git a/kilo.c b/kilo.c
-index b976eeb..ba97769 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -240,6 +240,15 @@ void editorProcessKeypress() {
+@@ -240,6 +240,15 @@
 |      exit(0);
 |      break;
 |
@@ -1622,10 +1590,9 @@ be sent as `<esc>[1~`, `<esc>[7~`, `<esc>[H`, or `<esc>OH`. Similarly, the
 detect-home-end c1
 
 diff --git a/kilo.c b/kilo.c
-index ba97769..b978216 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -20,6 +20,8 @@ enum editorKey {
+@@ -20,6 +20,8 @@
 |  ARROW_RIGHT,
 |  ARROW_UP,
 |  ARROW_DOWN,
@@ -1634,7 +1601,7 @@ index ba97769..b978216 100644
 |  PAGE_UP,
 |  PAGE_DOWN
 |};
-@@ -83,8 +85,12 @@ int editorReadKey() {
+@@ -83,8 +85,12 @@
 |        if (read(STDIN_FILENO, &seq[2], 1) != 1) return '\x1b';
 |        if (seq[2] == '~') {
 |          switch (seq[1]) {
@@ -1647,7 +1614,7 @@ index ba97769..b978216 100644
 |          }
 |        }
 |      } else {
-@@ -93,8 +99,15 @@ int editorReadKey() {
+@@ -93,8 +99,15 @@
 |          case 'B': return ARROW_DOWN;
 |          case 'C': return ARROW_RIGHT;
 |          case 'D': return ARROW_LEFT;
@@ -1674,10 +1641,9 @@ have them move the cursor to the left or right edges of the screen.
 home-end-simple c2
 
 diff --git a/kilo.c b/kilo.c
-index b978216..0773b7a 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -253,6 +253,14 @@ void editorProcessKeypress() {
+@@ -253,6 +253,14 @@
 |      exit(0);
 |      break;
 |
@@ -1710,10 +1676,9 @@ won't make this key do anything for now.
 detect-delete-key c1
 
 diff --git a/kilo.c b/kilo.c
-index 0773b7a..4954c40 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -20,6 +20,7 @@ enum editorKey {
+@@ -20,6 +20,7 @@
 |  ARROW_RIGHT,
 |  ARROW_UP,
 |  ARROW_DOWN,
@@ -1721,7 +1686,7 @@ index 0773b7a..4954c40 100644
 |  HOME_KEY,
 |  END_KEY,
 |  PAGE_UP,
-@@ -86,6 +87,7 @@ int editorReadKey() {
+@@ -86,6 +87,7 @@
 |        if (seq[2] == '~') {
 |          switch (seq[1]) {
 |            case '1': return HOME_KEY;

@@ -10,10 +10,9 @@ Let's begin by writing a function that inserts a single character into an
 row-insert-char c1
 
 diff --git a/kilo.c b/kilo.c
-index 21209c2..db10039 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -224,6 +224,15 @@ void editorAppendRow(char *s, size_t len) {
+@@ -224,6 +224,15 @@
 |  E.numrows++;
 |}
 |
@@ -59,10 +58,9 @@ position that the cursor is at.
 editor-insert-char c1
 
 diff --git a/kilo.c b/kilo.c
-index db10039..a1b7948 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -233,6 +233,16 @@ void editorRowInsertChar(erow *row, int at, int c) {
+@@ -233,6 +233,16 @@
 |  editorUpdateRow(row);
 |}
 |
@@ -104,10 +102,9 @@ edited.
 key-insert-char c2
 
 diff --git a/kilo.c b/kilo.c
-index a1b7948..406234f 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -484,6 +484,10 @@ void editorProcessKeypress() {
+@@ -484,6 +484,10 @@
 |    case ARROW_RIGHT:
 |      editorMoveCursor(c);
 |      break;
@@ -136,7 +133,6 @@ case of calling `editorInsertChar()`.
 block-special-chars c2
 
 diff --git a/kilo.c b/kilo.c
-index 406234f..598bab9 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -24,6 +24,7 @@
@@ -147,7 +143,7 @@ index 406234f..598bab9 100644
 |  ARROW_LEFT = 1000,
 |  ARROW_RIGHT,
 |  ARROW_UP,
-@@ -447,6 +448,10 @@ void editorProcessKeypress() {
+@@ -447,6 +448,10 @@
 |  int c = editorReadKey();
 |
 |  switch (c) {
@@ -158,7 +154,7 @@ index 406234f..598bab9 100644
 |    case CTRL_KEY('q'):
 |      write(STDOUT_FILENO, "\x1b[2J", 4);
 |      write(STDOUT_FILENO, "\x1b[H", 3);
-@@ -462,6 +467,12 @@ void editorProcessKeypress() {
+@@ -462,6 +467,12 @@
 |        E.cx = E.row[E.cy].size;
 |      break;
 |
@@ -171,7 +167,7 @@ index 406234f..598bab9 100644
 |    case PAGE_UP:
 |    case PAGE_DOWN:
 |      {
-@@ -485,6 +496,10 @@ void editorProcessKeypress() {
+@@ -485,6 +496,10 @@
 |      editorMoveCursor(c);
 |      break;
 |
@@ -227,10 +223,9 @@ single string that is ready to be written out to a file.
 rows-to-string c1
 
 diff --git a/kilo.c b/kilo.c
-index 598bab9..2fb3b25 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -246,6 +246,25 @@ void editorInsertChar(int c) {
+@@ -246,6 +246,25 @@
 |
 |/*** file i/o ***/
 |
@@ -277,7 +272,6 @@ string returned by `editorRowsToString()` to disk.
 save c1
 
 diff --git a/kilo.c b/kilo.c
-index 2fb3b25..3af208e 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -6,6 +6,7 @@
@@ -288,7 +282,7 @@ index 2fb3b25..3af208e 100644
 |#include <stdio.h>
 |#include <stdarg.h>
 |#include <stdlib.h>
-@@ -285,6 +286,19 @@ void editorOpen(char *filename) {
+@@ -285,6 +286,19 @@
 |  fclose(fp);
 |}
 |
@@ -353,10 +347,9 @@ We'll use <kbd>Ctrl-S</kbd>.
 ctrl-s c2
 
 diff --git a/kilo.c b/kilo.c
-index 3af208e..8625bd6 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -491,6 +491,10 @@ void editorProcessKeypress() {
+@@ -491,6 +491,10 @@
 |      exit(0);
 |      break;
 |
@@ -381,10 +374,9 @@ Let's add error handling to `editorSave()`.
 save-errors c2
 
 diff --git a/kilo.c b/kilo.c
-index 8625bd6..369cf36 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -293,9 +293,17 @@ void editorSave() {
+@@ -293,9 +293,17 @@
 |  char *buf = editorRowsToString(&len);
 |
 |  int fd = open(E.filename, O_RDWR | O_CREAT, 0644);
@@ -422,10 +414,9 @@ binding to the help message that's set in `main()`.
 save-status-message c0
 
 diff --git a/kilo.c b/kilo.c
-index 369cf36..53ae3fa 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -298,6 +298,7 @@ void editorSave() {
+@@ -298,6 +298,7 @@
 |      if (write(fd, buf, len) == len) {
 |        close(fd);
 |        free(buf);
@@ -433,7 +424,7 @@ index 369cf36..53ae3fa 100644
 |        return;
 |      }
 |    }
-@@ -305,6 +306,7 @@ void editorSave() {
+@@ -305,6 +306,7 @@
 |  }
 |
 |  free(buf);
@@ -441,7 +432,7 @@ index 369cf36..53ae3fa 100644
 |}
 |
 |/*** append buffer ***/
-@@ -576,7 +578,7 @@ int main(int argc, char *argv[]) {
+@@ -576,7 +578,7 @@
 |    editorOpen(argv[1]);
 |  }
 |
@@ -479,10 +470,9 @@ it.
 prototypes c2
 
 diff --git a/kilo.c b/kilo.c
-index 53ae3fa..ca8f69e 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -63,6 +63,10 @@ struct editorConfig {
+@@ -63,6 +63,10 @@
 |
 |struct editorConfig E;
 |
@@ -511,10 +501,9 @@ initialize it to `0`.
 dirty c1
 
 diff --git a/kilo.c b/kilo.c
-index ca8f69e..082538b 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -55,6 +55,7 @@ struct editorConfig {
+@@ -55,6 +55,7 @@
 |  int screencols;
 |  int numrows;
 |  erow *row;
@@ -522,7 +511,7 @@ index ca8f69e..082538b 100644
 |  char *filename;
 |  char statusmsg[80];
 |  time_t statusmsg_time;
-@@ -567,6 +568,7 @@ void initEditor() {
+@@ -567,6 +568,7 @@
 |  E.coloff = 0;
 |  E.numrows = 0;
 |  E.row = NULL;
@@ -541,10 +530,9 @@ after the filename if the file has been modified.
 show-dirty c1
 
 diff --git a/kilo.c b/kilo.c
-index 082538b..4c21ba3 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -393,8 +393,9 @@ void editorDrawRows(struct abuf *ab) {
+@@ -393,8 +393,9 @@
 |void editorDrawStatusBar(struct abuf *ab) {
 |  abAppend(ab, "\x1b[7m", 4);
 |  char status[80], rstatus[80];
@@ -567,10 +555,9 @@ text.
 increment-dirty c2
 
 diff --git a/kilo.c b/kilo.c
-index 4c21ba3..35932e4 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -229,6 +229,7 @@ void editorAppendRow(char *s, size_t len) {
+@@ -229,6 +229,7 @@
 |  editorUpdateRow(&E.row[at]);
 |
 |  E.numrows++;
@@ -578,7 +565,7 @@ index 4c21ba3..35932e4 100644
 |}
 |
 |void editorRowInsertChar(erow *row, int at, int c) {
-@@ -238,6 +239,7 @@ void editorRowInsertChar(erow *row, int at, int c) {
+@@ -238,6 +239,7 @@
 |  row->size++;
 |  row->chars[at] = c;
 |  editorUpdateRow(row);
@@ -604,10 +591,9 @@ away, before you make any changes. That's because `editorOpen()` calls
 reset-dirty c2
 
 diff --git a/kilo.c b/kilo.c
-index 35932e4..4e1040b 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -291,6 +291,7 @@ void editorOpen(char *filename) {
+@@ -291,6 +291,7 @@
 |  }
 |  free(line);
 |  fclose(fp);
@@ -615,7 +601,7 @@ index 35932e4..4e1040b 100644
 |}
 |
 |void editorSave() {
-@@ -305,6 +306,7 @@ void editorSave() {
+@@ -305,6 +306,7 @@
 |      if (write(fd, buf, len) == len) {
 |        close(fd);
 |        free(buf);
@@ -641,7 +627,6 @@ saving.
 quit-confirmation c2
 
 diff --git a/kilo.c b/kilo.c
-index 4e1040b..aa8dafc 100644
 --- a/kilo.c
 +++ b/kilo.c
 @@ -21,6 +21,7 @@
@@ -652,7 +637,7 @@ index 4e1040b..aa8dafc 100644
 |
 |#define CTRL_KEY(k) ((k) & 0x1f)
 |
-@@ -498,6 +499,8 @@ void editorMoveCursor(int key) {
+@@ -498,6 +499,8 @@
 |}
 |
 |void editorProcessKeypress() {
@@ -661,7 +646,7 @@ index 4e1040b..aa8dafc 100644
 |  int c = editorReadKey();
 |
 |  switch (c) {
-@@ -506,6 +509,12 @@ void editorProcessKeypress() {
+@@ -506,6 +509,12 @@
 |      break;
 |
 |    case CTRL_KEY('q'):
@@ -674,7 +659,7 @@ index 4e1040b..aa8dafc 100644
 |      write(STDOUT_FILENO, "\x1b[2J", 4);
 |      write(STDOUT_FILENO, "\x1b[H", 3);
 |      exit(0);
-@@ -561,6 +570,8 @@ void editorProcessKeypress() {
+@@ -561,6 +570,8 @@
 |      editorInsertChar(c);
 |      break;
 |  }
@@ -703,10 +688,9 @@ function, which deletes a character in an `erow`.
 row-del-char c1
 
 diff --git a/kilo.c b/kilo.c
-index aa8dafc..399e83b 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -243,6 +243,14 @@ void editorRowInsertChar(erow *row, int at, int c) {
+@@ -243,6 +243,14 @@
 |  E.dirty++;
 |}
 |
@@ -738,10 +722,9 @@ delete the character that is to the left of the cursor.
 editor-del-char c1
 
 diff --git a/kilo.c b/kilo.c
-index 399e83b..70c08f1 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -261,6 +261,16 @@ void editorInsertChar(int c) {
+@@ -261,6 +261,16 @@
 |  E.cx++;
 |}
 |
@@ -774,10 +757,9 @@ keys to `editorDelChar()`.
 key-del-char c2
 
 diff --git a/kilo.c b/kilo.c
-index 70c08f1..b0836d8 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -554,7 +554,8 @@ void editorProcessKeypress() {
+@@ -554,7 +554,8 @@
 |    case BACKSPACE:
 |    case CTRL_KEY('h'):
 |    case DEL_KEY:
@@ -813,10 +795,9 @@ also require an `editorFreeRow()` function for freeing the memory owned by the
 del-row c1
 
 diff --git a/kilo.c b/kilo.c
-index b0836d8..7051fe8 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -233,6 +233,19 @@ void editorAppendRow(char *s, size_t len) {
+@@ -233,6 +233,19 @@
 |  E.dirty++;
 |}
 |
@@ -855,10 +836,9 @@ end of a row.
 row-append-string c1
 
 diff --git a/kilo.c b/kilo.c
-index 7051fe8..e9f560d 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -256,6 +256,15 @@ void editorRowInsertChar(erow *row, int at, int c) {
+@@ -256,6 +256,15 @@
 |  E.dirty++;
 |}
 |
@@ -890,10 +870,9 @@ at the beginning of a line.
 del-char-row c2
 
 diff --git a/kilo.c b/kilo.c
-index e9f560d..6dcfa84 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -285,11 +285,17 @@ void editorInsertChar(int c) {
+@@ -285,11 +285,17 @@
 |
 |void editorDelChar() {
 |  if (E.cy == E.numrows) return;
@@ -941,10 +920,9 @@ be able to insert a row at the index specified by the new `at` argument.
 append-to-insert c0
 
 diff --git a/kilo.c b/kilo.c
-index 6dcfa84..7593e2a 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -216,10 +216,12 @@ void editorUpdateRow(erow *row) {
+@@ -216,10 +216,12 @@
 |  row->rsize = idx;
 |}
 |
@@ -977,10 +955,9 @@ We now have to replace all calls to `editorAppendRow(...)` with calls to
 use-insert-row c1
 
 diff --git a/kilo.c b/kilo.c
-index 7593e2a..46033f1 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -279,7 +279,7 @@ void editorRowDelChar(erow *row, int at) {
+@@ -279,7 +279,7 @@
 |
 |void editorInsertChar(int c) {
 |  if (E.cy == E.numrows) {
@@ -989,7 +966,7 @@ index 7593e2a..46033f1 100644
 |  }
 |  editorRowInsertChar(&E.row[E.cy], E.cx, c);
 |  E.cx++;
-@@ -336,7 +336,7 @@ void editorOpen(char *filename) {
+@@ -336,7 +336,7 @@
 |    while (linelen > 0 && (line[linelen - 1] == '\n' ||
 |                           line[linelen - 1] == '\r'))
 |      linelen--;
@@ -1009,10 +986,9 @@ Now that we have `editorInsertRow()`, we're ready to implement
 insert-newline c1
 
 diff --git a/kilo.c b/kilo.c
-index 46033f1..32221aa 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -285,6 +285,21 @@ void editorInsertChar(int c) {
+@@ -285,6 +285,21 @@
 |  E.cx++;
 |}
 |
@@ -1061,10 +1037,9 @@ Finally, let's actually map the <kbd>Enter</kbd> key to the
 enter-key c2
 
 diff --git a/kilo.c b/kilo.c
-index 32221aa..9fa82e3 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -568,7 +568,7 @@ void editorProcessKeypress() {
+@@ -568,7 +568,7 @@
 |
 |  switch (c) {
 |    case '\r':
@@ -1095,10 +1070,9 @@ after the prompt.
 prompt c1
 
 diff --git a/kilo.c b/kilo.c
-index 9fa82e3..ea1915b 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -68,6 +68,7 @@ struct editorConfig E;
+@@ -68,6 +68,7 @@
 |/*** prototypes ***/
 |
 |void editorSetStatusMessage(const char *fmt, ...);
@@ -1106,7 +1080,7 @@ index 9fa82e3..ea1915b 100644
 |
 |/*** terminal ***/
 |
-@@ -522,6 +523,34 @@ void editorSetStatusMessage(const char *fmt, ...) {
+@@ -522,6 +523,34 @@
 |
 |/*** input ***/
 |
@@ -1171,10 +1145,9 @@ is `NULL`.
 save-as c2
 
 diff --git a/kilo.c b/kilo.c
-index ea1915b..6bd9a1b 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -69,6 +69,7 @@ struct editorConfig E;
+@@ -69,6 +69,7 @@
 |
 |void editorSetStatusMessage(const char *fmt, ...);
 |void editorRefreshScreen();
@@ -1182,7 +1155,7 @@ index ea1915b..6bd9a1b 100644
 |
 |/*** terminal ***/
 |
-@@ -360,7 +361,9 @@ void editorOpen(char *filename) {
+@@ -360,7 +361,9 @@
 |}
 |
 |void editorSave() {
@@ -1204,10 +1177,9 @@ to press <kbd>Escape</kbd> to cancel the input prompt.
 prompt-escape c2
 
 diff --git a/kilo.c b/kilo.c
-index 6bd9a1b..972f8ff 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -538,7 +538,11 @@ char *editorPrompt(char *prompt) {
+@@ -538,7 +538,11 @@
 |    editorRefreshScreen();
 |
 |    int c = editorReadKey();
@@ -1232,10 +1204,9 @@ the save operation and displaying a "Save aborted" message to the user.
 abort-save c2
 
 diff --git a/kilo.c b/kilo.c
-index 972f8ff..e71f2c1 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -362,7 +362,11 @@ void editorOpen(char *filename) {
+@@ -362,7 +362,11 @@
 |
 |void editorSave() {
 |  if (E.filename == NULL) {
@@ -1264,10 +1235,9 @@ or <kbd>Delete</kbd>) in the input prompt.
 prompt-backspace c2
 
 diff --git a/kilo.c b/kilo.c
-index e71f2c1..cce71c2 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -542,7 +542,9 @@ char *editorPrompt(char *prompt) {
+@@ -542,7 +542,9 @@
 |    editorRefreshScreen();
 |
 |    int c = editorReadKey();

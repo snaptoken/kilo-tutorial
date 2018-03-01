@@ -11,10 +11,9 @@ We'll attempt to highlight numbers by coloring each digit character
 syntax-digits c2
 
 diff --git a/kilo.c b/kilo.c
-index 5f10de4..6b38a63 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -529,7 +529,17 @@ void editorDrawRows(struct abuf *ab) {
+@@ -529,7 +529,17 @@
 |      int len = E.row[filerow].rsize - E.coloff;
 |      if (len < 0) len = 0;
 |      if (len > E.screencols) len = E.screencols;
@@ -76,10 +75,9 @@ array. Let's add an array to the `erow` struct named `hl`, which stands for
 syntax-refactoring c1
 
 diff --git a/kilo.c b/kilo.c
-index 6b38a63..ac34194 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -45,6 +45,7 @@ typedef struct erow {
+@@ -45,6 +45,7 @@
 |  int rsize;
 |  char *chars;
 |  char *render;
@@ -87,7 +85,7 @@ index 6b38a63..ac34194 100644
 |} erow;
 |
 |struct editorConfig {
-@@ -244,6 +245,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -244,6 +245,7 @@
 |
 |  E.row[at].rsize = 0;
 |  E.row[at].render = NULL;
@@ -95,7 +93,7 @@ index 6b38a63..ac34194 100644
 |  editorUpdateRow(&E.row[at]);
 |
 |  E.numrows++;
-@@ -253,6 +255,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -253,6 +255,7 @@
 |void editorFreeRow(erow *row) {
 |  free(row->render);
 |  free(row->chars);
@@ -117,10 +115,9 @@ values that the `hl` array can contain.
 highlight-enum c1
 
 diff --git a/kilo.c b/kilo.c
-index ac34194..073e36f 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -38,6 +38,11 @@ enum editorKey {
+@@ -38,6 +38,11 @@
 |  PAGE_DOWN
 |};
 |
@@ -149,10 +146,9 @@ array.
 editor-update-syntax c1
 
 diff --git a/kilo.c b/kilo.c
-index 073e36f..7a4f786 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -189,6 +189,20 @@ int getWindowSize(int *rows, int *cols) {
+@@ -189,6 +189,20 @@
 |  }
 |}
 |
@@ -195,10 +191,9 @@ Now let's actually call `editorUpdateSyntax()`.
 call-update-syntax c1
 
 diff --git a/kilo.c b/kilo.c
-index 7a4f786..ea35ace 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -249,6 +249,8 @@ void editorUpdateRow(erow *row) {
+@@ -249,6 +249,8 @@
 |  }
 |  row->render[idx] = '\0';
 |  row->rsize = idx;
@@ -223,10 +218,9 @@ to the actual ANSI color codes we want to draw them with.
 map-colors c1
 
 diff --git a/kilo.c b/kilo.c
-index ea35ace..7031e33 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -203,6 +203,13 @@ void editorUpdateSyntax(erow *row) {
+@@ -203,6 +203,13 @@
 |  }
 |}
 |
@@ -254,10 +248,9 @@ Now let's finally draw the highlighted text to the screen!
 use-hl c1
 
 diff --git a/kilo.c b/kilo.c
-index 7031e33..b46fe1c 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -561,16 +561,21 @@ void editorDrawRows(struct abuf *ab) {
+@@ -561,16 +561,21 @@
 |      if (len < 0) len = 0;
 |      if (len > E.screencols) len = E.screencols;
 |      char *c = &E.row[filerow].render[E.coloff];
@@ -305,10 +298,9 @@ only print out an escape sequence when the color changes.
 current-color c1
 
 diff --git a/kilo.c b/kilo.c
-index b46fe1c..c127b15 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -562,16 +562,23 @@ void editorDrawRows(struct abuf *ab) {
+@@ -562,16 +562,23 @@
 |      if (len > E.screencols) len = E.screencols;
 |      char *c = &E.row[filerow].render[E.coloff];
 |      unsigned char *hl = &E.row[filerow].hl[E.coloff];
@@ -360,10 +352,9 @@ highlighting system to highlight search results. We'll start by adding
 hl-match c1
 
 diff --git a/kilo.c b/kilo.c
-index c127b15..549b191 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -40,7 +40,8 @@ enum editorKey {
+@@ -40,7 +40,8 @@
 |
 |enum editorHighlight {
 |  HL_NORMAL = 0,
@@ -373,7 +364,7 @@ index c127b15..549b191 100644
 |};
 |
 |/*** data ***/
-@@ -206,6 +207,7 @@ void editorUpdateSyntax(erow *row) {
+@@ -206,6 +207,7 @@
 |int editorSyntaxToColor(int hl) {
 |  switch (hl) {
 |    case HL_NUMBER: return 31;
@@ -392,10 +383,9 @@ search code.
 search-highlighting c2
 
 diff --git a/kilo.c b/kilo.c
-index 549b191..d443246 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -470,6 +470,8 @@ void editorFindCallback(char *query, int key) {
+@@ -470,6 +470,8 @@
 |      E.cy = current;
 |      E.cx = editorRowRxToCx(row, match - row->render);
 |      E.rowoff = E.numrows;
@@ -423,10 +413,9 @@ contents of `saved_hl` at the top of the callback.
 restore-hl c2
 
 diff --git a/kilo.c b/kilo.c
-index d443246..b21b62a 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -442,6 +442,15 @@ void editorFindCallback(char *query, int key) {
+@@ -442,6 +442,15 @@
 |  static int last_match = -1;
 |  static int direction = 1;
 |
@@ -442,7 +431,7 @@ index d443246..b21b62a 100644
 |  if (key == '\r' || key == '\x1b') {
 |    last_match = -1;
 |    direction = 1;
-@@ -471,6 +480,9 @@ void editorFindCallback(char *query, int key) {
+@@ -471,6 +480,9 @@
 |      E.cx = editorRowRxToCx(row, match - row->render);
 |      E.rowoff = E.numrows;
 |
@@ -483,10 +472,9 @@ character at a time for numbers, but this will be useful for later.)
 syntax-while c1
 
 diff --git a/kilo.c b/kilo.c
-index b21b62a..1ddafff 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -196,11 +196,15 @@ void editorUpdateSyntax(erow *row) {
+@@ -196,11 +196,15 @@
 |  row->hl = realloc(row->hl, row->rsize);
 |  memset(row->hl, HL_NORMAL, row->rsize);
 |
@@ -516,10 +504,9 @@ returns true if it's considered a separator character.
 is-separator c1
 
 diff --git a/kilo.c b/kilo.c
-index 1ddafff..0f53190 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -192,6 +192,10 @@ int getWindowSize(int *rows, int *cols) {
+@@ -192,6 +192,10 @@
 |
 |/*** syntax highlighting ***/
 |
@@ -553,10 +540,9 @@ and highlight numbers properly.
 prev-sep c2
 
 diff --git a/kilo.c b/kilo.c
-index 0f53190..ee4291a 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -200,14 +200,21 @@ void editorUpdateSyntax(erow *row) {
+@@ -200,14 +200,21 @@
 |  row->hl = realloc(row->hl, row->rsize);
 |  memset(row->hl, HL_NORMAL, row->rsize);
 |
@@ -608,10 +594,9 @@ Now let's support highlighting numbers that contain decimal points.
 decimal-point c2
 
 diff --git a/kilo.c b/kilo.c
-index ee4291a..7d07a0c 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -207,7 +207,8 @@ void editorUpdateSyntax(erow *row) {
+@@ -207,7 +207,8 @@
 |    char c = row->render[i];
 |    unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : HL_NORMAL;
 |
@@ -643,10 +628,9 @@ highlighting information for a particular filetype.
 editor-syntax c1
 
 diff --git a/kilo.c b/kilo.c
-index 7d07a0c..8aadce5 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -44,8 +44,16 @@ enum editorHighlight {
+@@ -44,8 +44,16 @@
 |  HL_MATCH
 |};
 |
@@ -682,10 +666,9 @@ C language to it.
 hldb c1
 
 diff --git a/kilo.c b/kilo.c
-index 8aadce5..0ed7af0 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -80,6 +80,20 @@ struct editorConfig {
+@@ -80,6 +80,20 @@
 |
 |struct editorConfig E;
 |
@@ -726,10 +709,9 @@ editor state, and initialize it to `NULL`.
 e-syntax c1
 
 diff --git a/kilo.c b/kilo.c
-index 0ed7af0..9eba68d 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -75,6 +75,7 @@ struct editorConfig {
+@@ -75,6 +75,7 @@
 |  char *filename;
 |  char statusmsg[80];
 |  time_t statusmsg_time;
@@ -737,7 +719,7 @@ index 0ed7af0..9eba68d 100644
 |  struct termios orig_termios;
 |};
 |
-@@ -880,6 +881,7 @@ void initEditor() {
+@@ -880,6 +881,7 @@
 |  E.filename = NULL;
 |  E.statusmsg[0] = '\0';
 |  E.statusmsg_time = 0;
@@ -759,10 +741,9 @@ then we'll display `no ft` ("no filetype") instead.
 show-filetype c2
 
 diff --git a/kilo.c b/kilo.c
-index 9eba68d..53aa237 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -651,8 +651,8 @@ void editorDrawStatusBar(struct abuf *ab) {
+@@ -651,8 +651,8 @@
 |  int len = snprintf(status, sizeof(status), "%.20s - %d lines %s",
 |    E.filename ? E.filename : "[No Name]", E.numrows,
 |    E.dirty ? "(modified)" : "");
@@ -784,10 +765,9 @@ into account.
 use-filetype c2
 
 diff --git a/kilo.c b/kilo.c
-index 53aa237..da1bc0c 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -223,6 +223,8 @@ void editorUpdateSyntax(erow *row) {
+@@ -223,6 +223,8 @@
 |  row->hl = realloc(row->hl, row->rsize);
 |  memset(row->hl, HL_NORMAL, row->rsize);
 |
@@ -796,7 +776,7 @@ index 53aa237..da1bc0c 100644
 |  int prev_sep = 1;
 |
 |  int i = 0;
-@@ -230,12 +232,14 @@ void editorUpdateSyntax(erow *row) {
+@@ -230,12 +232,14 @@
 |    char c = row->render[i];
 |    unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : HL_NORMAL;
 |
@@ -834,10 +814,9 @@ one matches, it'll set `E.syntax` to that filetype.
 select-syntax c1
 
 diff --git a/kilo.c b/kilo.c
-index da1bc0c..2e78267 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -255,6 +255,27 @@ int editorSyntaxToColor(int hl) {
+@@ -255,6 +255,27 @@
 |  }
 |}
 |
@@ -896,10 +875,9 @@ This is in `editorOpen()` and `editorSave()`.
 detect-filetype c2
 
 diff --git a/kilo.c b/kilo.c
-index 2e78267..64b7457 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -453,6 +453,8 @@ void editorOpen(char *filename) {
+@@ -453,6 +453,8 @@
 |  free(E.filename);
 |  E.filename = strdup(filename);
 |
@@ -908,7 +886,7 @@ index 2e78267..64b7457 100644
 |  FILE *fp = fopen(filename, "r");
 |  if (!fp) die("fopen");
 |
-@@ -477,6 +479,7 @@ void editorSave() {
+@@ -477,6 +479,7 @@
 |      editorSetStatusMessage("Save aborted");
 |      return;
 |    }
@@ -934,10 +912,9 @@ Let's rehighlight the entire file after setting `E.syntax` in
 rehighlight c2
 
 diff --git a/kilo.c b/kilo.c
-index 64b7457..22adfe6 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -269,6 +269,12 @@ void editorSelectSyntaxHighlight() {
+@@ -269,6 +269,12 @@
 |      if ((is_ext && ext && !strcmp(ext, s->filematch[i])) ||
 |          (!is_ext && strstr(E.filename, s->filematch[i]))) {
 |        E.syntax = s;
@@ -966,10 +943,9 @@ Let's start with strings.
 hl-string c1
 
 diff --git a/kilo.c b/kilo.c
-index 22adfe6..14b7547 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -40,6 +40,7 @@ enum editorKey {
+@@ -40,6 +40,7 @@
 |
 |enum editorHighlight {
 |  HL_NORMAL = 0,
@@ -977,7 +953,7 @@ index 22adfe6..14b7547 100644
 |  HL_NUMBER,
 |  HL_MATCH
 |};
-@@ -249,6 +250,7 @@ void editorUpdateSyntax(erow *row) {
+@@ -249,6 +250,7 @@
 |
 |int editorSyntaxToColor(int hl) {
 |  switch (hl) {
@@ -998,10 +974,9 @@ Now let's add an `HL_HIGHLIGHT_STRINGS` bit flag to the `flags` field of the
 string-flag c1
 
 diff --git a/kilo.c b/kilo.c
-index 14b7547..c508751 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -46,6 +46,7 @@ enum editorHighlight {
+@@ -46,6 +46,7 @@
 |};
 |
 |#define HL_HIGHLIGHT_NUMBERS (1<<0)
@@ -1009,7 +984,7 @@ index 14b7547..c508751 100644
 |
 |/*** data ***/
 |
-@@ -90,7 +91,7 @@ struct editorSyntax HLDB[] = {
+@@ -90,7 +91,7 @@
 |  {
 |    "c",
 |    C_HL_extensions,
@@ -1031,10 +1006,9 @@ quote.
 syntax-strings c2
 
 diff --git a/kilo.c b/kilo.c
-index c508751..9ce1ebb 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -228,12 +228,30 @@ void editorUpdateSyntax(erow *row) {
+@@ -228,12 +228,30 @@
 |  if (E.syntax == NULL) return;
 |
 |  int prev_sep = 1;
@@ -1094,10 +1068,9 @@ close the string in the vast majority of languages.
 string-escapes c2
 
 diff --git a/kilo.c b/kilo.c
-index 9ce1ebb..705468d 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -238,6 +238,11 @@ void editorUpdateSyntax(erow *row) {
+@@ -238,6 +238,11 @@
 |    if (E.syntax->flags & HL_HIGHLIGHT_STRINGS) {
 |      if (in_string) {
 |        row->hl[i] = HL_STRING;
@@ -1128,10 +1101,9 @@ until the end, because they're complicated.)
 hl-comment c1
 
 diff --git a/kilo.c b/kilo.c
-index 705468d..9d12177 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -40,6 +40,7 @@ enum editorKey {
+@@ -40,6 +40,7 @@
 |
 |enum editorHighlight {
 |  HL_NORMAL = 0,
@@ -1139,7 +1111,7 @@ index 705468d..9d12177 100644
 |  HL_STRING,
 |  HL_NUMBER,
 |  HL_MATCH
-@@ -274,6 +275,7 @@ void editorUpdateSyntax(erow *row) {
+@@ -274,6 +275,7 @@
 |
 |int editorSyntaxToColor(int hl) {
 |  switch (hl) {
@@ -1161,10 +1133,9 @@ to the `editorSyntax` struct, and set it to `"//"` for the C filetype.
 scs c1
 
 diff --git a/kilo.c b/kilo.c
-index 9d12177..90d4ad5 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -54,6 +54,7 @@ enum editorHighlight {
+@@ -54,6 +54,7 @@
 |struct editorSyntax {
 |  char *filetype;
 |  char **filematch;
@@ -1172,7 +1143,7 @@ index 9d12177..90d4ad5 100644
 |  int flags;
 |};
 |
-@@ -92,6 +93,7 @@ struct editorSyntax HLDB[] = {
+@@ -92,6 +93,7 @@
 |  {
 |    "c",
 |    C_HL_extensions,
@@ -1190,10 +1161,9 @@ Okay, now for the highlighting code.
 syntax-comments c2
 
 diff --git a/kilo.c b/kilo.c
-index 90d4ad5..97362ca 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -230,6 +230,9 @@ void editorUpdateSyntax(erow *row) {
+@@ -230,6 +230,9 @@
 |
 |  if (E.syntax == NULL) return;
 |
@@ -1203,7 +1173,7 @@ index 90d4ad5..97362ca 100644
 |  int prev_sep = 1;
 |  int in_string = 0;
 |
-@@ -238,6 +241,13 @@ void editorUpdateSyntax(erow *row) {
+@@ -238,6 +241,13 @@
 |    char c = row->render[i];
 |    unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : HL_NORMAL;
 |
@@ -1252,10 +1222,9 @@ other color.)
 hl-keywords c1
 
 diff --git a/kilo.c b/kilo.c
-index 97362ca..e71d659 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -41,6 +41,8 @@ enum editorKey {
+@@ -41,6 +41,8 @@
 |enum editorHighlight {
 |  HL_NORMAL = 0,
 |  HL_COMMENT,
@@ -1264,7 +1233,7 @@ index 97362ca..e71d659 100644
 |  HL_STRING,
 |  HL_NUMBER,
 |  HL_MATCH
-@@ -288,6 +290,8 @@ void editorUpdateSyntax(erow *row) {
+@@ -288,6 +290,8 @@
 |int editorSyntaxToColor(int hl) {
 |  switch (hl) {
 |    case HL_COMMENT: return 36;
@@ -1288,10 +1257,9 @@ type of keywords with a pipe (`|`) character (also known as a vertical bar).
 c-keywords c1
 
 diff --git a/kilo.c b/kilo.c
-index e71d659..1563283 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -56,6 +56,7 @@ enum editorHighlight {
+@@ -56,6 +56,7 @@
 |struct editorSyntax {
 |  char *filetype;
 |  char **filematch;
@@ -1299,7 +1267,7 @@ index e71d659..1563283 100644
 |  char *singleline_comment_start;
 |  int flags;
 |};
-@@ -90,11 +91,19 @@ struct editorConfig E;
+@@ -90,11 +91,19 @@
 |/*** filetypes ***/
 |
 |char *C_HL_extensions[] = { ".c", ".h", ".cpp", NULL };
@@ -1332,10 +1300,9 @@ Now let's highlight them.
 syntax-keywords c2
 
 diff --git a/kilo.c b/kilo.c
-index 1563283..698ac01 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -241,6 +241,8 @@ void editorUpdateSyntax(erow *row) {
+@@ -241,6 +241,8 @@
 |
 |  if (E.syntax == NULL) return;
 |
@@ -1344,7 +1311,7 @@ index 1563283..698ac01 100644
 |  char *scs = E.syntax->singleline_comment_start;
 |  int scs_len = scs ? strlen(scs) : 0;
 |
-@@ -291,6 +293,26 @@ void editorUpdateSyntax(erow *row) {
+@@ -291,6 +293,26 @@
 |      }
 |    }
 |
@@ -1429,10 +1396,9 @@ counterparts, we'll render them using inverted colors (black on white).
 nonprintables c2
 
 diff --git a/kilo.c b/kilo.c
-index 698ac01..cc81aec 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -729,7 +729,12 @@ void editorDrawRows(struct abuf *ab) {
+@@ -729,7 +729,12 @@
 |      int current_color = -1;
 |      int j;
 |      for (j = 0; j < len; j++) {
@@ -1466,10 +1432,9 @@ let's print the escape sequence for the current color afterwards.
 nonprintables-fix-color c2
 
 diff --git a/kilo.c b/kilo.c
-index cc81aec..c96b2e9 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -734,6 +734,11 @@ void editorDrawRows(struct abuf *ab) {
+@@ -734,6 +734,11 @@
 |          abAppend(ab, "\x1b[7m", 4);
 |          abAppend(ab, &sym, 1);
 |          abAppend(ab, "\x1b[m", 3);
@@ -1499,10 +1464,9 @@ Let's start by adding `HL_MLCOMMENT` to the `editorHighlight` enum.
 hl-multiline-comments c1
 
 diff --git a/kilo.c b/kilo.c
-index c96b2e9..9c8755d 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -41,6 +41,7 @@ enum editorKey {
+@@ -41,6 +41,7 @@
 |enum editorHighlight {
 |  HL_NORMAL = 0,
 |  HL_COMMENT,
@@ -1510,7 +1474,7 @@ index c96b2e9..9c8755d 100644
 |  HL_KEYWORD1,
 |  HL_KEYWORD2,
 |  HL_STRING,
-@@ -320,7 +321,8 @@ void editorUpdateSyntax(erow *row) {
+@@ -320,7 +321,8 @@
 |
 |int editorSyntaxToColor(int hl) {
 |  switch (hl) {
@@ -1534,10 +1498,9 @@ Now we'll add two strings to `editorSyntax`: `multiline_comment_start` and
 mcs-mce c1
 
 diff --git a/kilo.c b/kilo.c
-index 9c8755d..a9aa511 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -59,6 +59,8 @@ struct editorSyntax {
+@@ -59,6 +59,8 @@
 |  char **filematch;
 |  char **keywords;
 |  char *singleline_comment_start;
@@ -1546,7 +1509,7 @@ index 9c8755d..a9aa511 100644
 |  int flags;
 |};
 |
-@@ -105,7 +107,7 @@ struct editorSyntax HLDB[] = {
+@@ -105,7 +107,7 @@
 |    "c",
 |    C_HL_extensions,
 |    C_HL_keywords,
@@ -1567,10 +1530,9 @@ comments. We'll also add `mcs_len` and `mce_len`.
 mcs-mce-len c1
 
 diff --git a/kilo.c b/kilo.c
-index a9aa511..3c7c5a9 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -247,7 +247,12 @@ void editorUpdateSyntax(erow *row) {
+@@ -247,7 +247,12 @@
 |  char **keywords = E.syntax->keywords;
 |
 |  char *scs = E.syntax->singleline_comment_start;
@@ -1593,10 +1555,9 @@ Now for the highlighting code. We won't worry about multiple lines just yet.
 syntax-mlcomment c2
 
 diff --git a/kilo.c b/kilo.c
-index 3c7c5a9..f35450e 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -256,6 +256,7 @@ void editorUpdateSyntax(erow *row) {
+@@ -256,6 +256,7 @@
 |
 |  int prev_sep = 1;
 |  int in_string = 0;
@@ -1604,7 +1565,7 @@ index 3c7c5a9..f35450e 100644
 |
 |  int i = 0;
 |  while (i < row->rsize) {
-@@ -269,6 +270,27 @@ void editorUpdateSyntax(erow *row) {
+@@ -269,6 +270,27 @@
 |      }
 |    }
 |
@@ -1665,10 +1626,9 @@ single-line comments should not be recognized inside multi-line comments.
 slcomment-within-mlcomment c1
 
 diff --git a/kilo.c b/kilo.c
-index f35450e..a1ae610 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -263,7 +263,7 @@ void editorUpdateSyntax(erow *row) {
+@@ -263,7 +263,7 @@
 |    char c = row->render[i];
 |    unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : HL_NORMAL;
 |
@@ -1692,10 +1652,9 @@ to examine the previous row's `hl_open_comment` value.
 idx-and-hloc c1
 
 diff --git a/kilo.c b/kilo.c
-index a1ae610..baed21f 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -65,11 +65,13 @@ struct editorSyntax {
+@@ -65,11 +65,13 @@
 |};
 |
 |typedef struct erow {
@@ -1709,7 +1668,7 @@ index a1ae610..baed21f 100644
 |} erow;
 |
 |struct editorConfig {
-@@ -444,6 +446,8 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -444,6 +446,8 @@
 |  E.row = realloc(E.row, sizeof(erow) * (E.numrows + 1));
 |  memmove(&E.row[at + 1], &E.row[at], sizeof(erow) * (E.numrows - at));
 |
@@ -1718,7 +1677,7 @@ index a1ae610..baed21f 100644
 |  E.row[at].size = len;
 |  E.row[at].chars = malloc(len + 1);
 |  memcpy(E.row[at].chars, s, len);
-@@ -452,6 +456,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -452,6 +456,7 @@
 |  E.row[at].rsize = 0;
 |  E.row[at].render = NULL;
 |  E.row[at].hl = NULL;
@@ -1738,10 +1697,9 @@ or removed from the file.
 update-idx c1
 
 diff --git a/kilo.c b/kilo.c
-index baed21f..803d38e 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -445,6 +445,7 @@ void editorInsertRow(int at, char *s, size_t len) {
+@@ -445,6 +445,7 @@
 |
 |  E.row = realloc(E.row, sizeof(erow) * (E.numrows + 1));
 |  memmove(&E.row[at + 1], &E.row[at], sizeof(erow) * (E.numrows - at));
@@ -1749,7 +1707,7 @@ index baed21f..803d38e 100644
 |
 |  E.row[at].idx = at;
 |
-@@ -473,6 +474,7 @@ void editorDelRow(int at) {
+@@ -473,6 +474,7 @@
 |  if (at < 0 || at >= E.numrows) return;
 |  editorFreeRow(&E.row[at]);
 |  memmove(&E.row[at], &E.row[at + 1], sizeof(erow) * (E.numrows - at - 1));
@@ -1770,10 +1728,9 @@ Now, the final step.
 propagate-highlight c2
 
 diff --git a/kilo.c b/kilo.c
-index 803d38e..ba88a97 100644
 --- a/kilo.c
 +++ b/kilo.c
-@@ -258,7 +258,7 @@ void editorUpdateSyntax(erow *row) {
+@@ -258,7 +258,7 @@
 |
 |  int prev_sep = 1;
 |  int in_string = 0;
@@ -1782,7 +1739,7 @@ index 803d38e..ba88a97 100644
 |
 |  int i = 0;
 |  while (i < row->rsize) {
-@@ -348,6 +348,11 @@ void editorUpdateSyntax(erow *row) {
+@@ -348,6 +348,11 @@
 |    prev_sep = is_separator(c);
 |    i++;
 |  }
