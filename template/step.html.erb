@@ -2,16 +2,16 @@
   <div class="diff">
     <div class="diff-header">
       <div class="step-filename">
-        <a href="https://github.com/snaptoken/<%= config[:name] %>-src/blob/<%= step_name %>/<%= diff.filename %>">
+        <a href="https://github.com/snaptoken/<%= config[:name] %>-src/blob/step-<%= number %>/<%= diff.filename %>">
           <%= diff.filename %>
         </a>
       </div>
       <div class="step-number">
-        Step <%= step_number %>
+        Step <%= number %>
       </div>
       <div class="step-name">
-        <a href="https://github.com/snaptoken/<%= config[:name] %>-src/tree/<%= step_name %>">
-          <%= step_name %>
+        <a href="https://github.com/snaptoken/<%= config[:name] %>-src/tree/step-<%= number %>">
+          step-<%= number %>
         </a>
       </div>
     </div>
@@ -30,5 +30,22 @@
         <% end %>\\
       <% end %>\\
     </code></pre>
+    <div class="diff-footer">
+      <% tag = summary.split[1] %>
+      <% if %w(c0 c1 c2 c-unknown).include? tag %>
+        <div class="diff-tag-<%= tag %>">
+          <% case tag
+             when "c0" %>
+            ♏&#xFE0E; doesn’t compile
+          <% when "c1" %>
+            ♎&#xFE0E; compiles, but with no observable effects
+          <% when "c2" %>
+            ♐&#xFE0E; compiles
+          <% when "c-unknown" %>
+            ♋&#xFE0E; may or may not compile
+          <% end %>
+        </div>
+      <% end %>
+    </div>
   </div>
 <% end %>
