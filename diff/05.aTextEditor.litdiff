@@ -1253,4 +1253,3 @@ diff --git a/kilo.c b/kilo.c
 
 In the [next chapter](06.search.html), we'll make use of `editorPrompt()` to
 implement an incremental search feature in our editor.
-

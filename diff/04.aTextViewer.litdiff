@@ -1824,4 +1824,3 @@ only refresh the screen after each keypress.
 In the [next chapter](05.aTextEditor.html), we will turn our text viewer into a
 text editor, allowing the user to insert and delete characters and save their
 changes to disk.
-

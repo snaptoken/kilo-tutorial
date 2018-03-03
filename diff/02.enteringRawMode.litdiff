@@ -804,4 +804,3 @@ diff --git a/kilo.c b/kilo.c
 In the [next chapter](03.rawInputAndOutput.html), we'll do some more low-level
 terminal input/output handling, and use that to draw to the screen and allow
 the user to move the cursor around.
-

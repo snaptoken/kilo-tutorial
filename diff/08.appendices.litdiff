@@ -6,7 +6,7 @@ Each step in this tutorial is presented as a diff. A diff shows you the changes
 you need to make to the previous step's code to get to the current step. Here's
 a sample diff, from step 7:
 
-{{icanon}}
+{{step 7}}
 
 Each diff starts with a header that contains the filename of the file you need
 to edit ("kilo.c"), the step number ("Step 7"), and the step name ("icanon").
@@ -207,4 +207,3 @@ license.
 
 The rest of the tutorial is licensed under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-

@@ -478,4 +478,3 @@ diff --git a/kilo.c b/kilo.c
 
 In the [next chapter](07.syntaxHighlighting.html), we'll implement syntax
 highlighting and filetype detection, to complete our text editor.
-
