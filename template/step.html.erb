@@ -19,7 +19,7 @@
       <% for line in diff.lines %>\\
         <% if line.type == :folded %>\\
           <div class="line folded">\\
-            <% line.line_numbers.map { |n| diff.lines[n].source }.join(" &hellip; ").gsub("\n", "") %>\\
+            <%= line.line_numbers.map(&:source).join(" &hellip; ") %>\\
           </div>\\
         <% else %>\\
           <% tag = {unchanged: :div, added: :ins, removed: :del}[line.type] %>\\
