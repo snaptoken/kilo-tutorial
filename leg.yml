@@ -6,6 +6,7 @@ repo_author:
   email: snaptoken@viewsourcecode.org
 diff_transformers:
   - FoldSections:
+      unfold_before_new_section: true
       section_types:
         - name: comments
           start: "^/\\*\\*\\*.+\\*\\*\\*/$"
