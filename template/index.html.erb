@@ -3,30 +3,30 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title><%= tutorial.title %></title>
+    <title><%= title %></title>
     <link href="style.css" rel="stylesheet">
   </head>
   <body>
     <header class="bar">
       <nav>
         <a href="#"></a>
-        <a href="<%= tutorial.pages.first.filename %>.html">open the booklet</a>
+        <a href="<%= pages.first.filename %>.html">open the booklet</a>
         <a href="#"></a>
       </nav>
     </header>
     <div id="container">
-      <h1><%= tutorial.title %></h1>
+      <h1><%= title %></h1>
       <%= render "_welcome.md" %>
       <h2>Table of Contents</h2>
       <ol>
-        <% for page in tutorial.pages %>
+        <% for page in pages %>
           <li><a href="<%= page.filename %>.html"><%= page.title %></a></li>
         <% end %>
       </ol>
     </div>
     <div id="version">
-      <a href="https://github.com/snaptoken/<%= tutorial.name %>-tutorial/tree/v<%= tutorial.version %>"><%= tutorial.version %></a>
-      (<a href="https://github.com/snaptoken/<%= tutorial.name %>-tutorial/blob/master/CHANGELOG.md">changelog</a>)
+      <a href="https://github.com/snaptoken/<%= name %>-tutorial/tree/v<%= version %>"><%= version %></a>
+      (<a href="https://github.com/snaptoken/<%= name %>-tutorial/blob/master/CHANGELOG.md">changelog</a>)
     </div>
   </body>
 </html>

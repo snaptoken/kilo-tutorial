@@ -2,7 +2,7 @@
   <div class="diff">
     <div class="diff-header">
       <div class="step-filename">
-        <a href="https://github.com/snaptoken/<%= tutorial.name %>-src/blob/step-<%= number %>/<%= diff.filename %>">
+        <a href="https://github.com/snaptoken/<%= name %>-src/blob/step-<%= number %>/<%= diff.filename %>">
           <%= diff.filename %>
         </a>
       </div>
@@ -10,7 +10,7 @@
         Step <%= number %>
       </div>
       <div class="step-name">
-        <a href="https://github.com/snaptoken/<%= tutorial.name %>-src/tree/step-<%= number %>">
+        <a href="https://github.com/snaptoken/<%= name %>-src/tree/step-<%= number %>">
           step-<%= number %>
         </a>
       </div>
@@ -19,7 +19,7 @@
       <% for line in diff.lines %>\\
         <% if line.type == :folded %>\\
           <div class="line folded">\\
-            <%= line.line_numbers.map(&:source).join(" &hellip; ") %>\\
+            <%= line.source.gsub('<span class="err">…</span>', '…') %>\\
           </div>\\
         <% else %>\\
           <% tag = {unchanged: :div, added: :ins, removed: :del}[line.type] %>\\

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title><%= page_number %>. <%= title %> | <%= tutorial.title %></title>
+    <title><%= page_number %>. <%= page_title %> | <%= title %></title>
     <link href="style.css" rel="stylesheet">
   </head>
   <body>
@@ -28,8 +28,8 @@
       <%= content %>
     </div>
     <div id="version">
-      <a href="https://github.com/snaptoken/<%= tutorial.name %>-tutorial/tree/v<%= tutorial.version %>"><%= tutorial.version %></a>
-      (<a href="https://github.com/snaptoken/<%= tutorial.name %>-tutorial/blob/master/CHANGELOG.md">changelog</a>)
+      <a href="https://github.com/snaptoken/<%= name %>-tutorial/tree/v<%= version %>"><%= version %></a>
+      (<a href="https://github.com/snaptoken/<%= name %>-tutorial/blob/master/CHANGELOG.md">changelog</a>)
     </div>
     <footer class="bar">
       <nav>
