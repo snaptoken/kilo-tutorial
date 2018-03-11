@@ -9,11 +9,9 @@ a sample diff, from step 7:
 {{step 7}}
 
 Each diff starts with a header that contains the filename of the file you need
-to edit ("kilo.c"), the step number ("Step 7"), and the step name ("icanon").
-You can click the filename to see the full source code of the file for the
-current step on GitHub. You can also click the step name on the far right to
-browse all files for the current step on GitHub (which isn't particularly
-useful for this tutorial, since we're just working on a single source file).
+to edit ("kilo.c"), the step number ("Step 7"), and a link to the corresponding
+tag on GitHub ("step-7"). You can click the filename to see the full source code
+of the file for the current step on GitHub.
 
 After the header, the contents of the file are shown. Lines that need to be
 added or changed are highlighted and marked with an arrow. Functions that don't
