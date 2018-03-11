@@ -1,8 +1,17 @@
----
-:name: kilo
-:version: "1.0.0beta11"
-:title: Build Your Own Text Editor
-:repo_author:
-  :name: snaptoken
-  :email: snaptoken@viewsourcecode.org
-...
+name: kilo
+version: "1.0.0beta11"
+title: Build Your Own Text Editor
+repo_author:
+  name: snaptoken
+  email: snaptoken@viewsourcecode.org
+diff_transformers:
+  - FoldSections:
+      section_types:
+        - name: comments
+          start: "^/\\*\\*\\*.+\\*\\*\\*/$"
+          end: null
+        - name: braces
+          start: "^\\S.*{$"
+          end: "^}( \\w+)?;?$"
+  - TrimBlankLines
+  - OmitAdjacentRemovals
