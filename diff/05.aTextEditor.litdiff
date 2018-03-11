@@ -7,7 +7,7 @@ Let's begin by writing a function that inserts a single character into an
 
 ~~~
 
-row-insert-char c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -55,7 +55,7 @@ position that the cursor is at.
 
 ~~~
 
-editor-insert-char c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -99,7 +99,7 @@ edited.
 
 ~~~
 
-key-insert-char c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -130,7 +130,7 @@ case of calling `editorInsertChar()`.
 
 ~~~
 
-block-special-chars c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -220,7 +220,7 @@ single string that is ready to be written out to a file.
 
 ~~~
 
-rows-to-string c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -269,7 +269,7 @@ string returned by `editorRowsToString()` to disk.
 
 ~~~
 
-save c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -344,7 +344,7 @@ We'll use <kbd>Ctrl-S</kbd>.
 
 ~~~
 
-ctrl-s c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -371,7 +371,7 @@ Let's add error handling to `editorSave()`.
 
 ~~~
 
-save-errors c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -411,7 +411,7 @@ binding to the help message that's set in `main()`.
 
 ~~~
 
-save-status-message c0
+c0
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -467,7 +467,7 @@ it.
 
 ~~~
 
-prototypes c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -498,7 +498,7 @@ initialize it to `0`.
 
 ~~~
 
-dirty c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -527,7 +527,7 @@ after the filename if the file has been modified.
 
 ~~~
 
-show-dirty c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -552,7 +552,7 @@ text.
 
 ~~~
 
-increment-dirty c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -588,7 +588,7 @@ away, before you make any changes. That's because `editorOpen()` calls
 
 ~~~
 
-reset-dirty c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -624,7 +624,7 @@ saving.
 
 ~~~
 
-quit-confirmation c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -685,7 +685,7 @@ function, which deletes a character in an `erow`.
 
 ~~~
 
-row-del-char c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -719,7 +719,7 @@ delete the character that is to the left of the cursor.
 
 ~~~
 
-editor-del-char c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -754,7 +754,7 @@ keys to `editorDelChar()`.
 
 ~~~
 
-key-del-char c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -792,7 +792,7 @@ also require an `editorFreeRow()` function for freeing the memory owned by the
 
 ~~~
 
-del-row c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -833,7 +833,7 @@ end of a row.
 
 ~~~
 
-row-append-string c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -867,7 +867,7 @@ at the beginning of a line.
 
 ~~~
 
-del-char-row c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -917,7 +917,7 @@ be able to insert a row at the index specified by the new `at` argument.
 
 ~~~
 
-append-to-insert c0
+c0
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -952,7 +952,7 @@ We now have to replace all calls to `editorAppendRow(...)` with calls to
 
 ~~~
 
-use-insert-row c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -983,7 +983,7 @@ Now that we have `editorInsertRow()`, we're ready to implement
 
 ~~~
 
-insert-newline c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1034,7 +1034,7 @@ Finally, let's actually map the <kbd>Enter</kbd> key to the
 
 ~~~
 
-enter-key c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1067,7 +1067,7 @@ after the prompt.
 
 ~~~
 
-prompt c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1142,7 +1142,7 @@ is `NULL`.
 
 ~~~
 
-save-as c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1174,7 +1174,7 @@ to press <kbd>Escape</kbd> to cancel the input prompt.
 
 ~~~
 
-prompt-escape c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1201,7 +1201,7 @@ the save operation and displaying a "Save aborted" message to the user.
 
 ~~~
 
-abort-save c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1232,7 +1232,7 @@ or <kbd>Delete</kbd>) in the input prompt.
 
 ~~~
 
-prompt-backspace c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c

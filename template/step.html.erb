@@ -31,7 +31,7 @@
       <% end %>\\
     </code></pre>
     <div class="diff-footer">
-      <% tag = summary.split[1] %>
+      <% tag = summary %>
       <% if %w(c0 c1 c2 c-unknown).include? tag %>
         <div class="diff-tag-<%= tag %>">
           <% case tag

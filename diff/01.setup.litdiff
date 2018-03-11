@@ -65,7 +65,7 @@ the name of the text editor we are building.)
 
 ~~~
 
-main c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 new file mode 100644
@@ -107,7 +107,7 @@ Create a new file literally named `Makefile` with the following contents.
 
 ~~~
 
-make c2
+c2
 
 diff --git a/Makefile b/Makefile
 new file mode 100644

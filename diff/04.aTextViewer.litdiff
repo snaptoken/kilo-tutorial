@@ -6,7 +6,7 @@ Let's create a data type for storing a row of text in our editor.
 
 ~~~
 
-erow c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -53,7 +53,7 @@ file just yet. Instead, we'll hardcode a "Hello, world" string into it.
 
 ~~~
 
-hello-world c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -111,7 +111,7 @@ Let's display it then.
 
 ~~~
 
-draw-erow c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -170,7 +170,7 @@ first line of the file.
 
 ~~~
 
-open-file c-unknown
+c-unknown
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -266,7 +266,7 @@ our code more portable.
 
 ~~~
 
-feature-test-macros c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -293,7 +293,7 @@ the welcome message could get in the way of displaying the file.
 
 ~~~
 
-hide-welcome c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -323,7 +323,7 @@ the next few steps.)
 
 ~~~
 
-erow-array c0
+c0
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -354,7 +354,7 @@ function called `editorAppendRow()`. We'll also put it under a new section,
 
 ~~~
 
-append-row c0
+c0
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -401,7 +401,7 @@ now.
 
 ~~~
 
-fix-append-row c0
+c0
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -440,7 +440,7 @@ when printing out the current line.
 
 ~~~
 
-draw-multiple-erows c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -466,7 +466,7 @@ file into `E.row`.
 
 ~~~
 
-read-multiple-lines c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -499,7 +499,7 @@ of the file the user is currently scrolled to.
 
 ~~~
 
-rowoff c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -531,7 +531,7 @@ file according to the value of `rowoff`.
 
 ~~~
 
-filerow c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -573,7 +573,7 @@ refresh the screen.
 
 ~~~
 
-editor-scroll c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -618,7 +618,7 @@ past the bottom of the file).
 
 ~~~
 
-enable-vertical-scroll c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -649,7 +649,7 @@ text file. To position the cursor on the screen, we now have to subtract
 
 ~~~
 
-fix-cursor-scrolling c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -674,7 +674,7 @@ offset) variable to the global editor state.
 
 ~~~
 
-coloff c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -704,7 +704,7 @@ that are to the left of the offset from the length of the row.
 
 ~~~
 
-use-coloff c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -734,7 +734,7 @@ Now let's update `editorScroll()` to handle horizontal scrolling.
 
 ~~~
 
-editor-scroll-horizontal c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -763,7 +763,7 @@ Now let's allow the user to scroll past the right edge of the screen.
 
 ~~~
 
-enable-horizontal-scroll c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -789,7 +789,7 @@ scrolling.
 
 ~~~
 
-fix-cursor-scrolling-horizontal c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -824,7 +824,7 @@ line.
 
 ~~~
 
-scroll-limits c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -870,7 +870,7 @@ past the end of the line it's on.
 
 ~~~
 
-snap-cursor c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -903,7 +903,7 @@ move to the end of the previous line.
 
 ~~~
 
-moving-left c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -930,7 +930,7 @@ to go to the beginning of the next line.
 
 ~~~
 
-moving-right c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -977,7 +977,7 @@ initialized.
 
 ~~~
 
-render c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1013,7 +1013,7 @@ just yet.
 
 ~~~
 
-editor-update-row c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1057,7 +1057,7 @@ Now let's replace `chars` and `size` with `render` and `rsize` in
 
 ~~~
 
-use-render c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1083,7 +1083,7 @@ Now the text viewer is displaying the characters in `render`. Let's add code to
 
 ~~~
 
-tabs c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1132,7 +1132,7 @@ At this point, we should probably make the length of a tab stop a constant.
 
 ~~~
 
-tab-stop c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1181,7 +1181,7 @@ Start by adding `rx` to the global state struct, and initializing it to `0`.
 
 ~~~
 
-rx c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1213,7 +1213,7 @@ rendered position of the cursor.
 
 ~~~
 
-rx-scroll c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1250,7 +1250,7 @@ position.
 
 ~~~
 
-use-rx c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1275,7 +1275,7 @@ up.
 
 ~~~
 
-cx-to-rx c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1313,7 +1313,7 @@ Let's call `editorRowCxToRx()` at the top of `editorScroll()` to finally set
 
 ~~~
 
-set-rx c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1343,7 +1343,7 @@ Now that we have scrolling, let's make the <kbd>Page Up</kbd> and
 
 ~~~
 
-page-up-down c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1380,7 +1380,7 @@ screen.)
 
 ~~~
 
-end-key c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1415,7 +1415,7 @@ screen.
 
 ~~~
 
-status-bar-make-room c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1458,7 +1458,7 @@ Let's draw a blank white status bar of inverted space characters.
 
 ~~~
 
-blank-status-bar c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1505,7 +1505,7 @@ file is opened.
 
 ~~~
 
-filename c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1552,7 +1552,7 @@ If there is no filename, we'll display `[No Name]` instead.
 
 ~~~
 
-status-bar-left c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1582,7 +1582,7 @@ screen.
 
 ~~~
 
-status-bar-right c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1634,7 +1634,7 @@ been displayed.
 
 ~~~
 
-status-message c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1680,7 +1680,7 @@ functions.
 
 ~~~
 
-set-status-message c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1750,7 +1750,7 @@ beneath our status bar where we'll display the message.
 
 ~~~
 
-message-bar-make-room c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1782,7 +1782,7 @@ Let's draw the message bar in a new `editorDrawMessageBar()` function.
 
 ~~~
 
-draw-message-bar c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c

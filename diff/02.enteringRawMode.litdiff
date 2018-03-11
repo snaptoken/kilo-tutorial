@@ -5,18 +5,17 @@ highlighted and marked with arrows.)
 
 ~~~
 
-read c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,3 +1,8 @@
+@@ -1,3 +1,7 @@
 +#include <unistd.h>
 +
 |int main() {
 +  char c;
 +  while (read(STDIN_FILENO, &c, 1) == 1);
-+
 |  return 0;
 |}
 
@@ -55,17 +54,16 @@ highlighted and marked the same way as lines you need to add.)
 
 ~~~
 
-press-q c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -2,7 +2,7 @@
+@@ -2,6 +2,6 @@
 |
 |int main() {
 |  char c;
 -  while (read(STDIN_FILENO, &c, 1) == 1);
-|
 +  while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q');
 |  return 0;
 |}
@@ -88,12 +86,12 @@ attributes back out. Let's try turning off the `ECHO` feature this way.
 
 ~~~
 
-echo c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
 +++ b/kilo.c
-@@ -1,8 +1,20 @@
+@@ -1,6 +1,19 @@
 +#include <termios.h>
 |#include <unistd.h>
 |
@@ -108,13 +106,11 @@ diff --git a/kilo.c b/kilo.c
 +}
 +
 |int main() {
--  char c;
 +  enableRawMode();
-|
-+  char c;
++
+|  char c;
 |  while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q');
 |  return 0;
-|}
 
 ~~~
 
@@ -164,7 +160,7 @@ exits.
 
 ~~~
 
-atexit c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -218,7 +214,7 @@ we will finally be reading input byte-by-byte, instead of line-by-line.
 
 ~~~
 
-icanon c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -249,7 +245,7 @@ the character it represents if it is a printable character.
 
 ~~~
 
-keypresses c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -334,7 +330,7 @@ both of these signals.
 
 ~~~
 
-isig c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -371,7 +367,7 @@ just turn off that feature.
 
 ~~~
 
-ixon c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -408,7 +404,7 @@ driver is otherwise set to discard that control character.
 
 ~~~
 
-iexten c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -446,7 +442,7 @@ off this feature.
 
 ~~~
 
-icrnl c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -486,7 +482,7 @@ processing feature turned on by default.
 
 ~~~
 
-opost c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -511,7 +507,7 @@ screen. To fix that, let's add carriage returns to our `printf()` statements.
 
 ~~~
 
-carriage-returns c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -540,7 +536,7 @@ Let's turn off a few more flags.
 
 ~~~
 
-misc-flags c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -590,7 +586,7 @@ returns if it doesn't get any input for a certain amount of time.
 
 ~~~
 
-vmin-vtime c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -658,7 +654,7 @@ program.
 
 ~~~
 
-die c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -694,7 +690,7 @@ fail.
 
 ~~~
 
-error-handling c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -765,7 +761,7 @@ single line.
 
 ~~~
 
-sections c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c

@@ -7,7 +7,7 @@ cursor to the match.
 
 ~~~
 
-basic-search c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -70,7 +70,7 @@ same code.
 
 ~~~
 
-rx-to-cx c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -114,7 +114,7 @@ index and assign that to `E.cx`.
 
 ~~~
 
-use-rx-to-cx c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -136,7 +136,7 @@ to the help message we set in `main()`.
 
 ~~~
 
-ctrl-f c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -178,7 +178,7 @@ pressed.
 
 ~~~
 
-prompt-callback c0
+c0
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -235,7 +235,7 @@ to compile.
 
 ~~~
 
-null-callback c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -267,7 +267,7 @@ called `editorFindCallback()`. Obviously this will be our callback function for
 
 ~~~
 
-incremental-search c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -321,7 +321,7 @@ after the search is cancelled.
 
 ~~~
 
-restore-cursor c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -367,7 +367,7 @@ the search: `1` for searching forward, and `-1` for searching backward.
 
 ~~~
 
-callback-statics c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -411,7 +411,7 @@ Now that we have those variables all set up, let's put them to use.
 
 ~~~
 
-search-arrows c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -458,7 +458,7 @@ can use the arrow keys.
 
 ~~~
 
-search-arrows-help c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c

@@ -9,7 +9,7 @@ editor. We'll start by mapping <kbd>Ctrl-Q</kbd> to the quit operation.
 
 ~~~
 
-ctrl-q c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -56,7 +56,7 @@ keypresses at this point.
 
 ~~~
 
-refactor-input c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -131,7 +131,7 @@ keypress. Let's start by just clearing the screen.
 
 ~~~
 
-clear-screen c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -201,7 +201,7 @@ the editor interface from top to bottom.
 
 ~~~
 
-cursor-home c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -237,7 +237,7 @@ wherever the cursor happens to be at that point.
 
 ~~~
 
-clean-exit c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -279,7 +279,7 @@ end of the file being edited.
 
 ~~~
 
-tildes c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -327,7 +327,7 @@ terminal. For now, let's just put our `orig_termios` global into the struct.
 
 ~~~
 
-global-state c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -379,7 +379,7 @@ stands for **T**erminal **IOC**tl (which itself stands for **I**nput/**O**utput
 
 ~~~
 
-ioctl c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -431,7 +431,7 @@ call `getWindowSize()` to fill in those values.
 
 ~~~
 
-init-editor c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -468,7 +468,7 @@ Now we're ready to display the proper number of tildes on the screen:
 
 ~~~
 
-screenrows c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -499,7 +499,7 @@ Let's start by moving the cursor to the bottom-right.
 
 ~~~
 
-bottom-right c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -555,7 +555,7 @@ see what the reply looks like.
 
 ~~~
 
-cursor-query c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -613,7 +613,7 @@ buffer. We'll keep reading characters until we get to the `R` character.
 
 ~~~
 
-response-buffer c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -660,7 +660,7 @@ If you run the program, you'll see we have the response in `buf` in the form of
 
 ~~~
 
-parse-response c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -700,7 +700,7 @@ condition temporarily.
 
 ~~~
 
-back-to-ioctl c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -727,7 +727,7 @@ exception when we print our `"\r\n"`'s.
 
 ~~~
 
-last-line c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -766,7 +766,7 @@ Let's start by making a new `/*** append buffer ***/` section, and defining the
 
 ~~~
 
-abuf-struct c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -799,7 +799,7 @@ destructor.
 
 ~~~
 
-abuf-append c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -857,7 +857,7 @@ Okay, our `abuf` type is ready to be put to use.
 
 ~~~
 
-use-abuf c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -920,7 +920,7 @@ finishes.
 
 ~~~
 
-hide-cursor c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -965,7 +965,7 @@ the end of each line we draw.
 
 ~~~
 
-clear-line c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1004,7 +1004,7 @@ editor and a version number a third of the way down the screen.
 
 ~~~
 
-welcome c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1048,7 +1048,7 @@ Now let's center it.
 
 ~~~
 
-center c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1084,7 +1084,7 @@ the global editor state.
 
 ~~~
 
-cx-cy c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1121,7 +1121,7 @@ position stored in `E.cx` and `E.cy`.
 
 ~~~
 
-set-cursor-position c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1161,7 +1161,7 @@ with using these keys as arrow keys: <kbd>w</kbd> is your up arrow,
 
 ~~~
 
-move-cursor c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1222,7 +1222,7 @@ as a single keypress.
 
 ~~~
 
-detect-arrow-keys c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1283,7 +1283,7 @@ Let's start by replacing each instance of the
 
 ~~~
 
-arrow-keys-enum c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1365,7 +1365,7 @@ will also have to change all variables that store keypresses to be of type
 
 ~~~
 
-arrow-keys-int c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1438,7 +1438,7 @@ doing some bounds checking in `editorMoveCursor()`.
 
 ~~~
 
-off-screen c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1484,7 +1484,7 @@ sent as `<esc>[5~` and <kbd>Page Down</kbd> is sent as `<esc>[6~`.
 
 ~~~
 
-detect-page-up-down c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1540,7 +1540,7 @@ screen.
 
 ~~~
 
-page-up-down-simple c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1587,7 +1587,7 @@ be sent as `<esc>[1~`, `<esc>[7~`, `<esc>[H`, or `<esc>OH`. Similarly, the
 
 ~~~
 
-detect-home-end c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1638,7 +1638,7 @@ have them move the cursor to the left or right edges of the screen.
 
 ~~~
 
-home-end-simple c2
+c2
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
@@ -1673,7 +1673,7 @@ won't make this key do anything for now.
 
 ~~~
 
-detect-delete-key c1
+c1
 
 diff --git a/kilo.c b/kilo.c
 --- a/kilo.c
