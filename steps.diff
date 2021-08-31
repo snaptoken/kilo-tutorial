@@ -1502,7 +1502,7 @@ diff --git a/kilo.c b/kilo.c
 -  char *line = "Hello, world!";
 -  ssize_t linelen = 13;
 +void editorOpen(char *filename) {
-+  FILE *fp = fopen(filename, "r");
++  FILE *fp = fopen(filename, "rb");
 +  if (!fp) die("fopen");
  
 -  E.row.size = linelen;
@@ -2304,7 +2304,7 @@ diff --git a/kilo.c b/kilo.c
 +  free(E.filename);
 +  E.filename = strdup(filename);
 +
-   FILE *fp = fopen(filename, "r");
+   FILE *fp = fopen(filename, "rb");
    if (!fp) die("fopen");
  
 @@ -441,6 +445,7 @@ void initEditor() {
@@ -4002,7 +4002,7 @@ diff --git a/kilo.c b/kilo.c
  
 +  editorSelectSyntaxHighlight();
 +
-   FILE *fp = fopen(filename, "r");
+   FILE *fp = fopen(filename, "rb");
    if (!fp) die("fopen");
  
 @@ -477,6 +479,7 @@ void editorSave() {
